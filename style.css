@@ -1,0 +1,251 @@
+/* Golf Trainer: Webseite
+   Gesetzt wie ein gedrucktes Yardage-Book (docs/GESTALTUNG.md im Repository der
+   App): Schwarz auf Weiß, Serifenschrift für Überschriften, Haarlinien statt
+   Kästen, Fahnenrot nur für Hinweise. Farben wie in App/Sources/Design/Theme.swift.
+   Keine Webfonts und nichts von anderen Servern. */
+
+:root {
+  color-scheme: light dark;
+  --paper: #ffffff;
+  --ink: #000000;
+  --ink-secondary: #6e6e73;           /* 5,1 : 1 auf Papier */
+  --rule: rgba(0, 0, 0, 0.14);        /* Haarlinie */
+  --flag: #d1381f;                    /* Fahnenrot, 4,9 : 1 auf Papier */
+  --serif: ui-serif, "New York", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #000000;
+    --ink: #ffffff;
+    --ink-secondary: #99999e;         /* 7,4 : 1 auf Papier */
+    --rule: rgba(255, 255, 255, 0.18);
+    --flag: #ff6b4d;                  /* 7,5 : 1 auf Papier */
+  }
+}
+
+/* „Kontrast erhöhen“: zweitrangiger Text kräftiger, wie in der App. */
+@media (prefers-contrast: more) {
+  :root { --ink-secondary: #4d4d4d; }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root { --ink-secondary: #bfbfbf; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0 20px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.0625rem;               /* 17 px wie der Fließtext auf dem iPhone */
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+/* Satzspiegel: höchstens 680 px breit, wie die Rechtstexte in der App. */
+.masthead, main, .colophon {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skip {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  padding: 8px 12px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+.skip:focus { top: 12px; }
+
+/* Kopf: der Name wie ein Kolumnentitel, darunter die Seiten als Wortreihe.
+   Die aktuelle Seite steht in Tinte und ist unterstrichen, wie der Tab in der App. */
+.masthead {
+  padding-top: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.brand {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.brand a { text-decoration: none; }
+.masthead ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.masthead nav a {
+  display: block;
+  padding: 10px 0;
+  color: var(--ink-secondary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.masthead nav a:hover { color: var(--ink); }
+.masthead nav a[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+main { padding: 8px 0 56px; }
+main:focus { outline: none; }
+
+h1, h2 {
+  font-family: var(--serif);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+h1 {
+  margin: 32px 0 14px;
+  font-size: 2.125rem;
+  font-weight: 700;
+}
+/* Abschnitt: Linie in Tinte, darunter die Überschrift, mit viel Luft darüber. */
+h2 {
+  margin: 44px 0 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ink);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+p, ul { margin: 0 0 12px; }
+p, li {
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+strong { font-weight: 600; }
+
+.intro {
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+}
+/* Stand: kleine, gesperrte Versalien wie die Rubriken der App. */
+.stand {
+  color: var(--ink-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Links sind unterstrichen, damit sie sich nicht nur durch die Farbe abheben. */
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Aufzählungen mit Gedankenstrich wie in der App. */
+main ul {
+  padding-left: 1.2em;
+  list-style-type: disc;
+  list-style-type: "–  ";
+}
+main li { margin-bottom: 8px; }
+main li::marker { color: var(--ink-secondary); }
+
+address {
+  margin: 0 0 12px;
+  font-style: normal;
+}
+
+/* Hinweis in Fahnenrot, z. B. wenn die Anbieterangaben fehlen. */
+.notice {
+  padding: 2px 0 2px 12px;
+  border-left: 3px solid var(--flag);
+  color: var(--flag);
+  font-weight: 600;
+}
+
+/* Startseite: die Seiten als Zeilen mit Haarlinie, Titel halbfett in Serifenschrift. */
+main .contents {
+  padding: 0;
+  list-style: none;
+}
+main .contents li {
+  margin: 0;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.contents a {
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+.contents p {
+  margin: 4px 0 0;
+  color: var(--ink-secondary);
+}
+
+/* Link zur Web-App: als Knopf in Tinte. */
+.cta a {
+  display: inline-block;
+  padding: 12px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: none;
+}
+.cta a:hover { text-decoration: underline; }
+
+/* Die eine Zahl, die zählt: groß in Serifenschrift. */
+.figure {
+  margin: 4px 0 12px;
+  font-family: var(--serif);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.figure a { text-decoration-thickness: 2px; }
+
+.colophon {
+  padding: 16px 0 40px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-secondary);
+  font-size: 0.875rem;
+}
+.colophon p { margin: 0; }
+
+/* Drucken: immer Schwarz auf Weiß, ohne Navigation, mit den Zielen der Links. */
+@media print {
+  :root {
+    --paper: #ffffff;
+    --ink: #000000;
+    --ink-secondary: #444444;
+    --rule: #999999;
+    --flag: #d1381f;
+  }
+  body { padding: 0; font-size: 11pt; }
+  .skip, .masthead nav { display: none; }
+  main a[href^="https:"]::after { content: " (" attr(href) ")"; }
+  h2 { break-after: avoid; }
+}

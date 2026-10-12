@@ -1,0 +1,4258 @@
+{
+  "version": 1,
+  "drills": [
+    {
+      "id": "warmup",
+      "name": "Aufwärmen",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [],
+      "minutes": 10,
+      "summary": "Kurzes Aufwärmen, damit die ersten Bälle nicht verschenkt sind.",
+      "steps": [
+        "3 Min. Mobilisation: Hüftkreisen, Rumpfdrehung mit dem Schläger hinter den Schultern, Armkreisen.",
+        "5 Min. halbe Schwünge mit dem Wedge, locker, auf einen sauberen Treffmoment achten. Ohne Range als Probeschwünge, ohne Ball.",
+        "2 Min. einige Schläge mit dem Schläger, mit dem die Einheit beginnt, auf dem Puttinggrün ein paar Putts."
+      ],
+      "scoring": {
+        "kind": "none"
+      },
+      "isWarmUp": true,
+      "sources": [
+        {
+          "title": "Adam Young – Effective Warm up for Golf",
+          "url": "https://www.adamyounggolf.com/effective-warm-up-for-golf/"
+        },
+        {
+          "title": "Wells & Langdown – Warming-up for Golf (Übersicht)",
+          "url": "https://oro.open.ac.uk/84707/1/Warming%20Up%20-%20Wells%20and%20Langdown%20ORO%20-%20FINAL.pdf"
+        }
+      ],
+      "purpose": "Bereitet Muskeln und Gelenke auf schnelle Schwünge vor. In Studien brachten schon rund 10 Minuten Aufwärmen mehr Schlägerkopfgeschwindigkeit, und Golfer, die sich länger als 10 Minuten aufwärmen, spielen im Schnitt bessere Handicaps.",
+      "tips": [
+        "Vor jeder Einheit, auch wenn die Zeit knapp ist.",
+        "Mit kleinen Schwüngen beginnen und langsam steigern.",
+        "Die ersten Bälle nicht bewerten, sie sind nur zum Einschwingen."
+      ]
+    },
+    {
+      "id": "putt-gate",
+      "name": "Start-Tor",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block für die Startrichtung: Der Ball muss durch ein schmales Tor aus zwei Tees rollen.",
+      "steps": [
+        "Gerader Putt aus ca. 1,5 m.",
+        "Zwei Tees ca. 30 cm vor dem Ball auf die Ziellinie stecken.",
+        "20 Putts. Zähle, wie viele sauber durchs Tor rollen, ohne ein Tee zu berühren."
+      ],
+      "levels": [
+        "Tor zwei Ballbreiten breit",
+        "Tor eineinhalb Ballbreiten breit",
+        "Tor nur knapp breiter als der Ball"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 20
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – The First 3 Putting Drills",
+          "url": "https://mygolfspy.com/news-opinion/instruction/the-first-3-putting-drills-beginners-should-learn/"
+        },
+        {
+          "title": "Evnroll – Top 10 Putting Drills",
+          "url": "https://www.evnroll.com/blogs/straight-talk/top-10-putting-drills-for-golfers"
+        }
+      ],
+      "purpose": "Startrichtung. Die meisten verschobenen kurzen Putts starten schon falsch. Das Tor zeigt sofort, ob die Schlagfläche im Treffmoment gerade steht.",
+      "tips": [
+        "Am Anfang der Putt-Einheit, solange du frisch bist.",
+        "Später auch mit Break üben: das Tor auf die gewählte Startlinie stecken, nicht aufs Loch.",
+        "Von hinten filmen, um die Schlagfläche im Treffmoment zu sehen."
+      ],
+      "equipment": [
+        "2 Tees"
+      ]
+    },
+    {
+      "id": "putt-lag-zone",
+      "name": "Lag-Zone",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Längenkontrolle bei langen Putts: Jeder Putt aus einer anderen Distanz, der Ball soll in einem Kreis um das Loch liegen bleiben.",
+      "steps": [
+        "Die App nennt für jeden Ball eine Distanz.",
+        "Vor jedem Putt die volle Routine: Linie lesen, Probeschwung, putten.",
+        "Punkt, wenn der Ball innerhalb des Kreises liegen bleibt."
+      ],
+      "levels": [
+        "Kreis mit 1,5 m Radius",
+        "Kreis mit 1 m Radius",
+        "Kreis mit 60 cm Radius"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "generator": "lagDistances",
+      "sources": [
+        {
+          "title": "MyGolfSpy – The First 3 Putting Drills",
+          "url": "https://mygolfspy.com/news-opinion/instruction/the-first-3-putting-drills-beginners-should-learn/"
+        },
+        {
+          "title": "Phoenix Putter – 7 Lag Putting Drills",
+          "url": "https://phoenixputterco.com/blogs/news/7-lag-putting-drills-that-will-transform-your-distance-control"
+        }
+      ],
+      "purpose": "Lange Putts so nah ans Loch bringen, dass der zweite Putt sicher fällt. Das ist der direkte Weg, Dreiputts zu vermeiden.",
+      "tips": [
+        "Nie zweimal hintereinander dieselbe Distanz.",
+        "Vor dem Putt seitlich zur Linie stellen und die Länge abschätzen.",
+        "Vor Turnieren besonders wichtig, weil fremde Grüns oft anders schnell sind."
+      ],
+      "equipment": [
+        "Tees oder Münzen für den Kreis"
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "putt-ladder",
+      "name": "Putt-Leiter",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Feine Längenkontrolle: Jeder Putt soll knapp hinter dem vorherigen liegen bleiben.",
+      "steps": [
+        "Den ersten Putt ca. 3 m weit spielen.",
+        "Jeder weitere Putt muss hinter dem vorherigen liegen bleiben, aber höchstens den erlaubten Abstand weiter.",
+        "Zähle die gelungenen Putts in Folge (höchstens 10). Bei einem Fehler neu beginnen und die beste Serie eintragen."
+      ],
+      "levels": [
+        "Abstand bis eine Putterlänge",
+        "Abstand bis zwei Drittel Putterlänge",
+        "Abstand bis eine halbe Putterlänge"
+      ],
+      "scoring": {
+        "kind": "streak",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "HackMotion – Ladder Drill for Putting & Chipping",
+          "url": "https://hackmotion.com/ladder-drill-for-putting-and-chipping/"
+        },
+        {
+          "title": "Golf-Info-Guide – Ladder Drill",
+          "url": "https://golf-info-guide.com/golf-tips/golf-drills/distance-control-golf-drills-ladder-drill/"
+        }
+      ],
+      "purpose": "Feingefühl für die Länge: kleine Unterschiede in der Schlaglänge bewusst dosieren.",
+      "tips": [
+        "Ein zu langer Putt beendet die Serie, das zwingt zu Gefühl statt Kraft.",
+        "Auch bergauf und bergab üben, das ist deutlich schwerer.",
+        "Passt gut als zweite Putt-Übung nach dem Start-Tor."
+      ]
+    },
+    {
+      "id": "putt-clock",
+      "name": "Uhr-Drill",
+      "area": "putting",
+      "mode": "competition",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Kurze Putts unter Druck: 12 Bälle im Kreis um das Loch wie die Zahlen einer Uhr. Alle müssen nacheinander fallen.",
+      "steps": [
+        "12 Bälle im gleichen Abstand rund um das Loch legen.",
+        "Reihum putten. Bei einem Fehlschlag wieder bei Ball 1 beginnen.",
+        "Trage die längste Serie ein (höchstens 12)."
+      ],
+      "levels": [
+        "Abstand 1 m",
+        "Abstand 1,5 m",
+        "Abstand 2 m"
+      ],
+      "scoring": {
+        "kind": "streak",
+        "attempts": 12
+      },
+      "sources": [
+        {
+          "title": "Sunday Golf – 12 Putting Drills",
+          "url": "https://sundaygolf.com/blogs/news/golf-putting-drills"
+        },
+        {
+          "title": "Evnroll – Top 10 Putting Drills",
+          "url": "https://www.evnroll.com/blogs/straight-talk/top-10-putting-drills-for-golfers"
+        }
+      ],
+      "purpose": "Kurze Putts unter Druck. Weil ein Fehler die Serie beendet, steigt mit jedem Ball die Spannung wie auf der Runde.",
+      "tips": [
+        "Als Abschluss der Putt-Einheit.",
+        "Vor jedem Putt die volle Routine, auch wenn es schnell gehen soll.",
+        "Mit nur 4 Bällen: 4 Positionen, dreimal herum.",
+        "In der Turnierwoche ideal für Sicherheit bei kurzen Putts."
+      ],
+      "equipment": [
+        "4 bis 12 Bälle, Tees als Markierung"
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "putt-par18",
+      "name": "Putting-Parcours (Par 18)",
+      "area": "putting",
+      "mode": "competition",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 20,
+      "summary": "9 Löcher auf dem Puttinggrün, jedes aus einer anderen Distanz. Par 2 pro Loch, und wie auf der Runde zählt jeder Schlag.",
+      "steps": [
+        "9 Löcher mit unterschiedlichen Distanzen und Breaks wählen.",
+        "Pro Loch nur ein Ball, putten, bis er fällt.",
+        "Schläge pro Loch eintragen. Ziel: 18 oder besser."
+      ],
+      "levels": [
+        "Distanzen 2–8 m",
+        "Distanzen 3–12 m",
+        "Distanzen 3–15 m mit starkem Break"
+      ],
+      "scoring": {
+        "kind": "strokes",
+        "attempts": 9,
+        "par": 2
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – The 15 best golf practice games",
+          "url": "https://www.golfdigest.com/story/the-15-best-golf-practice-games"
+        }
+      ],
+      "purpose": "Putten wie auf der Runde: jeder Putt anders, jeder Schlag zählt. Trainiert Lesen, Tempo und Einlochen zusammen.",
+      "tips": [
+        "Leichte und schwere Löcher bewusst mischen.",
+        "Mit Trainingspartner als Wettkampf spielen.",
+        "Unter 18 ist ein starkes Ergebnis."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "putt-test",
+      "name": "Putt-Test",
+      "area": "putting",
+      "mode": "competition",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 25,
+      "summary": "Monatlicher Test für alle Puttlängen. Immer gleich aufbauen, damit die Ergebnisse vergleichbar sind.",
+      "steps": [
+        "5 Putts aus 1 m.",
+        "5 Putts aus 2 m.",
+        "5 Putts aus 4–6 m.",
+        "5 Putts aus 10–15 m.",
+        "Pro Putt: eingelocht 2 Punkte, bis 1 m am Loch 1 Punkt, weiter weg 0 Punkte."
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 20,
+        "zones": [
+          {
+            "label": "Eingelocht",
+            "points": 2
+          },
+          {
+            "label": "Bis 1 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 1 m",
+            "points": 0
+          }
+        ]
+      },
+      "isBenchmark": true,
+      "generator": "puttTest",
+      "sources": [
+        {
+          "title": "GolfWRX – Dave Pelz Short Game Test",
+          "url": "https://forums.golfwrx.com/topic/232980-dave-pelz-short-game-test/"
+        },
+        {
+          "title": "DGV-Trainerportal – Downloads Leistungstests",
+          "url": "https://www.dgv-trainerportal.de/downloads-leistungstests"
+        }
+      ],
+      "purpose": "Zeigt einmal im Monat, wie gut dein Putten wirklich ist: kurz, mittel und lang. Erst so siehst du, ob das Training wirkt.",
+      "tips": [
+        "Immer gleich aufbauen, möglichst auf demselben Grün.",
+        "Vorher nur kurz einputten, nicht die Teststationen üben.",
+        "Die schwächste Station gezielt trainieren und mit dem Trainer besprechen."
+      ]
+    },
+    {
+      "id": "chip-landing",
+      "name": "Landepunkt-Chips",
+      "area": "shortGame",
+      "mode": "block",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 20,
+      "summary": "Technik-Block: immer derselbe Chip auf denselben Landepunkt, mit Fokus auf die Vorgabe deines Trainers.",
+      "steps": [
+        "Vom Vorgrün chippen, ein Handtuch ca. 1 m aufs Grün als Landezone legen.",
+        "20 Bälle mit demselben Schläger, der Trainer-Fokus steht im Vordergrund.",
+        "Einige Schwünge filmen und kontrollieren.",
+        "Zähle die Bälle, die auf dem Handtuch landen."
+      ],
+      "levels": [
+        "Handtuch ausgebreitet",
+        "Handtuch einmal gefaltet",
+        "Handtuch zweimal gefaltet"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 20
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golfwell – Structuring your practice (Adam Young)",
+          "url": "https://golfwell.co/structuring-your-practice-adam-young/"
+        },
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        }
+      ],
+      "purpose": "Ein fester Landepunkt macht Chips berechenbar: Wer den Landepunkt trifft, kontrolliert die Länge.",
+      "tips": [
+        "Erst den Landepunkt wählen, dann den passenden Schläger.",
+        "Hier zählt die Umsetzung des Trainer-Fokus mehr als das Ergebnis.",
+        "Von der Seite filmen und mit dem Trainer-Fokus vergleichen."
+      ],
+      "equipment": [
+        "Handtuch"
+      ]
+    },
+    {
+      "id": "chip-ladder",
+      "name": "Chip-Leiter",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Längenkontrolle beim Chippen: Jeder Ball soll ein Stück hinter dem vorherigen liegen bleiben.",
+      "steps": [
+        "Den ersten Chip ca. 3 m aufs Grün spielen.",
+        "Jeder weitere Ball muss hinter dem vorherigen liegen bleiben, aber höchstens den erlaubten Abstand weiter.",
+        "Zähle die gelungenen Chips in Folge (höchstens 10). Bei einem Fehler neu beginnen und die beste Serie eintragen."
+      ],
+      "levels": [
+        "Abstand bis 2 m",
+        "Abstand bis 1,5 m",
+        "Abstand bis 1 m"
+      ],
+      "scoring": {
+        "kind": "streak",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "HackMotion – Ladder Drill for Putting & Chipping",
+          "url": "https://hackmotion.com/ladder-drill-for-putting-and-chipping/"
+        },
+        {
+          "title": "Golf-Info-Guide – Ladder Drill",
+          "url": "https://golf-info-guide.com/golf-tips/golf-drills/distance-control-golf-drills-ladder-drill/"
+        }
+      ],
+      "purpose": "Längenkontrolle beim Chippen: kleine Unterschiede in der Schlaglänge bewusst dosieren.",
+      "tips": [
+        "Die ganze Serie mit demselben Schläger.",
+        "Danach mit einem anderen Schläger wiederholen. So lernst du, wie weit die Bälle rollen."
+      ]
+    },
+    {
+      "id": "chip-random-lies",
+      "name": "Zufallslagen",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 20,
+      "summary": "Jeder Ball aus einer anderen Lage und Distanz, so wie auf dem Platz. Das fühlt sich schwerer an, bringt laut Forschung aber mehr.",
+      "steps": [
+        "Die App nennt für jeden Ball Lage und Distanz.",
+        "Vor jedem Schlag: Lage ansehen, Schlag wählen, Landepunkt festlegen.",
+        "Punkte nach Abstand zur Fahne eintragen."
+      ],
+      "levels": [
+        "Nur gute Lagen",
+        "Gemischte Lagen",
+        "Schwere Lagen mit Hanglagen"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m",
+            "points": 0
+          }
+        ]
+      },
+      "generator": "shortGameLies",
+      "sources": [
+        {
+          "title": "Studie: Blocked vs. random practice beim Chip",
+          "url": "https://www.researchgate.net/publication/325228507_The_effects_of_blocked_and_random_practice_on_the_learning_of_three_variations_of_the_golf_chip_shot"
+        },
+        {
+          "title": "Meta-Analyse: High contextual interference improves retention (Scientific Reports 2024)",
+          "url": "https://www.nature.com/articles/s41598-024-65753-3"
+        }
+      ],
+      "purpose": "Bereitet auf den Platz vor, wo keine zwei Lagen gleich sind. Verbessert Schlagwahl und Anpassung.",
+      "tips": [
+        "Jeden Ball wie auf dem Platz: Lage ansehen, Schlag planen, Routine.",
+        "Misslungene Bälle nicht wiederholen, weiter zur nächsten Lage.",
+        "Ideal direkt nach einem Technik-Block, um Neues zu festigen."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "chip-par18",
+      "name": "Par 18 (Up & Down)",
+      "area": "shortGame",
+      "mode": "competition",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 25,
+      "summary": "9 Stationen rund ums Grün, von jeder mit einem Ball chippen und einlochen. Par 2 pro Station, Ziel: 18 oder besser.",
+      "steps": [
+        "9 unterschiedliche Stationen wählen: verschiedene Lagen, Distanzen und Hänge.",
+        "Pro Station ein Ball: chippen oder pitchen, dann einlochen.",
+        "Schläge pro Station eintragen."
+      ],
+      "levels": [
+        "Leichte Lagen, 5–15 m",
+        "Gemischte Lagen, 5–25 m",
+        "Schwere Lagen, 5–30 m"
+      ],
+      "scoring": {
+        "kind": "strokes",
+        "attempts": 9,
+        "par": 2
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – The 15 best golf practice games",
+          "url": "https://www.golfdigest.com/story/the-15-best-golf-practice-games"
+        },
+        {
+          "title": "Foy Golf Academy – Best Chipping Games",
+          "url": "https://foygolfacademy.com/best-chipping-games-to-make-your-short-game-practice-fun-and-effective/"
+        },
+        {
+          "title": "Par-Tee of 18 – 7 Golf Chipping Games",
+          "url": "https://parteeof18.com/blog/golf-chipping-games/"
+        }
+      ],
+      "purpose": "Up & Down unter Wettkampfbedingungen: Chip und Putt zählen zusammen wie auf der Runde.",
+      "tips": [
+        "Nur ein Ball pro Station, kein zweiter Versuch.",
+        "Auch schwere Lagen wählen, sonst ist es zu leicht.",
+        "Perfekt für die Turnierwoche."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "shortgame-test",
+      "name": "Kurzspiel-Test (nach Pelz)",
+      "area": "shortGame",
+      "mode": "competition",
+      "facilities": [
+        "shortGameArea",
+        "bunker"
+      ],
+      "minutes": 40,
+      "summary": "Monatlicher Test für das kurze Spiel, angelehnt an den Short-Game-Test von Dave Pelz. Kurzversion mit 5 statt 10 Bällen pro Station.",
+      "steps": [
+        "Pitch 45 m – 5 Bälle",
+        "Pitch 27 m – 5 Bälle",
+        "Chip aus dem Rough 18 m – 5 Bälle",
+        "Lob 14 m – 5 Bälle",
+        "Bunker 9 m – 5 Bälle",
+        "Bunker 14 m – 5 Bälle",
+        "Chip vom Vorgrün 9 m – 5 Bälle",
+        "Chip aus dem Rough 14 m – 5 Bälle"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 40,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m",
+            "points": 0
+          }
+        ]
+      },
+      "isBenchmark": true,
+      "generator": "shortGameTest",
+      "sources": [
+        {
+          "title": "Dog Leg News – Short Game Handicap (Pelz-Test)",
+          "url": "https://doglegnews.com/short-game-handicap-heres-the-test-to-determine-yours/"
+        },
+        {
+          "title": "Golf Monthly Forum – Pelz Short Game Test",
+          "url": "https://forums.golfmonthly.com/threads/pelz-short-game-test.13242/"
+        },
+        {
+          "title": "DGV-Trainerportal – Downloads Leistungstests",
+          "url": "https://www.dgv-trainerportal.de/downloads-leistungstests"
+        }
+      ],
+      "purpose": "Monatlicher Leistungstest für das kurze Spiel. Zeigt, welche Schläge rund ums Grün dich am meisten kosten.",
+      "tips": [
+        "Immer dieselben Stationen, damit die Ergebnisse vergleichbar sind.",
+        "Die Station mit den wenigsten Punkten in den nächsten Wochen gezielt trainieren."
+      ]
+    },
+    {
+      "id": "bunker-line",
+      "name": "Linien-Drill",
+      "area": "bunker",
+      "mode": "block",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block: Der Schläger soll den Sand immer an derselben Stelle treffen, an einer Linie, die du in den Sand ziehst.",
+      "steps": [
+        "Eine Linie quer zur Zielrichtung in den Sand ziehen.",
+        "Erst ohne Ball: Schwünge, bei denen der Schläger genau an der Linie in den Sand eintritt.",
+        "Dann den Ball ca. 5 cm zielseitig der Linie hinlegen und schlagen.",
+        "Zähle die Schläge, bei denen der Eintrittspunkt stimmt."
+      ],
+      "levels": [
+        "Nur Linie, ohne Ball",
+        "Linie mit Ball",
+        "Linie mit Ball und Ziel auf dem Grün"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf Distillery – Bunker Drill",
+          "url": "https://www.golfdistillery.com/golf-tips/short-game/bunkers/drill/"
+        },
+        {
+          "title": "World of Short Game – Bunker drill for better contact",
+          "url": "https://www.worldofshortgame.com/en/bunker-drill-better-contact/"
+        }
+      ],
+      "purpose": "Bunkerschläge gelingen, wenn der Schläger immer an derselben Stelle in den Sand eintritt. Die Linie macht das sichtbar.",
+      "tips": [
+        "Nach jedem Schlag die Linie neu ziehen.",
+        "Erst ohne Ball, bis der Eintrittspunkt sitzt.",
+        "Von vorne filmen, um den Eintrittspunkt zu sehen."
+      ],
+      "equipment": [
+        "Harke oder Schläger zum Ziehen der Linie"
+      ]
+    },
+    {
+      "id": "bunker-zones",
+      "name": "Bunker-Zonen",
+      "area": "bunker",
+      "mode": "variable",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Längenkontrolle aus dem Bunker: Die Distanz wechselt bei jedem Ball.",
+      "steps": [
+        "Drei Ziele auf dem Grün wählen, z. B. 8, 12 und 16 m.",
+        "10 Bälle, das Ziel bei jedem Ball wechseln.",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "levels": [
+        "Gute Lage, 8–12 m",
+        "Wechselnde Lagen, 8–16 m",
+        "Auch Spiegelei und Hanglage, 8–20 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m",
+            "points": 0
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Foy Golf Academy – 7 Sand Bunker Drills",
+          "url": "https://foygolfacademy.com/sand-bunker-practice-drills/"
+        }
+      ],
+      "purpose": "Längenkontrolle aus dem Sand. Viele kommen zwar heraus, aber nicht nah genug ans Loch.",
+      "tips": [
+        "Die Länge über die Länge des Schwungs steuern, nicht über Kraft.",
+        "Lagen wechseln, auch mal ein Spiegelei."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "bunker-updown",
+      "name": "Bunker Up & Down",
+      "area": "bunker",
+      "mode": "competition",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "5 Bälle aus dem Bunker, jeden bis ins Loch spielen. Par 2 pro Ball.",
+      "steps": [
+        "5 unterschiedliche Lagen und Distanzen im Bunker wählen.",
+        "Jeden Ball aus dem Bunker spielen und einlochen.",
+        "Schläge pro Ball eintragen."
+      ],
+      "levels": [
+        "Gute Lagen",
+        "Gemischte Lagen",
+        "Schwere Lagen"
+      ],
+      "scoring": {
+        "kind": "strokes",
+        "attempts": 5,
+        "par": 2
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – The 15 best golf practice games",
+          "url": "https://www.golfdigest.com/story/the-15-best-golf-practice-games"
+        }
+      ],
+      "purpose": "Up & Down aus dem Bunker unter Wettkampfbedingungen.",
+      "tips": [
+        "Jeden Ball bis ins Loch spielen.",
+        "Gut als Abschluss einer Kurzspiel-Einheit."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "wedge-clock",
+      "name": "Wedge-Matrix (Uhr-System)",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 25,
+      "summary": "Technik-Block: Für jeden Wedge drei Ausholweiten wie die Zeiger einer Uhr. So entsteht deine persönliche Distanz-Tabelle.",
+      "steps": [
+        "Mit jedem Wedge drei Ausholweiten: Der Führungsarm, also der Arm auf der Zielseite, ist der Zeiger und geht bis 7:30, 9:00 oder 10:30 Uhr. 9 Uhr heißt waagerecht nach hinten, für Rechts- und Linkshänder.",
+        "Je Ausholweite 5 Bälle mit gleichem Rhythmus.",
+        "Durchschnittliche Carry-Länge schätzen oder mit dem Entfernungsmesser messen und notieren."
+      ],
+      "scoring": {
+        "kind": "none"
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Clock System Explained",
+          "url": "https://foygolfacademy.com/the-smart-way-to-play-partial-wedges-clock-system-explained/"
+        },
+        {
+          "title": "Golf.com – Trick for wedge distance control",
+          "url": "https://golf.com/instruction/short-game/clever-trick-wedge-distance-control/"
+        }
+      ],
+      "purpose": "Baut deine persönliche Distanz-Tabelle für Wedges. Damit weißt du auf dem Platz für jede Entfernung den passenden Schwung.",
+      "tips": [
+        "Zu Saisonbeginn und nach jedem Schlägerwechsel wiederholen.",
+        "Die Tabelle aufschreiben, z. B. auf ein Kärtchen im Bag.",
+        "Gleicher Rhythmus bei allen Ausholweiten."
+      ],
+      "equipment": [
+        "Entfernungsmesser (falls vorhanden)",
+        "Stift und Kärtchen"
+      ]
+    },
+    {
+      "id": "wedge-ladder",
+      "name": "Wedge-Leiter",
+      "area": "wedges",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Distanzkontrolle: Ziele in festen Abständen, erst die Leiter hinauf, dann wieder hinunter.",
+      "steps": [
+        "Sechs Ziele auf der Range wählen, je nach Stufe, z. B. 40, 50, 60, 70, 80 und 90 m.",
+        "Je ein Ball pro Ziel, erst aufsteigend, dann absteigend (12 Bälle).",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "levels": [
+        "Sechs Ziele von 45 bis 70 m, alle 5 m",
+        "Sechs Ziele von 40 bis 90 m, alle 10 m",
+        "Sechs Ziele von 30 bis 105 m, alle 15 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 12,
+        "zones": [
+          {
+            "label": "Unter 3 m",
+            "points": 3
+          },
+          {
+            "label": "3–6 m",
+            "points": 2
+          },
+          {
+            "label": "6–10 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 10 m",
+            "points": 0
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Golf.com – Wedge ladder drill",
+          "url": "https://golf.com/instruction/approach-shots/wedge-shots-distance-control-ladder-drill/"
+        },
+        {
+          "title": "Foy Golf Academy – Wedge Drills 40–100 yards",
+          "url": "https://foygolfacademy.com/wedge-drills-distance-control/"
+        }
+      ],
+      "purpose": "Distanzkontrolle zwischen 40 und 90 m, damit der Ball aus dieser Entfernung nah genug für einen guten Putt liegt.",
+      "tips": [
+        "Jeder Ball ein anderes Ziel.",
+        "Die Werte aus der Wedge-Matrix nutzen.",
+        "Notieren, welche Distanz am schwächsten ist, und sie gezielt üben."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "wedge-random",
+      "name": "Zufallsdistanz",
+      "area": "wedges",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Die App nennt für jeden Ball eine neue Distanz. Volle Routine vor jedem Schlag, jeder Ball zählt wie auf der Runde.",
+      "steps": [
+        "Distanz ansagen lassen, Schläger und Ausholweite wählen.",
+        "Volle Routine vor jedem Schlag.",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "levels": [
+        "Distanzen 40–80 m",
+        "Distanzen 35–95 m",
+        "Distanzen 30–100 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Unter 3 m",
+            "points": 3
+          },
+          {
+            "label": "3–6 m",
+            "points": 2
+          },
+          {
+            "label": "6–10 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 10 m",
+            "points": 0
+          }
+        ]
+      },
+      "generator": "wedgeDistances",
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Clock System Explained",
+          "url": "https://foygolfacademy.com/the-smart-way-to-play-partial-wedges-clock-system-explained/"
+        },
+        {
+          "title": "Golfwell – Guide to Wedges from 30–100 yards",
+          "url": "https://golfwell.co/wedge-distance-control-guide/"
+        }
+      ],
+      "purpose": "Wie auf dem Platz: Die Distanz kommt überraschend. Trainiert Entscheidung und Ausführung unter leichtem Druck.",
+      "tips": [
+        "Volle Routine bei jedem Ball.",
+        "Nicht nachschlagen: ein Ball pro Ansage.",
+        "Sehr gut für die Turnierwoche."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "wedge-test",
+      "name": "Wedge-Test",
+      "area": "wedges",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Monatlicher Test: 12 Bälle auf 40, 55, 70 und 85 m in zufälliger Reihenfolge.",
+      "steps": [
+        "Die App nennt die Reihenfolge der Distanzen.",
+        "Volle Routine vor jedem Schlag.",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 12,
+        "zones": [
+          {
+            "label": "Unter 3 m",
+            "points": 3
+          },
+          {
+            "label": "3–6 m",
+            "points": 2
+          },
+          {
+            "label": "6–10 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 10 m",
+            "points": 0
+          }
+        ]
+      },
+      "isBenchmark": true,
+      "generator": "wedgeTest",
+      "sources": [
+        {
+          "title": "Golfwell – Guide to Wedges from 30–100 yards",
+          "url": "https://golfwell.co/wedge-distance-control-guide/"
+        },
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        }
+      ],
+      "purpose": "Monatstest für Wedges. Zeigt, ob deine Distanzkontrolle besser wird.",
+      "tips": [
+        "Immer auf derselben Range und mit denselben Zielen.",
+        "Ergebnis mit den Strokes-Gained-Werten für die Annäherung vergleichen."
+      ]
+    },
+    {
+      "id": "iron-technique",
+      "name": "Technik-Block Eisen",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Ein Schläger, ein Ziel, Fokus auf die Vorgabe deines Trainers. Hier entstehen die Videos für die Schwunganalyse.",
+      "steps": [
+        "Mittleres Eisen, ein festes Ziel.",
+        "Vor jedem Ball den Trainer-Fokus bewusst machen, bei Bedarf Probeschwung in Zeitlupe.",
+        "Jeden dritten Schwung filmen und kontrollieren.",
+        "Zähle die Schwünge, bei denen du den Fokus umgesetzt hast."
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge",
+        "Volle Schwünge mit wechselndem Ziel"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golfwell – Structuring your practice (Adam Young)",
+          "url": "https://golfwell.co/structuring-your-practice-adam-young/"
+        },
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        }
+      ],
+      "purpose": "Hier setzt du um, was du mit deinem Trainer erarbeitest: langsame, bewusste Wiederholungen mit Video zur Kontrolle.",
+      "tips": [
+        "Direkt nach einer Trainerstunde besonders wertvoll.",
+        "Mit halben Schwüngen beginnen und erst dann steigern.",
+        "Nicht in der Turnierwoche, dann wird nichts mehr umgestellt."
+      ],
+      "equipment": [
+        "iPhone mit Stativ"
+      ]
+    },
+    {
+      "id": "iron-nine-window",
+      "name": "9-Fenster-Drill",
+      "area": "approach",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Tiger Woods’ Übung für die Ballkontrolle: drei Flughöhen mal drei Kurven ergibt neun Fenster.",
+      "steps": [
+        "6er- oder 7er-Eisen nehmen.",
+        "Die neun Schläge: hoch, mittel und flach, jeweils als Fade, gerade und Draw.",
+        "Punkt für jeden Schlag, der die angesagte Flugkurve hat."
+      ],
+      "levels": [
+        "Nur die Höhe variieren",
+        "Alle 9 Fenster in fester Reihenfolge",
+        "Alle 9 Fenster in zufälliger Reihenfolge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 9
+      },
+      "generator": "nineWindows",
+      "sources": [
+        {
+          "title": "Golf Magic – Tiger Woods' nine window drill",
+          "url": "https://www.golfmagic.com/pga-tour/tiger-woods-shows-taylormade-nine-window-iron-practice-drill"
+        },
+        {
+          "title": "National Club Golfer – The 9-shot drill",
+          "url": "https://www.nationalclubgolfer.com/golf-tips/iron-play/winter-golf-training-9-shot-drill/"
+        }
+      ],
+      "purpose": "Ballkontrolle: Wer Flughöhe und Kurve bewusst steuern kann, findet auf jedem Loch eine sichere Linie.",
+      "tips": [
+        "Erst die Höhe, dann die Kurve dazunehmen.",
+        "Mit dem Trainer klären, welche Kurve deine Standardkurve ist.",
+        "Gute Abwechslung, besonders im Winter."
+      ]
+    },
+    {
+      "id": "iron-green-hit",
+      "name": "Grüntreffer",
+      "area": "approach",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "10 Bälle, jeder mit anderem Schläger auf ein anderes Ziel. Punkt, wenn der Ball auf dem gedachten Grün landet.",
+      "steps": [
+        "Zielfahnen zwischen ca. 100 und 170 m auswählen.",
+        "Jeder Ball: anderes Ziel, passender Schläger, volle Routine.",
+        "Punkt, wenn der Ball im Radius um die Fahne landet."
+      ],
+      "levels": [
+        "Radius 15 m",
+        "Radius 10 m",
+        "Radius 7 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        },
+        {
+          "title": "Golf State of Mind – Practice drills for golf",
+          "url": "https://golfstateofmind.com/practice-drills-for-golf/"
+        },
+        {
+          "title": "MyGolfSpy – Course management with DECADE",
+          "url": "https://mygolfspy.com/news-opinion/cracking-the-course-management-code-with-decade/"
+        }
+      ],
+      "purpose": "Trainiert, was auf dem Platz zählt: Grüns treffen mit wechselnden Schlägern und Zielen.",
+      "tips": [
+        "Jeder Ball mit einem anderen Schläger.",
+        "Volle Routine.",
+        "Auf die Grünmitte zielen, wenn die Fahne gefährlich steht, so wie im Turnier."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "range-course",
+      "name": "Platz-Simulation",
+      "area": "approach",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 30,
+      "summary": "Spiele 9 Löcher deines Heimatplatzes auf der Range: Abschlag und zweiter Schlag mit den Schlägern, die du wirklich nehmen würdest.",
+      "steps": [
+        "Loch für Loch im Kopf durchgehen, Fairway und Grün auf der Range festlegen.",
+        "Abschlag mit dem echten Schläger, dann den passenden zweiten Schlag.",
+        "Volle Routine, jeder Schlag nur einmal.",
+        "Zähle die Treffer: Fairway beim Abschlag, Grün beim zweiten Schlag (18 Schläge)."
+      ],
+      "levels": [
+        "Großzügige Ziele",
+        "Normale Ziele",
+        "Enge Ziele"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 18
+      },
+      "sources": [
+        {
+          "title": "Golf State of Mind – Practice drills for golf",
+          "url": "https://golfstateofmind.com/practice-drills-for-golf/"
+        },
+        {
+          "title": "Outta Bounds – Driving Range Practice Drills",
+          "url": "https://outtabounds.co.uk/blogs/driving-range/driving-range-practice-drills-that-actually-lower-scores"
+        },
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        }
+      ],
+      "purpose": "Überträgt das Training auf den Platz: echte Schlägerwahl, echte Routine, nur ein Versuch.",
+      "tips": [
+        "Vor Turnieren die Löcher des Turnierplatzes spielen.",
+        "Ergebnis notieren und mit der echten Runde vergleichen."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "iron-test",
+      "name": "Eisen-Test",
+      "area": "approach",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Monatlicher Test: 12 Bälle auf 110, 130, 150 und 170 m in zufälliger Reihenfolge.",
+      "steps": [
+        "Die App nennt die Reihenfolge der Distanzen.",
+        "Volle Routine vor jedem Schlag.",
+        "Punkte nach Lage: auf dem gedachten Grün, am Grünrand oder daneben."
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 12,
+        "zones": [
+          {
+            "label": "Grün (unter 10 m)",
+            "points": 2
+          },
+          {
+            "label": "Grünrand (10–20 m)",
+            "points": 1
+          },
+          {
+            "label": "Daneben",
+            "points": 0
+          }
+        ]
+      },
+      "isBenchmark": true,
+      "generator": "ironTest",
+      "sources": [
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        },
+        {
+          "title": "Mark Broadie – Assessing Golfer Performance (Strokes Gained)",
+          "url": "https://columbia.edu/~mnb2/broadie/Assets/strokes_gained_pga_broadie_20110408.pdf"
+        }
+      ],
+      "purpose": "Monatstest für die Annäherung. Zeigt, wie oft du aus typischen Entfernungen das Grün triffst.",
+      "tips": [
+        "Immer dieselben Ziele.",
+        "Vorher normal aufwärmen, aber nicht auf die Testdistanzen einschießen."
+      ]
+    },
+    {
+      "id": "drive-technique",
+      "name": "Technik-Block Driver",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Driver mit Fokus auf die Vorgabe deines Trainers. Einige Schwünge filmen.",
+      "steps": [
+        "Ein festes Ziel wählen.",
+        "Vor jedem Ball den Trainer-Fokus bewusst machen.",
+        "Jeden dritten Schwung filmen und kontrollieren.",
+        "Zähle die Schwünge, bei denen du den Fokus umgesetzt hast."
+      ],
+      "levels": [
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge",
+        "Volle Schwünge mit wechselndem Ziel"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 12
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golfwell – Structuring your practice (Adam Young)",
+          "url": "https://golfwell.co/structuring-your-practice-adam-young/"
+        },
+        {
+          "title": "Adam Young – Practice Like You Play",
+          "url": "https://www.adamyounggolf.com/practice-like-play/"
+        }
+      ],
+      "purpose": "Setzt die Vorgaben deines Trainers mit dem Driver um, mit Video zur Kontrolle.",
+      "tips": [
+        "Mit 70 % Tempo beginnen.",
+        "Nicht in der Turnierwoche."
+      ],
+      "equipment": [
+        "iPhone mit Stativ"
+      ]
+    },
+    {
+      "id": "drive-shape",
+      "name": "Draw & Fade im Wechsel",
+      "area": "driving",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Abschläge mit wechselnder Flugkurve. Wer beide Kurven kann, kann auf jedem Loch die sichere Seite wählen.",
+      "steps": [
+        "Zwei Markierungen als Fairway festlegen.",
+        "Abwechselnd Draw und Fade ansagen und schlagen.",
+        "Punkt, wenn die Kurve stimmt und der Ball im Fairway landet."
+      ],
+      "levels": [
+        "Fairway 40 m breit",
+        "Fairway 30 m breit",
+        "Fairway 25 m breit"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf Magic – Tiger Woods' nine window drill",
+          "url": "https://www.golfmagic.com/pga-tour/tiger-woods-shows-taylormade-nine-window-iron-practice-drill"
+        },
+        {
+          "title": "National Club Golfer – The 9-shot drill",
+          "url": "https://www.nationalclubgolfer.com/golf-tips/iron-play/winter-golf-training-9-shot-drill/"
+        }
+      ],
+      "purpose": "Kurven bewusst spielen: Mit der passenden Kurve bleibst du auch auf engen Löchern im Spiel.",
+      "tips": [
+        "Vor jedem Ball laut ansagen, welche Kurve kommt.",
+        "Eine sichere Standardkurve ist wichtiger als beide Kurven perfekt."
+      ]
+    },
+    {
+      "id": "drive-fairway",
+      "name": "Fairway-Finder",
+      "area": "driving",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "10 Drives in ein festgelegtes Fairway, volle Routine vor jedem Schlag. Ziel: mindestens 7 Treffer.",
+      "steps": [
+        "Zwei Markierungen auf der Range als Fairway festlegen.",
+        "10 Drives, vor jedem Schlag die volle Routine.",
+        "Zähle die Bälle, die im Fairway landen."
+      ],
+      "levels": [
+        "Fairway ca. 30 m breit",
+        "Fairway ca. 25 m breit",
+        "Fairway ca. 20 m breit"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Outta Bounds – Driving Range Practice Drills",
+          "url": "https://outtabounds.co.uk/blogs/driving-range/driving-range-practice-drills-that-actually-lower-scores"
+        }
+      ],
+      "purpose": "Treffsicherheit mit dem Driver unter Wettkampfbedingungen. Im Spiel zu bleiben spart mehr Schläge als ein paar Meter Länge.",
+      "tips": [
+        "Volle Routine, ein Ball pro Versuch.",
+        "Fairwaybreite an deine Turnierplätze anpassen."
+      ],
+      "isTournamentPrep": true
+    },
+    {
+      "id": "drive-test",
+      "name": "Abschlag-Test",
+      "area": "driving",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Monatlicher Test: 14 Abschläge wie auf einer Runde. Strafschläge sind besonders teuer, deshalb zählt vor allem: im Spiel bleiben.",
+      "steps": [
+        "Fairway ca. 30 m breit festlegen, links und rechts davon eine Zone für das Rough.",
+        "14 Abschläge, volle Routine, jeder Ball zählt.",
+        "Punkte nach Lage eintragen."
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 14,
+        "zones": [
+          {
+            "label": "Fairway",
+            "points": 2
+          },
+          {
+            "label": "Rough, spielbar",
+            "points": 1
+          },
+          {
+            "label": "Aus oder Strafe",
+            "points": 0
+          }
+        ]
+      },
+      "isBenchmark": true,
+      "sources": [
+        {
+          "title": "Outta Bounds – Driving Range Practice Drills",
+          "url": "https://outtabounds.co.uk/blogs/driving-range/driving-range-practice-drills-that-actually-lower-scores"
+        },
+        {
+          "title": "Mark Broadie – Assessing Golfer Performance (Strokes Gained)",
+          "url": "https://columbia.edu/~mnb2/broadie/Assets/strokes_gained_pga_broadie_20110408.pdf"
+        }
+      ],
+      "purpose": "Monatstest für den Abschlag: Wie oft bleibst du im Spiel?",
+      "tips": [
+        "Immer dieselbe Fairwaybreite.",
+        "Strafschläge besonders beachten, sie kosten am meisten."
+      ]
+    },
+    {
+      "id": "putt-coin",
+      "name": "Münz-Drill",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Eine Münze liegt kurz vor dem Ball auf der Linie. Der Ball muss genau darüber rollen.",
+      "purpose": "Zielgenauigkeit auf einen kleinen Punkt und ein ruhiger Kopf bis nach dem Treffmoment.",
+      "steps": [
+        "Gerader Putt aus 2–3 m.",
+        "Münze auf die Ziellinie legen.",
+        "20 Putts, zähle die Bälle, die über die Münze rollen."
+      ],
+      "tips": [
+        "Den Blick nach dem Treffen noch kurz auf der Stelle lassen, wo der Ball lag.",
+        "Gut als Ergänzung zum Start-Tor."
+      ],
+      "equipment": [
+        "1 Münze"
+      ],
+      "levels": [
+        "Münze 30 cm vor dem Ball",
+        "Münze 60 cm vor dem Ball",
+        "Münze 1 m vor dem Ball"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 20
+      },
+      "sources": [
+        {
+          "title": "GolfZon Leadbetter – 6 Effective Putting Drills",
+          "url": "https://www.golfzonleadbetter.com/blogs/master-your-putting-game-6-effective-putting-drills-for-precision-speed-alignment/"
+        }
+      ]
+    },
+    {
+      "id": "putt-one-hand",
+      "name": "Einhand-Putts",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Je 5 Putts nur mit der unteren und nur mit der oberen Hand.",
+      "purpose": "Gefühl und Tempo: Zu aktive Hände zerstören die Längenkontrolle. Mit einer Hand spürst du, wie ruhig der Schlag sein muss.",
+      "steps": [
+        "5 Putts nur mit der unteren Hand, 3–6 m.",
+        "5 Putts nur mit der oberen Hand.",
+        "Zähle die Putts, die innerhalb einer Putterlänge am Loch liegen bleiben."
+      ],
+      "tips": [
+        "Langsam und rhythmisch, nicht schlagen.",
+        "Danach sofort ein paar Putts mit beiden Händen und das Gefühl mitnehmen."
+      ],
+      "levels": [
+        "3 m",
+        "5 m",
+        "6 m mit Break"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "GolfZon Leadbetter – 6 Effective Putting Drills",
+          "url": "https://www.golfzonleadbetter.com/blogs/master-your-putting-game-6-effective-putting-drills-for-precision-speed-alignment/"
+        },
+        {
+          "title": "PrimePutt – Distance Control Drills",
+          "url": "https://primeputt.com/blogs/golf/distance-control-drills-how-to-master-speed-and-start-two-putting-more-often"
+        }
+      ]
+    },
+    {
+      "id": "putt-behind-hole",
+      "name": "Schläger hinter dem Loch",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Ein Schläger liegt kurz hinter dem Loch. Der Ball soll fallen oder vorbeirollen, ohne den Schläger zu berühren.",
+      "purpose": "Richtiges Tempo: Putts, die kurz bleiben, fallen nie. Die Übung trainiert, den Ball sicher bis zum Loch zu bringen, ohne weit vorbeizuschießen.",
+      "steps": [
+        "Einen Schläger quer hinter das Loch legen.",
+        "10 Putts aus wechselnden Distanzen.",
+        "Punkt, wenn der Ball fällt oder zwischen Loch und Schläger liegen bleibt."
+      ],
+      "tips": [
+        "Distanz bei jedem Ball wechseln.",
+        "In der Turnierwoche gut, um das Tempo auf fremden Grüns zu finden."
+      ],
+      "equipment": [
+        "1 Schläger"
+      ],
+      "levels": [
+        "Schläger 60 cm hinter dem Loch, 4 m",
+        "Schläger 45 cm hinter dem Loch, 6 m",
+        "Schläger 45 cm hinter dem Loch, 9 m mit Break"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "PrimePutt – Distance Control Drills",
+          "url": "https://primeputt.com/blogs/golf/distance-control-drills-how-to-master-speed-and-start-two-putting-more-often"
+        },
+        {
+          "title": "GolfZon Leadbetter – 6 Effective Putting Drills",
+          "url": "https://www.golfzonleadbetter.com/blogs/master-your-putting-game-6-effective-putting-drills-for-precision-speed-alignment/"
+        }
+      ]
+    },
+    {
+      "id": "putt-fringe",
+      "name": "Vorgrün-Drill",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Putten ohne Loch: Der Ball soll knapp vor dem Vorgrün liegen bleiben.",
+      "purpose": "Reines Tempogefühl. Ohne Loch denkst du nicht ans Einlochen, sondern nur an die Länge.",
+      "steps": [
+        "Aus verschiedenen Stellen quer übers Grün Richtung Vorgrün putten.",
+        "10 Putts, bergauf und bergab gemischt.",
+        "Punkt, wenn der Ball höchstens eine Putterlänge vor dem Vorgrün liegen bleibt, ohne es zu erreichen."
+      ],
+      "tips": [
+        "Ideal zum Einspielen vor einer Runde.",
+        "Am Turniertag und am Vortag gut, um die Grüngeschwindigkeit zu lernen."
+      ],
+      "levels": [
+        "Distanzen 5–8 m",
+        "Distanzen 8–12 m",
+        "Distanzen 10–15 m, bergab"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "GolfZon Leadbetter – 6 Effective Putting Drills",
+          "url": "https://www.golfzonleadbetter.com/blogs/master-your-putting-game-6-effective-putting-drills-for-precision-speed-alignment/"
+        },
+        {
+          "title": "PrimePutt – Distance Control Drills",
+          "url": "https://primeputt.com/blogs/golf/distance-control-drills-how-to-master-speed-and-start-two-putting-more-often"
+        }
+      ]
+    },
+    {
+      "id": "putt-must-make",
+      "name": "Muss-Putt-Serie",
+      "area": "putting",
+      "mode": "competition",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "15 kurze Putts im Wechsel aus 1, 1,5 und 2 m. Drei Fehlschläge hintereinander, und die Serie beginnt von vorn.",
+      "purpose": "Druck mit Folgen: Weil Fehler etwas kosten, lernst du, kurze Putts auch dann einzulochen, wenn es zählt.",
+      "steps": [
+        "Drei Markierungen in 1, 1,5 und 2 m um das Loch.",
+        "Reihum putten, bis 15 Putts gespielt sind.",
+        "Drei Fehler in Folge: von vorn beginnen.",
+        "Treffer der letzten Serie eintragen."
+      ],
+      "tips": [
+        "Volle Routine bei jedem Putt.",
+        "Eine kleine Belohnung oder Strafe ausmachen, das erhöht den Druck.",
+        "Am Ende einer Einheit und in der Turnierwoche."
+      ],
+      "levels": [
+        "1, 1,5 und 2 m",
+        "1,5, 2 und 2,5 m",
+        "2, 2,5 und 3 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Scoring Zone – Pressure Putting Drills",
+          "url": "https://www.scoringzone.net/blog/pressure-putting-drills"
+        },
+        {
+          "title": "Golf.com – Two putting games under pressure",
+          "url": "https://golf.com/instruction/putting/two-putting-games-test-performance-under-pressure/"
+        }
+      ]
+    },
+    {
+      "id": "chip-one-club",
+      "name": "Ein Schläger, viele Schläge",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Alle Chips mit nur einem Schläger: flach rollend, mittel und hoch, zu wechselnden Fahnen.",
+      "purpose": "Kreativität und Gefühl für Loft. Du lernst, mit Ballposition und Schlagfläche zu variieren, statt immer den Schläger zu wechseln.",
+      "steps": [
+        "Einen Schläger wählen, z. B. 8er-Eisen oder Sand Wedge.",
+        "10 Bälle zu verschiedenen Fahnen, jedes Mal eine andere Flughöhe.",
+        "Punkte nach Abstand zur Fahne."
+      ],
+      "tips": [
+        "Ballposition und Neigung der Schlagfläche bewusst verändern.",
+        "Beim nächsten Mal einen anderen Schläger nehmen."
+      ],
+      "levels": [
+        "Gute Lagen, 5–15 m",
+        "Gemischte Lagen, 5–20 m",
+        "Schwere Lagen, 5–25 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Sunday Golf – Chipping Tips & Drills",
+          "url": "https://sundaygolf.com/blogs/news/golf-chipping-tips-and-drills-from-pros"
+        },
+        {
+          "title": "Break X Golf – Best Chipping Drills",
+          "url": "https://breakxgolf.com/best-chipping-drills/"
+        }
+      ]
+    },
+    {
+      "id": "chip-hoop",
+      "name": "Ring ums Loch",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Ein Kreis um das Loch. Chips zählen, wenn der Ball im Kreis liegen bleibt.",
+      "purpose": "Findet heraus, welcher Schlag für welche Lage am zuverlässigsten ist, z. B. flach rollend oder hoch.",
+      "steps": [
+        "Einen Kreis um das Loch legen (Reifen oder Tees).",
+        "15 Bälle aus verschiedenen Lagen.",
+        "Bei jeder Lage einen anderen Schlag probieren.",
+        "Zähle die Bälle im Kreis."
+      ],
+      "tips": [
+        "Notieren, welcher Schlag am häufigsten im Kreis landet. Das ist dein Standardschlag für diese Lage.",
+        "Wer zuverlässig im Kreis landet, schafft auch das Up & Down."
+      ],
+      "equipment": [
+        "Hula-Hoop-Reifen oder 8 Tees"
+      ],
+      "levels": [
+        "Kreis mit 1,5 m Radius",
+        "Kreis mit 1 m Radius",
+        "Kreis mit 60 cm Radius"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Distillery – Chipping Drills",
+          "url": "https://www.golfdistillery.com/drills/chipping-drills/"
+        },
+        {
+          "title": "Golf Workout Program – Chipping Drills",
+          "url": "https://golfworkoutprogram.com/chipping-drills/"
+        }
+      ]
+    },
+    {
+      "id": "pitch-trajectory",
+      "name": "Drei Flughöhen",
+      "area": "wedges",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Gleiche Distanz, drei Flughöhen: flach, mittel und hoch, nur über Ballposition und Abstand zum Ball.",
+      "purpose": "Flughöhe kontrollieren. Bei Wind, unter Ästen oder vor Fahnen hinter Bunkern brauchst du verschiedene Flugbahnen aus derselben Entfernung.",
+      "steps": [
+        "Ein Ziel in fester Distanz wählen.",
+        "3 Bälle flach (Ball weiter hinten), 3 mittel, 3 hoch (Ball weiter vorne).",
+        "Punkt, wenn die Flughöhe stimmt und der Ball in der Nähe des Ziels landet."
+      ],
+      "tips": [
+        "Gleicher Schwung, nur die Ansprechposition ändern.",
+        "Danach mit einem anderen Wedge wiederholen."
+      ],
+      "levels": [
+        "20 m",
+        "30 m",
+        "40 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 9
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "GOLFTEC – Three must-have wedge shots",
+          "url": "https://scramble.golftec.com/blog/2023/08/three-must-have-golf-shots-with-your-wedge/"
+        },
+        {
+          "title": "GolfWRX – The Wedge Guy's favorite wedge drills",
+          "url": "https://golfwrx.com/675868/the-wedge-guys-favorite-wedge-practice-drills/"
+        }
+      ]
+    },
+    {
+      "id": "iron-line",
+      "name": "Linien-Drill (Treffmoment)",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ball auf eine Linie im Gras legen. Das Divot muss nach der Linie beginnen.",
+      "purpose": "Erst Ball, dann Boden: der tiefste Punkt des Schwungs liegt vor dem Ball. Das ist die Grundlage für saubere Eisenschläge.",
+      "steps": [
+        "Mit Spray oder Schläger eine Linie quer zur Zielrichtung ins Gras ziehen.",
+        "Ball auf die Linie legen.",
+        "15 Schläge, zähle die Divots, die nach der Linie beginnen."
+      ],
+      "tips": [
+        "Nur auf Rasenabschlägen möglich, auf Matten den Handtuch-Drill nehmen.",
+        "Mit halben Schwüngen beginnen.",
+        "Von der Seite filmen."
+      ],
+      "equipment": [
+        "Sprühfarbe oder Schläger zum Ziehen der Linie"
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "HackMotion – Low Point Control Drills",
+          "url": "https://hackmotion.com/low-point-control-drills/"
+        },
+        {
+          "title": "Foy Golf Academy – Low Point Control",
+          "url": "https://foygolfacademy.com/low-point-control-the-real-key-to-crisp-iron-shots/"
+        }
+      ]
+    },
+    {
+      "id": "iron-towel",
+      "name": "Handtuch-Drill",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ein gefaltetes Handtuch liegt kurz hinter dem Ball. Der Schläger darf es nicht berühren.",
+      "purpose": "Korrektur-Übung gegen fette Schläge und zu frühes Abwinkeln (Casting): Der Schläger muss den Ball zuerst treffen.",
+      "steps": [
+        "Handtuch quer hinter den Ball legen.",
+        "15 Schläge mit einem mittleren Eisen.",
+        "Zähle die Schläge ohne Handtuch-Berührung."
+      ],
+      "tips": [
+        "Nur einsetzen, wenn dein Trainer fette Schläge oder Casting als Thema sieht.",
+        "Abstand verkleinern, wenn es sicher klappt."
+      ],
+      "equipment": [
+        "Handtuch"
+      ],
+      "levels": [
+        "Handtuch 20 cm hinter dem Ball",
+        "Handtuch 15 cm hinter dem Ball",
+        "Handtuch 10 cm hinter dem Ball"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "HackMotion – Towel-on-the-Ground Drill",
+          "url": "https://hackmotion.com/towel-on-ground-drill/"
+        },
+        {
+          "title": "HackMotion – Low Point Control Drills",
+          "url": "https://hackmotion.com/low-point-control-drills/"
+        }
+      ]
+    },
+    {
+      "id": "iron-gate-path",
+      "name": "Schwungbahn-Tor",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Zwei Ausrichtungsstäbe bilden ein Tor, das leicht nach außen zeigt, also vom Körper weg. Der Schläger muss durch, ohne sie zu berühren.",
+      "purpose": "Korrektur-Übung gegen Slice und Pull: Das Tor erzwingt eine Schwungbahn von innen.",
+      "steps": [
+        "Zwei Stäbe parallel, etwa 15 cm breiter als der Schlägerkopf, leicht nach außen ausgerichtet: Rechtshänder etwas rechts vom Ziel, Linkshänder etwas links vom Ziel.",
+        "Ball in die Mitte legen.",
+        "15 Schläge, zähle die ohne Stab-Berührung."
+      ],
+      "tips": [
+        "Nur, wenn dein Trainer die Schwungbahn als Thema sieht.",
+        "Erst langsam, dann schneller.",
+        "Statt Stäben gehen auch zwei Headcover."
+      ],
+      "equipment": [
+        "2 Ausrichtungsstäbe oder Headcover"
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – 3 drills to fix your swing path",
+          "url": "https://mygolfspy.com/news-opinion/instruction/fix-your-golf-swing-path-fast-3-drills-that-actually-work/"
+        },
+        {
+          "title": "Golf Monthly – How to use alignment sticks",
+          "url": "https://www.golfmonthly.com/tips/how-to-use-golf-alignment-sticks"
+        }
+      ]
+    },
+    {
+      "id": "iron-feet-together",
+      "name": "Füße zusammen",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Schwünge mit geschlossenen Füßen.",
+      "purpose": "Korrektur-Übung für Balance, Rhythmus und Drehung: Ohne breiten Stand fällt jeder Ausfallschritt mit dem Oberkörper sofort auf.",
+      "steps": [
+        "Mittleres Eisen, Füße berühren sich.",
+        "10 Schläge mit 70 % Tempo.",
+        "Zähle die Schläge, die sauber getroffen sind und bei denen du das Finish 3 Sekunden halten kannst."
+      ],
+      "tips": [
+        "Gut zum Aufwärmen oder wenn der Rhythmus verloren geht.",
+        "Nach der Übung ein paar normale Schläge mit dem gleichen Gefühl."
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – 3 drills to fix your swing path",
+          "url": "https://mygolfspy.com/news-opinion/instruction/fix-your-golf-swing-path-fast-3-drills-that-actually-work/"
+        },
+        {
+          "title": "Golf Guidebook – Swing Path Drills",
+          "url": "https://golfguidebook.com/swing-path-drills-consistency/"
+        }
+      ]
+    },
+    {
+      "id": "iron-pump",
+      "name": "Pump-Drill",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Vom höchsten Punkt den Schläger dreimal halb nach unten führen, dann den Schwung durchziehen.",
+      "purpose": "Korrektur-Übung für den Übergang: Du spürst, wie der Schläger von innen nach unten fällt, statt von oben über den Ball zu kommen.",
+      "steps": [
+        "Ausholen bis zum höchsten Punkt.",
+        "Den Schläger bis Hüfthöhe nach unten führen und zurück, dreimal.",
+        "Beim vierten Mal durchschwingen und den Ball treffen.",
+        "10 Wiederholungen."
+      ],
+      "tips": [
+        "Langsam und bewusst, Tempo ist hier egal.",
+        "Nur, wenn der Übergang dein Thema mit dem Trainer ist."
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – 3 drills to fix your swing path",
+          "url": "https://mygolfspy.com/news-opinion/instruction/fix-your-golf-swing-path-fast-3-drills-that-actually-work/"
+        },
+        {
+          "title": "Golf Guidebook – Swing Path Drills",
+          "url": "https://golfguidebook.com/swing-path-drills-consistency/"
+        }
+      ]
+    },
+    {
+      "id": "iron-step",
+      "name": "Step-Drill",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Mit geschlossenen Füßen ausholen und beim Rückschwung mit dem vorderen Fuß in den Stand treten.",
+      "purpose": "Korrektur-Übung für die richtige Reihenfolge: Der Unterkörper startet den Abschwung, das bringt Kraft und eine Bahn von innen.",
+      "steps": [
+        "Füße zusammen, Ball in der Mitte.",
+        "Beim Ausholen mit dem vorderen Fuß Richtung Ziel in den normalen Stand treten.",
+        "Dann durchschwingen.",
+        "10 Wiederholungen, zähle die sauber getroffenen."
+      ],
+      "tips": [
+        "Erst ohne Ball, bis der Ablauf flüssig ist.",
+        "Gut für mehr Länge, wenn der Trainer das empfiehlt."
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – 3 drills to fix your swing path",
+          "url": "https://mygolfspy.com/news-opinion/instruction/fix-your-golf-swing-path-fast-3-drills-that-actually-work/"
+        },
+        {
+          "title": "Golf Guidebook – Swing Path Drills",
+          "url": "https://golfguidebook.com/swing-path-drills-consistency/"
+        }
+      ]
+    },
+    {
+      "id": "swing-belly-turn",
+      "name": "Griff am Bauchnabel",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Das Griffende des Schlägers steckt am Bauchnabel, die Arme sind am Schaft gestreckt. Du drehst, bis der Schläger vom Ziel weg zeigt und dein Rücken zum Ziel.",
+      "purpose": "Korrektur-Übung für mehr Drehung: Schultern und Hüfte drehen mit dem Rumpf, statt dass nur die Arme ausholen. Mehr Drehung bringt Länge, ohne dass du schneller schlagen musst.",
+      "steps": [
+        "Ansprechhaltung ohne Ball. Das Griffende an den Bauchnabel, die Arme gestreckt am Schaft, der Schlägerkopf zeigt in der Luft nach vorne.",
+        "Zurückdrehen, bis der Schläger vom Ziel weg zeigt und dein Rücken zum Ziel. Die Vorneigung bleibt.",
+        "Das hintere Knie darf sich dabei etwas strecken. Das gibt der Hüfte Platz zum Drehen.",
+        "Zurück zur Ansprache und weiter ins Finish drehen, bis die Brust zum Ziel zeigt.",
+        "10 langsame Wiederholungen, dann 5 Probeschwünge mit demselben Gefühl."
+      ],
+      "tips": [
+        "Geht auch zuhause, ohne Ball.",
+        "Die Arme bleiben vor der Brust, nur der Körper dreht.",
+        "Bei Schmerzen im Rücken sofort aufhören."
+      ],
+      "scoring": {
+        "kind": "none"
+      },
+      "isCorrective": true,
+      "sources": [
+        {
+          "title": "GOLFTEC – Fix that weak slice with this hip rotation drill",
+          "url": "https://scramble.golftec.com/blog/2022/01/fix-that-weak-slice-with-this-hip-rotation-drill/"
+        },
+        {
+          "title": "Golf.com – GOLFTEC: How much should your hips and shoulders turn",
+          "url": "https://golf.com/instruction/lower-body-shoulder-turn-golftec/"
+        }
+      ]
+    },
+    {
+      "id": "swing-hip-sticks",
+      "name": "Stäbe an der Hüfte",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Zwei Ausrichtungsstäbe stecken senkrecht neben deinen Hüften. Im Schwung drehst du dich, ohne einen Stab wegzuschieben.",
+      "purpose": "Korrektur-Übung gegen Sway und Slide: Die Hüfte soll drehen, nicht zur Seite schieben. Gute Spieler bleiben bis zum Umkehrpunkt fast an ihrem Platz und verschieben die Hüfte bis zum Treffmoment nur etwa 8 bis 13 cm zum Ziel.",
+      "steps": [
+        "Zwei Ausrichtungsstäbe mit Schutzkappe senkrecht in den Boden stecken: einen knapp außen neben der hinteren Hüfte, einen etwa eine Handbreit außen neben der vorderen.",
+        "Erst ohne Ball ausholen. Die hintere Hüfte dreht nach hinten weg, ohne den Stab zu berühren. Das Gewicht bleibt innen am hinteren Fuß.",
+        "Durchschwingen. Die Hüfte geht etwas zum Ziel und dreht dann auf. Die vordere Hüfte darf den Stab höchstens leicht berühren.",
+        "Dann 10 Bälle. Zähle die Schwünge, bei denen kein Stab wackelt."
+      ],
+      "tips": [
+        "Den vorderen Stab nicht zu nah setzen: Etwas Bewegung zum Ziel gehört zu jedem guten Schwung.",
+        "Von vorne filmen und in der Schwunganalyse „Hüfte seitlich“ vergleichen.",
+        "Niemand steht im Schwungbereich, die Stäbe nur mit Kappe."
+      ],
+      "equipment": [
+        "2 Ausrichtungsstäbe mit Schutzkappe"
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "HackMotion – How to stop swaying in the golf swing",
+          "url": "https://hackmotion.com/stop-swaying-in-golf-swing/"
+        },
+        {
+          "title": "TPI – Swing characteristics: Sway",
+          "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/sway"
+        },
+        {
+          "title": "TPI – Swing characteristics: Slide",
+          "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/slide"
+        }
+      ]
+    },
+    {
+      "id": "swing-tailbone-stick",
+      "name": "Stab am Steißbein",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ein Ausrichtungsstab steckt senkrecht hinter dir, dein Steißbein berührt ihn beim Ansprechen. Im ganzen Schwung bleibt der Po hinten am Stab.",
+      "purpose": "Korrektur-Übung gegen Early Extension und Aufrichten: Die Hüfte bleibt im Abschwung hinten, statt zum Ball zu schieben. So bleibt Platz für die Arme und du bleibst in deiner Vorneigung.",
+      "steps": [
+        "Einen Ausrichtungsstab mit Schutzkappe senkrecht hinter dir in den Boden stecken, so dass dein Steißbein ihn in der Ansprechhaltung berührt. Ohne Stab geht es mit einem Stuhl ohne Rollen.",
+        "Ausholen: Die hintere Gesäßhälfte dreht an den Stab.",
+        "Abschwung: Druck auf das vordere Bein, der Po bleibt am Stab, statt zum Ball zu kommen.",
+        "Im Treffmoment berührt die vordere Gesäßhälfte den Stab.",
+        "Erst 5 Schwünge ohne Ball, dann 10 Bälle. Zähle die Schwünge, bei denen der Po am Stab bleibt."
+      ],
+      "tips": [
+        "Den Stab nur leicht berühren, nicht dagegen lehnen.",
+        "Langsam beginnen, das Gefühl ist am Anfang ungewohnt.",
+        "Von hinten filmen und in der Schwunganalyse „Hüfte zum Ball“ vergleichen."
+      ],
+      "equipment": [
+        "1 Ausrichtungsstab mit Schutzkappe oder ein Stuhl ohne Rollen"
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Titleist – Early extension swing fault (Dave Phillips, TPI)",
+          "url": "https://www.titleist.com/videos/instruction/early-extension-swing-fault"
+        },
+        {
+          "title": "TPI – Swing characteristics: Early Extension",
+          "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/early-extension"
+        },
+        {
+          "title": "HackMotion – How to stop early extension in golf",
+          "url": "https://hackmotion.com/how-to-stop-early-extension-in-golf/"
+        }
+      ]
+    },
+    {
+      "id": "swing-club-across-chest",
+      "name": "Schläger vor der Brust",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "In Ansprechhaltung hältst du den Schläger quer vor der Brust, die Arme gekreuzt. Du drehst zum Umkehrpunkt und durch bis ins Finish, ohne dich aufzurichten.",
+      "purpose": "Korrektur-Übung für die Haltung: Du spürst, wie der Oberkörper um die Wirbelsäule dreht und dabei in der Vorneigung bleibt. Die vordere Schulter geht im Rückschwung zum Ball, im Abschwung bleibt die Brust zum Boden geneigt.",
+      "steps": [
+        "Ansprechhaltung ohne Ball: aus der Hüfte nach vorne neigen, der Rücken bleibt gerade. Den Schläger quer vor die Brust halten, die Arme gekreuzt.",
+        "Zum Umkehrpunkt drehen. Die vordere Schulter geht nach unten zum Ball, der Schaft zeigt etwa auf den Ball.",
+        "Zurück in die Treffhaltung drehen. Die Brust bleibt zum Boden geneigt, bis die Schultern am Ball vorbei sind.",
+        "Weiter ins Finish drehen, bis die Brust zum Ziel zeigt.",
+        "10 langsame Wiederholungen, dann 5 Probeschwünge mit demselben Gefühl."
+      ],
+      "tips": [
+        "Vor einem Spiegel oder mit einem Video von hinten prüfen.",
+        "Geht auch zuhause, ohne Ball.",
+        "Nicht zum Ziel zurücklehnen: Das belastet den Rücken."
+      ],
+      "scoring": {
+        "kind": "none"
+      },
+      "isCorrective": true,
+      "sources": [
+        {
+          "title": "Swing Surgeon – Club across chest drill",
+          "url": "https://www.swingsurgeon.com/daily-video-tips/club-across-chest-drill"
+        },
+        {
+          "title": "Golf.com – The key relationship to maintain your posture (GOLFTEC)",
+          "url": "https://golf.com/instruction/key-relationship-maintain-posture-golftec/"
+        },
+        {
+          "title": "TPI – Swing characteristics: Loss of Posture",
+          "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/loss-of-posture"
+        }
+      ]
+    },
+    {
+      "id": "swing-shadow",
+      "name": "Schatten-Drill",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Mit der Sonne im Rücken liegt dein Schatten vor dir. Drei Bälle markieren Gürtel, Brust und Kopf. Beim Schwingen bleibt der Schatten des Kopfes über seinem Ball.",
+      "purpose": "Korrektur-Übung für einen ruhigen Kopf: Du siehst sofort, ob der Kopf im Rückschwung weit nach hinten wandert, zum Ziel kippt oder hochkommt. Etwas Absinken im Abschwung ist normal.",
+      "steps": [
+        "Stell dich so hin, dass die Sonne hinter dir steht und dein Schatten vor dir auf dem Boden liegt.",
+        "Lege drei Bälle in den Schatten: auf Höhe der Gürtelschnalle, der Brustmitte und der Stirn.",
+        "Schwing ohne Ball oder über ein Tee. Der Schatten des Kopfes bleibt über seinem Ball.",
+        "10 Schwünge. Zähle die, bei denen der Kopf über seinem Ball bleibt."
+      ],
+      "tips": [
+        "Ohne Sonne geht es auch: die Stirn leicht an einen Pfosten oder ein Kissen an der Wand legen und ohne Schläger mit gekreuzten Armen ausholen.",
+        "Erst halbe Schwünge, dann volle.",
+        "Niemand steht im Schwungbereich."
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "sources": [
+        {
+          "title": "Golf Digest – Justin Rose’s shadow drill (Mark Blackburn)",
+          "url": "https://www.golfdigest.com/story/Justin-Rose-golf-swing-drill-video-mark-blackburn"
+        },
+        {
+          "title": "Golf.com – Want to swing like Jack Nicklaus? 4 drills that help",
+          "url": "https://golf.com/instruction/want-swing-jack-nicklaus-4-drills-help/"
+        }
+      ]
+    },
+    {
+      "id": "routine-range",
+      "name": "Routine bei jedem Ball",
+      "area": "approach",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "15 Bälle, jeder mit anderem Ziel und Schläger und der kompletten Routine vom Platz.",
+      "purpose": "Macht die Routine automatisch, damit sie im Turnier auch unter Druck funktioniert. Die Routine sollte 20 bis 30 Sekunden dauern.",
+      "steps": [
+        "Hinter den Ball stellen, Ziel wählen, Probeschwung, ausrichten, schlagen.",
+        "Jeder Ball: anderes Ziel, anderer Schläger.",
+        "Zähle die Bälle, bei denen die Routine vollständig war und du dich klar auf das Ziel festgelegt hast."
+      ],
+      "tips": [
+        "Die Zeit mit der Stoppuhr prüfen: 20 bis 30 Sekunden.",
+        "Gleiche Routine für jeden vollen Schlag.",
+        "In der Turnierwoche fester Bestandteil jeder Einheit."
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – How to build a pre-shot routine",
+          "url": "https://mygolfspy.com/news-opinion/instruction/how-to-build-a-pre-shot-routine-that-actually-works/"
+        },
+        {
+          "title": "Wicked Smart Golf – Pre-shot routine",
+          "url": "https://www.wickedsmartgolf.com/blog/pre-shot-routine-in-golf"
+        }
+      ]
+    },
+    {
+      "id": "drive-tee-gate",
+      "name": "Tee-Tor",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Zwei Tees knapp breiter als der Driverkopf. Der Schläger muss durch, ohne sie zu berühren.",
+      "purpose": "Treffpunkt in der Mitte der Schlagfläche: Treffer an der Spitze oder an der Ferse kosten Länge und Richtung.",
+      "steps": [
+        "Ball normal aufteen.",
+        "Je ein Tee gut 1 cm außerhalb der Spitze und der Ferse stecken, nur wenig aus dem Boden.",
+        "10 Schläge, zähle die ohne Tee-Berührung."
+      ],
+      "tips": [
+        "Mit Fußspray auf der Schlagfläche siehst du genau, wo du triffst.",
+        "Mit 70 % Tempo beginnen, dann steigern."
+      ],
+      "equipment": [
+        "2 Tees",
+        "Fußspray (optional)"
+      ],
+      "levels": [
+        "70 % Tempo",
+        "Volles Tempo",
+        "Volles Tempo mit Fairway-Ziel"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Driver off the toe, 15-ball test",
+          "url": "https://foygolfacademy.com/why-you-hit-driver-off-the-toe-causes-fixes-and-a-15-ball-test/"
+        },
+        {
+          "title": "Golf Instruction – 10 Driving Drills",
+          "url": "https://www.golf-instructions.com/blog/10-driving-drills-to-improve-power-accuracy-amp-consistency"
+        }
+      ]
+    },
+    {
+      "id": "drive-first-tee",
+      "name": "Erster Abschlag",
+      "area": "driving",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Den ersten Abschlag eines Turniers simulieren: ein Ball, volle Routine, danach Pause.",
+      "purpose": "Der erste Abschlag ist der nervöseste Schlag des Tages. Hier übst du genau diese Situation, mehrmals hintereinander.",
+      "steps": [
+        "Ein Fairway festlegen und den ersten Abschlag des Turnierplatzes vorstellen.",
+        "Volle Routine, nur ein Ball.",
+        "1–2 Minuten etwas anderes machen, dann wieder.",
+        "5 Wiederholungen, zähle die Bälle im Fairway."
+      ],
+      "tips": [
+        "Den Schläger nehmen, den du auch im Turnier am ersten Loch nimmst.",
+        "Fester Teil der Turnierwoche und des Einspielens."
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 5
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Outta Bounds – Driving Range Practice Drills",
+          "url": "https://outtabounds.co.uk/blogs/driving-range/driving-range-practice-drills-that-actually-lower-scores"
+        },
+        {
+          "title": "MyGolfSpy – How to build a pre-shot routine",
+          "url": "https://mygolfspy.com/news-opinion/instruction/how-to-build-a-pre-shot-routine-that-actually-works/"
+        }
+      ]
+    },
+    {
+      "id": "bunker-dollar",
+      "name": "Dollarschein-Drill",
+      "area": "bunker",
+      "mode": "block",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Zeichne ein Rechteck so groß wie ein Geldschein um den Ball. Der Schläger schlägt den ganzen Sand aus dem Rechteck aus dem Bunker, und der Ball fliegt mit.",
+      "purpose": "Zeigt dir, wie viel Sand du nehmen musst: eine flache Schicht von etwa 15 cm Länge. Der Schläger tritt ca. 5 cm hinter dem Ball in den Sand und ca. 10 cm vor ihm wieder heraus.",
+      "steps": [
+        "Mit einem Tee ein Rechteck von etwa 15 × 7 cm in den Sand zeichnen, so groß wie ein Geldschein.",
+        "Den Ball so hineinlegen, dass hinter ihm ca. 5 cm und vor ihm ca. 10 cm Platz bleiben. Auf Stufe 1 ohne Ball.",
+        "Der Schläger tritt an der hinteren Kante in den Sand, gleitet flach unter dem Rechteck durch und kommt an der vorderen Kante wieder heraus.",
+        "Der ganze Sand aus dem Rechteck fliegt Richtung Grün und nimmt den Ball mit.",
+        "Zähle die Schläge, bei denen das Rechteck leer ist und das Ziel der Stufe erreicht wird."
+      ],
+      "tips": [
+        "Flach durch den Sand gleiten, statt tief zu graben. Die Rückseite des Schlägers (Bounce) rutscht durch den Sand.",
+        "Durch den Sand beschleunigen. Wenn du abbremst: kürzer ausholen, länger durchschwingen.",
+        "Nach jedem Schlag den Sand glätten und ein neues Rechteck zeichnen."
+      ],
+      "equipment": [
+        "Tee zum Zeichnen"
+      ],
+      "levels": [
+        "Ohne Ball: Der Sand landet auf dem Grün",
+        "Mit Ball: Der Ball landet auf dem Grün",
+        "Mit Ball: Der Ball bleibt innerhalb von 3 m um die Fahne liegen"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf.com – $100 bill bunker drill (Brech Spradley)",
+          "url": "https://golf.com/instruction/bunker-shots/100-bill-bunker-drill-brech-spradley/"
+        },
+        {
+          "title": "Golf Distillery – How to Hit a Bunker Shot",
+          "url": "https://www.golfdistillery.com/shot-tips/bunker-shots/how-to-hit-a-bunker-shot/"
+        }
+      ]
+    },
+    {
+      "id": "bunker-tee",
+      "name": "Tee im Sand",
+      "area": "bunker",
+      "mode": "block",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Ein Tee steckt unter dem Ball im Sand. Der Schläger soll das Tee herausschlagen, ohne den Ball direkt zu treffen.",
+      "purpose": "Im Bunker zählt nicht nur, wo der Schläger in den Sand eintritt: Der tiefste Punkt des Schwungs muss genau unter dem Ball liegen. Das Tee zeigt dir, ob das klappt.",
+      "steps": [
+        "Ein Tee in den Sand stecken und den Ball daraufsetzen. Wie tief das Tee steckt, sagt die Stufe.",
+        "Entlang der Linie deiner Fußspitzen schwingen und das Tee unten am Schaft treffen.",
+        "Gelungen ist der Schlag, wenn das Tee herausfliegt, ohne dass der Schläger den Ball direkt trifft.",
+        "Zum Schluss ohne Tee: Ball auf den Sand legen, sich das Tee darunter vorstellen und genauso schwingen.",
+        "Zähle die Schläge, die das Ziel der Stufe erreichen."
+      ],
+      "tips": [
+        "Das Tee nach jedem Schlag neu und gleich tief stecken.",
+        "Erst wenn das Tee zuverlässig herausfliegt, ohne Tee üben und den Schwung beibehalten.",
+        "Gute Ergänzung zum Linien-Drill: Dort geht es um den Eintrittspunkt, hier um den tiefsten Punkt."
+      ],
+      "equipment": [
+        "Tees"
+      ],
+      "levels": [
+        "Tee weit heraus: nur das Tee treffen, nicht den Sand",
+        "Tee halb im Sand: Der Schläger tritt in den Sand und schlägt das Tee heraus",
+        "Tee ganz im Sand, nur der Kopf schaut heraus: Ball landet auf dem Grün"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "sources": [
+        {
+          "title": "Golf Monthly – Tee Peg Bunker Drill (Ged Walters)",
+          "url": "https://www.golfmonthly.com/videos/short-game-tips/tee-peg-bunker-drill-for-golf"
+        },
+        {
+          "title": "Golf.com – Simple bunker drill to blast the ball out",
+          "url": "https://golf.com/instruction/bunker-shots/simple-bunker-drill-blast-ball-out-with-ease/"
+        },
+        {
+          "title": "Foy Golf Academy – 7 Sand Bunker Drills",
+          "url": "https://foygolfacademy.com/sand-bunker-practice-drills/"
+        }
+      ]
+    },
+    {
+      "id": "bunker-one-hand",
+      "name": "Einhand-Bunkerschläge",
+      "area": "bunker",
+      "mode": "block",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 10,
+      "summary": "Bunkerschläge nur mit der unteren Hand am Griff. Die Rückseite des Schlägerkopfs klatscht flach in den Sand.",
+      "purpose": "Korrektur-Übung gegen Abbremsen im Bunker. Mit nur einer Hand kannst du den Schwung kaum zu früh abbrechen, und du spürst, wie der Schläger flach durch den Sand gleitet, statt zu graben. Außerdem merkst du, wie groß der Schwung sein darf, ohne dass der Ball weit fliegt.",
+      "steps": [
+        "Den Wedge nur mit der unteren Hand greifen, also mit der rechten bei Rechtshändern und mit der linken bei Linkshändern. Die andere Hand nimmst du vom Griff.",
+        "Erst ohne Ball: halbe, dann volle Schwünge. Die Rückseite des Schlägerkopfs klatscht hinter dem Ball in den Sand.",
+        "Wenn das sicher klappt, Bälle mit einer Hand aus dem Bunker schlagen.",
+        "Zum Schluss einige Schläge mit beiden Händen und dasselbe Gefühl mitnehmen.",
+        "Zähle die Einhand-Schläge, die das Ziel der Stufe erreichen."
+      ],
+      "tips": [
+        "Nur einsetzen, wenn dein Trainer Abbremsen oder Graben im Bunker als Thema sieht.",
+        "Nach dem Treffmoment zeigt die Schlagfläche zum Himmel. Dann hat der Schläger richtig durchgeschwungen.",
+        "Den Griff fest genug halten und darauf achten, dass niemand in deiner Nähe steht."
+      ],
+      "levels": [
+        "Ohne Ball: Der Sand fliegt aus dem Bunker",
+        "Mit Ball: Der Ball verlässt den Bunker",
+        "Mit Ball: Der Ball landet auf dem Grün"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf Digest – What a good bunker shot feels like",
+          "url": "https://www.golfdigest.com/story/what-a-good-bunker-shot-feels-like"
+        }
+      ]
+    },
+    {
+      "id": "bunker-plugged",
+      "name": "Spiegelei",
+      "area": "bunker",
+      "mode": "block",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block für eingegrabene Lagen: Der Ball steckt im Sand, oft mit einem Ring drumherum wie ein Spiegelei. Mit gerader Schlagfläche und steilem Schwung holst du ihn heraus.",
+      "purpose": "Aus dem Spiegelei brauchst du einen anderen Schlag: Statt mit der Rückseite durch den Sand zu gleiten, schiebt die Vorderkante den Ball mit viel Sand heraus. Der Ball rollt danach weiter als sonst.",
+      "steps": [
+        "Den Ball mit dem Fuß in den Sand drücken. Wie tief, sagt die Stufe.",
+        "Ball in der Mitte des Stands, Schlagfläche gerade statt geöffnet, etwas mehr Gewicht auf dem vorderen Fuß.",
+        "Beim Ausholen die Handgelenke früh anwinkeln und steil nach unten schwingen.",
+        "Der Schläger tritt außerhalb des Rings in den Sand, ca. 7–8 cm hinter dem Ball. Kräftig in den Sand schlagen, ein kurzes Finish ist in Ordnung.",
+        "Zähle die Bälle, die das Ziel der Stufe erreichen."
+      ],
+      "tips": [
+        "Fest greifen, damit sich der Schläger im Sand nicht in der Hand dreht.",
+        "Der Ball rollt weit. Plane das ein und lande ihn möglichst vor der Fahne.",
+        "Auf dem Platz zuerst sicher heraus. Wenn hinter dem Grün Gefahr lauert, lieber von der Fahne weg spielen."
+      ],
+      "levels": [
+        "Ball zu einem Drittel eingegraben, Ziel: raus aus dem Bunker",
+        "Ball halb eingegraben, Ziel: Ball auf dem Grün",
+        "Ball fast ganz eingegraben, Ziel: Ball auf dem Grün"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – Hank Haney: How to escape the buried lie",
+          "url": "https://www.golfdigest.com/story/hank-haney-escape-the-buried-lie"
+        },
+        {
+          "title": "Golf Distillery – Bunker shot from a fried-egg lie",
+          "url": "https://www.golfdistillery.com/shot-tips/bunker-shots/how-to-hit-a-bunker-shot-fried-egg/"
+        },
+        {
+          "title": "Golf Monthly – Plugged lie in the bunker: 3 expert tips",
+          "url": "https://www.golfmonthly.com/tips/conquer-the-dreaded-plugged-lie-in-the-bunker-with-3-expert-tips"
+        }
+      ]
+    },
+    {
+      "id": "bunker-slopes",
+      "name": "Hanglagen im Bunker",
+      "area": "bunker",
+      "mode": "variable",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Bunkerschläge aus wechselnden Lagen: bergauf, bergab und eben. Die Lage wechselt bei jedem Ball.",
+      "purpose": "Im Bunker liegt der Ball nicht immer eben. Wer Schultern und Hüften an den Hang anpasst, trifft den Sand trotzdem richtig. Bergauf kommt der Ball steil heraus und bleibt schnell liegen, bergab fliegt er flacher und rollt weiter.",
+      "steps": [
+        "Drei Lagen im Bunker suchen: bergauf, bergab und eben, alle mit Ziel auf dem Grün.",
+        "Bei jedem Ball die Lage wechseln, nie zweimal hintereinander dieselbe.",
+        "Vor jedem Schlag Schultern und Hüften parallel zum Hang ausrichten. Der Ball liegt näher am höheren Fuß: bergauf weiter vorne im Stand, bergab weiter hinten.",
+        "Den Sand hinter dem Ball treffen und den Schläger dem Hang folgen lassen: bergab den Hang hinunter, bergauf den Hang hinauf.",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "tips": [
+        "Bergab erst ohne Ball üben: Beim Durchschwingen den hinteren Fuß lösen, als würdest du den Hang hinuntergehen.",
+        "Bergab rollt der Ball weiter, also früher landen lassen. Bergauf bleibt er schnell liegen, also mutig bis zur Fahne spielen.",
+        "Bergauf etwas neben das Ziel zielen, Rechtshänder rechts, Linkshänder links: Der Ball zieht leicht in die andere Richtung."
+      ],
+      "levels": [
+        "Leichte Hänge, 8–12 m",
+        "Stärkere Hänge, 8–15 m",
+        "Steile Hänge, 8–20 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m oder im Bunker",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Distillery – Bunker shots from upslope and downslope",
+          "url": "https://www.golfdistillery.com/golf-tips/short-game/bunkers/uphill-downhill-lie/"
+        },
+        {
+          "title": "Golf Digest – Jason Guss: How to escape the tough lies",
+          "url": "https://www.golfdigest.com/story/jason-guss-tough-lie"
+        },
+        {
+          "title": "Golf Monthly – Seve's bunker lesson: uphill and downhill slopes",
+          "url": "https://www.golfmonthly.com/tips/seves-lost-bunker-lesson-master-slopes-and-transform-your-short-game-today"
+        }
+      ]
+    },
+    {
+      "id": "bunker-long",
+      "name": "Lange Bunkerschläge",
+      "area": "bunker",
+      "mode": "variable",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Bunkerschläge über 20 bis 30 m. Ziel und Schläger wechseln bei jedem Ball, vom Sand Wedge bis zum Pitching Wedge.",
+      "purpose": "Für lange Bunkerschläge brauchst du weniger Loft und einen Schwung wie beim Pitch. Dann fliegen Sand und Ball flacher nach vorne statt steil nach oben, und der Ball erreicht auch weit entfernte Fahnen.",
+      "steps": [
+        "Ziele in ca. 20, 25 und 30 m wählen, je nach Stufe.",
+        "Bei jedem Ball Ziel und Schläger wechseln: Sand Wedge für das kurze Ziel, Gap Wedge oder Pitching Wedge für die langen.",
+        "Aufstellen wie beim Pitch: Füße und Schultern fast parallel zur Ziellinie, Schlagfläche gerade oder nur leicht geöffnet.",
+        "Der Schläger tritt näher am Ball in den Sand als beim normalen Bunkerschlag. Das Finish bleibt flach: Hände unter Schulterhöhe, Arme gestreckt.",
+        "Punkte nach Abstand zum Ziel eintragen."
+      ],
+      "tips": [
+        "Den Schwung erst mit ein paar Pitches vom Gras üben, dann in den Bunker gehen.",
+        "Notiere, wie weit jeder Schläger aus dem Bunker fliegt. So weißt du auf dem Platz, welchen du nimmst.",
+        "Mit weniger Loft rollt der Ball weiter. Lande ihn deshalb früher."
+      ],
+      "levels": [
+        "Ziele in 20 und 25 m, gute Lage",
+        "Ziele in 20, 25 und 30 m, gute Lage",
+        "Ziele in 20, 25 und 30 m, wechselnde Lagen"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 2 m",
+            "points": 3
+          },
+          {
+            "label": "2–4 m",
+            "points": 2
+          },
+          {
+            "label": "4–6 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 6 m oder im Bunker",
+            "points": 0
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – The other bunker shot every golfer needs to know",
+          "url": "https://www.golfdigest.com/story/drive-it-low-and-forward-on-long-bunker-shots"
+        },
+        {
+          "title": "Golf.com – How to hit a longer greenside bunker shot",
+          "url": "https://golf.com/instruction/bunker-shots/easily-hit-longer-greenside-bunker-shot/"
+        },
+        {
+          "title": "Golf Monthly – Dan Grieve's formula for bunker shots",
+          "url": "https://www.golfmonthly.com/tips/dan-grieve-formula-perfect-bunker-shots"
+        }
+      ]
+    },
+    {
+      "id": "bunker-points",
+      "name": "Bunker-Punktespiel",
+      "area": "bunker",
+      "mode": "competition",
+      "facilities": [
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Fünf Bälle aus dem Bunker, drei mit dem Sand Wedge und zwei mit einem anderen Schläger. Punkte gibt es fürs Herauskommen, für Bälle nah am Loch und am meisten fürs Einlochen.",
+      "purpose": "Druck wie auf der Runde: Jeder Ball zählt, und du lernst, auch mit einem anderen Schläger aus dem Bunker zu spielen. Allein spielst du gegen deinen Rekord, zu zweit gegeneinander.",
+      "steps": [
+        "Fünf Bälle nebeneinander in den Bunker legen und eine Fahne wählen.",
+        "Die ersten drei mit dem Sand Wedge spielen, die letzten zwei mit einem anderen Schläger deiner Wahl, z. B. Lob Wedge, Pitching Wedge oder 9er-Eisen.",
+        "Pro Ball: eingelocht 5 Punkte, bis zwei Schlägerlängen am Loch 3 Punkte, aus dem Bunker heraus 1 Punkt.",
+        "Zwei Runden spielen (10 Bälle) und die Punkte zusammenzählen."
+      ],
+      "tips": [
+        "Mit Trainingspartner spielen: Wer nach zwei Runden mehr Punkte hat, gewinnt.",
+        "Volle Routine vor jedem Ball, kein zweiter Versuch.",
+        "Den Rekord notieren und beim nächsten Mal versuchen, ihn zu schlagen."
+      ],
+      "levels": [
+        "Gute Lagen, Fahne 8–12 m entfernt",
+        "Wechselnde Lagen, Fahne 10–15 m entfernt",
+        "Schwere Lagen mit Spiegelei oder Hang, Fahne 10–20 m entfernt"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht",
+            "points": 5
+          },
+          {
+            "label": "Bis 2 Schlägerlängen am Loch",
+            "points": 3
+          },
+          {
+            "label": "Aus dem Bunker",
+            "points": 1
+          },
+          {
+            "label": "Im Bunker geblieben",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "MASSGOLF – Games for the range, putting green & short game area",
+          "url": "https://www.massgolf.org/news/20-practicegames/"
+        }
+      ]
+    },
+    {
+      "id": "chip-shaft-extension",
+      "name": "Verlängerter Schaft",
+      "area": "shortGame",
+      "mode": "block",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Ein Ausrichtungsstab verlängert den Griff nach oben und zeigt an der Zielseite deines Oberkörpers vorbei. Beim Chippen darf er deine Seite nicht berühren.",
+      "purpose": "Korrektur-Übung gegen Löffeln, also abknickende Handgelenke im Treffmoment. Der Stab stößt sofort an deine Seite, wenn die Handgelenke abknicken oder der Körper nicht mitdreht. So lernst du, den Chip mit der Körperdrehung zu spielen.",
+      "steps": [
+        "Einen Ausrichtungsstab zusammen mit dem Griff halten, sodass er wie eine Verlängerung des Schafts an der Zielseite deines Oberkörpers vorbeizeigt.",
+        "Hände leicht vor dem Ball. Arme und Schaft bilden ein kleines y, das im ganzen Schwung erhalten bleibt.",
+        "Mit kleinen Schwüngen bis Hüfthöhe beginnen: Den Körper vor- und zurückdrehen, der Stab bleibt eine Verlängerung des Schafts.",
+        "Stößt der Stab an deine Seite, sind die Handgelenke abgeknickt oder der Körper hat nicht mitgedreht.",
+        "Zähle die Chips, bei denen der Stab frei bleibt und der Ball sauber getroffen ist."
+      ],
+      "tips": [
+        "Nur einsetzen, wenn dein Trainer Löffeln oder abknickende Handgelenke als Thema sieht.",
+        "Ohne Stab geht auch ein zweiter Schläger, den du zusammen mit dem Griff hältst.",
+        "Danach einige Chips ohne Stab mit demselben Gefühl.",
+        "Von vorne filmen: Im Treffmoment sind die Hände vor dem Schlägerkopf."
+      ],
+      "equipment": [
+        "Ausrichtungsstab oder zweiter Schläger"
+      ],
+      "levels": [
+        "Chips 5 m, Schwung bis Kniehöhe",
+        "Chips 10 m, Schwung bis Hüfthöhe",
+        "Pitches 15 m, Schwung bis Hüfthöhe, Ziel auf dem Grün"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf.com – Alignment-stick chipping drill (Jon Hearn)",
+          "url": "https://golf.com/news/simple-drill-justin-rose-short-game-coach-fixed-chipping-woes/"
+        },
+        {
+          "title": "Golf Digest – Rick Smith: How to stop the chip flip",
+          "url": "https://www.golfdigest.com/story/ricksmith_gd0710"
+        },
+        {
+          "title": "Practical Golf – 4 Chipping Drills (and 3 Games)",
+          "url": "https://practical-golf.com/chipping-drills/"
+        }
+      ]
+    },
+    {
+      "id": "chip-two-tees",
+      "name": "Zwei-Tee-Drill",
+      "area": "shortGame",
+      "mode": "block",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Zwei Tees liegen flach auf der Ziellinie, eins hinter und eins vor dem Ball. Beim Chip fliegen Ball und vorderes Tee weg, das hintere bleibt liegen.",
+      "purpose": "Für einen sauberen Treffmoment: erst der Ball, dann der Boden. Der tiefste Punkt des Schwungs liegt vor dem Ball, und du spürst, wie der Schläger dort das Gras streift.",
+      "steps": [
+        "Zwei Tees flach auf die Ziellinie legen: eins eine Schlagflächenbreite hinter dem Ball, eins eine Schlagflächenbreite davor.",
+        "Ansprechen mit mehr Gewicht auf dem vorderen Fuß.",
+        "Chippen: Ball und vorderes Tee sollen wegfliegen, das hintere Tee bleibt unberührt.",
+        "Zähle die Chips, bei denen das klappt."
+      ],
+      "tips": [
+        "Der Schläger soll das Gras vor dem Ball streifen, nicht dahinter.",
+        "Mit kleinen Schwüngen beginnen und erst steigern, wenn es sicher klappt.",
+        "Variante: Einen Ballbeutel ca. 1 m vor den Ball legen und darüber chippen. Das zwingt dich, nach unten zu schlagen, statt den Ball hochzuheben."
+      ],
+      "equipment": [
+        "2 Tees"
+      ],
+      "levels": [
+        "Chips 5 m",
+        "Chips 10 m",
+        "Pitches 15–20 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 15
+      },
+      "sources": [
+        {
+          "title": "Golf.com – Two-tee low point drill (Nick Kumpis)",
+          "url": "https://golf.com/instruction/2-tees-low-point-drill-nick-kumpis/"
+        },
+        {
+          "title": "Golf.com – How a high-level collegiate golfer practices",
+          "url": "https://golf.com/instruction/elite-amateur-practice-savannah-barber/"
+        }
+      ]
+    },
+    {
+      "id": "chip-trail-foot",
+      "name": "Hinterer Fuß zurück",
+      "area": "shortGame",
+      "mode": "block",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 10,
+      "summary": "Chippen mit zurückgezogenem hinteren Fuß, der nur mit den Zehenspitzen den Boden berührt. So bleibt der Druck auf dem vorderen Fuß.",
+      "purpose": "Beim Chip soll der Druck auf dem vorderen Fuß liegen und während des ganzen Schlags dort bleiben. Dann triffst du erst den Ball und dann den Boden, und der Kontakt wird solide.",
+      "steps": [
+        "Normal zum Chip ansprechen.",
+        "Den hinteren Fuß einen halben Schritt zurückziehen und nur mit den Zehenspitzen aufsetzen. Der Druck liegt jetzt auf dem vorderen Fuß.",
+        "Chippen, ohne dass der hintere Fuß Gewicht übernimmt. Der Druck bleibt bis ins Finish vorne.",
+        "Zähle die Chips, die sauber getroffen sind und im Kreis der Stufe liegen bleiben."
+      ],
+      "tips": [
+        "Kleine, ruhige Schwünge, das Gleichgewicht ist anfangs ungewohnt.",
+        "Danach einige Chips mit normalem Stand und demselben Gefühl.",
+        "Passt gut vor den Zwei-Tee-Drill."
+      ],
+      "levels": [
+        "Chips 5 m, Kreis 2 m um das Ziel",
+        "Chips 10 m, Kreis 1,5 m um das Ziel",
+        "Chips 15 m, Kreis 1 m um das Ziel"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf Monthly – Dan Grieve's 5 best chipping drills",
+          "url": "https://www.golfmonthly.com/tips/dan-grieves-5-best-chipping-drills"
+        },
+        {
+          "title": "Golf.com – Shaft lean drill for better chipping contact",
+          "url": "https://golf.com/instruction/chipping-contact-shaft-lean-drill/"
+        }
+      ]
+    },
+    {
+      "id": "pitch-lob-obstacle",
+      "name": "Lob übers Hindernis",
+      "area": "shortGame",
+      "mode": "block",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Hohe, weiche Schläge über ein Hindernis, z. B. ein Handtuch oder deine Golftasche. Der Ball muss das Hindernis überfliegen und auf dem Grün liegen bleiben.",
+      "purpose": "Der Lob ist der Schlag, wenn du über ein Hindernis musst und der Ball schnell liegen bleiben soll, z. B. bei einer Fahne kurz hinter einem Bunker. Die Übung zeigt dir, ob dein Lob zuverlässig genug für den Platz ist.",
+      "steps": [
+        "Ziel und eine großzügige Landezone auf dem Grün wählen, Entfernung je nach Stufe.",
+        "Das Hindernis zwischen Ball und Landezone legen, etwa auf halbem Weg.",
+        "Aufstellen: Stand etwas breiter, Schlagfläche und Körper leicht geöffnet, Ball weiter vorne, Gewicht leicht auf dem vorderen Fuß.",
+        "Die Handgelenke früh anwinkeln, weiter ausholen als beim normalen Pitch und mit Körperdrehung bis in ein volles Finish schwingen.",
+        "Zähle die Bälle, die das Hindernis überfliegen und auf dem Grün liegen bleiben."
+      ],
+      "tips": [
+        "Nur aus einer guten oder leicht erhöhten Lage üben, nie von kahlem oder hartem Boden.",
+        "Niemand darf hinter oder neben dem Hindernis stehen.",
+        "Entschlossen durchschwingen und bis ins Finish beschleunigen, nicht abbremsen.",
+        "Auf dem Platz nur, wenn ein normaler Chip nicht reicht, z. B. bei wenig Grün hinter einem Bunker."
+      ],
+      "equipment": [
+        "Handtuch, Ausrichtungsstab oder Golftasche als Hindernis"
+      ],
+      "levels": [
+        "Handtuch oder Ausrichtungsstab am Boden, Ziel ca. 14 m",
+        "Liegende Golftasche, Ziel ca. 16 m",
+        "Stehende Golftasche, Ziel ca. 18 m, wenig Grün hinter dem Hindernis"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Foy Golf Academy – How to hit a flop shot",
+          "url": "https://foygolfacademy.com/how-to-hit-a-flop-shot/"
+        },
+        {
+          "title": "Golf Digest – The high lob shot",
+          "url": "https://www.golfdigest.com/story/want-put-the-high-lob-shot-in-your-bag--get-your-wrists-involved"
+        },
+        {
+          "title": "Golf Digest – Todd Anderson: Chip, Pitch, Lob",
+          "url": "https://www.golfdigest.com/story/todd-anderson-chip-pitch-lob"
+        }
+      ]
+    },
+    {
+      "id": "chip-three-clubs",
+      "name": "Ein Ziel, drei Schläger",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 15,
+      "summary": "Von derselben Stelle zum selben Ziel, aber jeder Ball mit einem anderen Schläger, z. B. Lob Wedge, Pitching Wedge und 8er-Eisen.",
+      "purpose": "Zeigt dir, wie unterschiedlich die Schläger fliegen und rollen. So findest du für jede Lage den Schläger, der am zuverlässigsten nah ans Ziel kommt. Das Gegenstück zu „Ein Schläger, viele Schläge“.",
+      "steps": [
+        "Eine Stelle neben dem Grün und ein Ziel wählen.",
+        "Drei Schläger mit unterschiedlichem Loft nehmen, z. B. Lob Wedge, Pitching Wedge und 8er-Eisen.",
+        "Mit jedem Schläger einen Ball zum selben Ziel spielen. Für jeden Schläger einen eigenen Landepunkt wählen.",
+        "Nach drei Bällen Stelle und Ziel wechseln, insgesamt vier Stellen (12 Bälle).",
+        "Zähle die Bälle, die im Kreis der Stufe liegen bleiben."
+      ],
+      "tips": [
+        "Der Schläger, der am nächsten liegt, gewinnt die Stelle. Notiere ihn, er ist deine erste Wahl für diese Lage.",
+        "Mit Partner als Spiel: ein Punkt für jeden Ball innerhalb von 3 m, wer mehr Punkte hat, gewinnt.",
+        "Flache Schläger früh landen und rollen lassen, den Lob Wedge weiter fliegen lassen."
+      ],
+      "levels": [
+        "Kreis 3 m um das Ziel, gute Lagen, 5–10 m",
+        "Kreis 2 m um das Ziel, gemischte Lagen, 5–15 m",
+        "Kreis 1 m um das Ziel, schwere Lagen, 5–20 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 12
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "MASSGOLF – Games for the range, putting green & short game area",
+          "url": "https://www.massgolf.org/news/20-practicegames/"
+        },
+        {
+          "title": "Practical Golf – 4 Chipping Drills (and 3 Games)",
+          "url": "https://practical-golf.com/chipping-drills/"
+        }
+      ]
+    },
+    {
+      "id": "pitch-over-bunker",
+      "name": "Pitch über den Bunker",
+      "area": "shortGame",
+      "mode": "variable",
+      "facilities": [
+        "shortGameArea",
+        "bunker"
+      ],
+      "minutes": 15,
+      "summary": "Pitches über einen Grünbunker zur Fahne. Startpunkt oder Fahne wechseln bei jedem Ball, mal mit viel, mal mit wenig Grün hinter dem Bunker.",
+      "purpose": "Über einen Bunker zu spielen macht Druck, weil ein zu kurzer Ball im Sand landet. Du lernst, Schläger und Schwunglänge passend zu wählen und lieber etwas zu lang als zu kurz zu spielen.",
+      "steps": [
+        "Stellen vor einem Grünbunker wählen, von denen der Ball über den Bunker fliegen muss.",
+        "Bei jedem Ball Stelle oder Fahne wechseln: mal viel Grün hinter dem Bunker, mal wenig.",
+        "Schläger passend wählen: Bei viel Grün reichen Pitching oder Gap Wedge mit Pitch-Schwung, bei wenig Grün Sand oder Lob Wedge.",
+        "Probeschwung, dann pitchen. Der Schläger trifft hörbar den Boden, er streift nicht nur das Gras.",
+        "Punkte nach Abstand zur Fahne eintragen. Ein Ball im Bunker gibt 0 Punkte."
+      ],
+      "tips": [
+        "Lieber zu lang als zu kurz: Hinter der Fahne liegst du besser als im Sand.",
+        "Die Länge über die Größe des Rückschwungs steuern, nicht über Kraft.",
+        "Mit Pitching oder Gap Wedge rollt der Ball weiter. Das geht nur, wenn genug Grün vor der Fahne liegt."
+      ],
+      "levels": [
+        "10–15 m, viel Grün hinter dem Bunker",
+        "10–20 m, gemischte Fahnen",
+        "15–25 m, Fahne kurz hinter dem Bunker"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Eingelocht oder unter 1 m",
+            "points": 3
+          },
+          {
+            "label": "1–2 m",
+            "points": 2
+          },
+          {
+            "label": "2–4 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 4 m oder im Bunker",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf.com – Pitching over a bunker (Kellie Stenzel)",
+          "url": "https://golf.com/instruction/short-game/10-ways-success-pitch-shot-bunker-kellie-stenzel/"
+        },
+        {
+          "title": "Golf Digest – Club selection when chipping over a bunker",
+          "url": "https://www.golfdigest.com/story/greenside-bunker-club-selection-short-game-tips"
+        }
+      ]
+    },
+    {
+      "id": "chip-updown-streak",
+      "name": "Up-&-Down-Serie",
+      "area": "shortGame",
+      "mode": "competition",
+      "facilities": [
+        "shortGameArea"
+      ],
+      "minutes": 20,
+      "summary": "Fünf Stellen rund ums Grün, von jeder chippen und einlochen. Geschafft ist das Spiel erst, wenn alle fünf Up & Downs hintereinander gelingen.",
+      "purpose": "Up & Down unter echtem Druck: Ein Fehler setzt die Serie zurück. Deshalb fühlt sich der letzte Ball an wie ein wichtiger Schlag auf der Runde.",
+      "steps": [
+        "Fünf unterschiedliche Stellen rund ums Grün wählen: verschiedene Lagen, Distanzen und Hänge.",
+        "Von jeder Stelle ein Ball: chippen oder pitchen, dann einlochen. Up & Down heißt: höchstens zwei Schläge.",
+        "Bei einem Fehler wieder an Stelle 1 beginnen.",
+        "Trage die längste Serie ein (höchstens 5)."
+      ],
+      "tips": [
+        "Volle Routine vor jedem Chip und jedem Putt.",
+        "Leichtere Variante für den Einstieg: an jeder Stelle drei Bälle, zwei Up & Downs reichen zum Weitergehen.",
+        "Ideal am Ende einer Einheit und in der Turnierwoche."
+      ],
+      "levels": [
+        "Gute Lagen, 5–10 m",
+        "Gemischte Lagen, 5–20 m",
+        "Schwere Lagen mit Hang und Rough, 5–25 m"
+      ],
+      "scoring": {
+        "kind": "streak",
+        "attempts": 5
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "MASSGOLF – Games for the range, putting green & short game area",
+          "url": "https://www.massgolf.org/news/20-practicegames/"
+        },
+        {
+          "title": "PGA of America – Three practice games for pressure",
+          "url": "https://www.pga.com/story/three-great-practice-games-to-help-you-play-better-golf-under-pressure"
+        }
+      ]
+    },
+    {
+      "id": "drive-whoosh",
+      "name": "Whoosh-Drill",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Speed-Training mit dem umgedrehten Driver: Schwinge so schnell du kannst und hör hin, wo das lauteste Whoosh entsteht.",
+      "purpose": "Mehr Schlägerkopfgeschwindigkeit und ein besseres Timing. Das Whoosh soll im Treffbereich am lautesten sein. Ist es leise oder zu früh, verschenkst du Tempo schon oben im Schwung.",
+      "steps": [
+        "Erst aufwärmen. Dann den Driver umdrehen und direkt unter dem Schlägerkopf greifen.",
+        "Satz 1: 5 Schwünge nur mit der hinteren Hand. Griff locker, Handgelenk weich, wie mit einer Peitsche.",
+        "Satz 2: 5 Schwünge mit beiden Händen, so schnell du kannst. Das lauteste Whoosh soll auf Höhe des Balls oder kurz danach kommen.",
+        "Zwischen den Sätzen etwa eine Minute Pause. Danach 5 Bälle mit dem Driver und demselben Gefühl.",
+        "Zähle die 10 Schwünge aus Satz 1 und 2, bei denen das Whoosh an der richtigen Stelle war."
+      ],
+      "tips": [
+        "Nur nach dem Aufwärmen und mit genug Abstand zu anderen Spielern. Bei Schmerzen sofort aufhören.",
+        "Speed-Training höchstens dreimal pro Woche, mit einem Ruhetag dazwischen.",
+        "Spannung in Händen und Armen macht langsam: lieber locker und schnell als fest und hart.",
+        "Statt des umgedrehten Drivers geht auch ein Ausrichtungsstab."
+      ],
+      "equipment": [
+        "Ausrichtungsstab (optional)"
+      ],
+      "levels": [
+        "Dreiviertel-Schwünge, Whoosh zwischen den Füßen",
+        "Volle Schwünge, Whoosh auf Höhe des Balls",
+        "Volle Schwünge mit vollem Tempo, Whoosh kurz nach dem Ball"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf Monthly – How To Increase Your Swing Speed Without Losing Control",
+          "url": "https://www.golfmonthly.com/tips/how-to-increase-your-swing-speed-off-the-tee-without-losing-control"
+        },
+        {
+          "title": "HackMotion – 6 Best Speed Drills for Golf to Increase Swing Speed",
+          "url": "https://hackmotion.com/drills-to-increase-swing-speed/"
+        },
+        {
+          "title": "SuperSpeed Golf – Protocol FAQ",
+          "url": "https://superspeedgolf.com/pages/protocol-faq"
+        }
+      ]
+    },
+    {
+      "id": "drive-tempo",
+      "name": "Tempo 3:1",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Abschläge im Takt des Tempo-Trainers: Der Rückschwung dauert dreimal so lang wie der Abschwung.",
+      "purpose": "Ein gleichmäßiger Rhythmus macht deine Abschläge konstanter. Nach John Novosel (Tour Tempo) schwingen die besten Spieler mit einem Verhältnis von etwa 3 zu 1 zwischen Rückschwung und Abschwung.",
+      "steps": [
+        "Den Tempo-Trainer der App starten (hier bei der Übung oder unter Schwung) und einen Takt wählen, der zu deinem Tempo passt, z. B. 21/7.",
+        "Erst 5 Probeschwünge ohne Ball: beim ersten Ton ausholen, beim zweiten Ton den Abschwung starten, beim dritten Ton treffen.",
+        "Dann 10 Bälle im Takt der Töne.",
+        "Zähle die Schwünge, bei denen der Treffmoment genau auf den dritten Ton fällt."
+      ],
+      "tips": [
+        "Auf die Töne reagieren, nicht vorausahnen.",
+        "Den Rückschwung nicht künstlich langsam machen. Ein aktiver Rückschwung hilft, im Verhältnis 3:1 zu bleiben.",
+        "Schnelle und langsame Takte haben dasselbe Verhältnis. Wichtig ist das Verhältnis, nicht wie schnell du schwingst."
+      ],
+      "equipment": [
+        "Smartphone, am besten mit Ohrhörer"
+      ],
+      "levels": [
+        "Holz oder Hybrid, Dreiviertel-Schwünge",
+        "Driver, volle Schwünge",
+        "Driver, volle Schwünge, der Ball muss zusätzlich im Fairway (30 m breit) landen"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Tour Tempo – Tour Tempo App",
+          "url": "https://tourtempo.com/pages/tour-tempo-app"
+        },
+        {
+          "title": "Golf Digest – The secret to silky smooth tempo? Experts reveal 3 keys",
+          "url": "https://www.golfdigest.com/story/good-tempo-golf-swing-experts-reveal-tips"
+        },
+        {
+          "title": "MyGolfSpy – Tour Tempo Review",
+          "url": "https://mygolfspy.com/news-opinion/tour-tempo-review/"
+        }
+      ]
+    },
+    {
+      "id": "drive-hit-up",
+      "name": "Nach oben treffen",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ein zweites Tee steckt eine Schlägerkopflänge vor dem Ball. Der Driver soll nach dem Treffen darüber hinweg nach oben schwingen.",
+      "purpose": "Korrektur-Übung gegen Abschläge, bei denen du von oben auf den Ball triffst. Laut Trackman brauchst du mit dem Driver einen positiven Anstellwinkel (Attack Angle), also einen Treffer in der Aufwärtsbewegung, um die maximale Länge zu erreichen.",
+      "steps": [
+        "Ball hoch aufteen, sodass etwa die Hälfte des Balls über die Oberkante des Drivers ragt. Ballposition innen an der vorderen Ferse.",
+        "Ein zweites Tee eine Schlägerkopflänge vor dem Ball auf die Ziellinie stecken, nur leicht in den Boden, sodass es weit herausragt.",
+        "Erst Probeschwünge ohne Ball: Der Schläger soll nach dem Treffpunkt über das vordere Tee hinweggehen.",
+        "Dann 10 Bälle mit demselben Gefühl. Zähle die Schläge, bei denen das vordere Tee stehen bleibt und der Ball sauber getroffen ist."
+      ],
+      "tips": [
+        "Nur, wenn dein Trainer das Treffen nach oben als Thema sieht.",
+        "Beim Ansprechen die vordere Hüfte leicht Richtung Ziel schieben und die Schulterlinie leicht vom Ziel weg neigen.",
+        "Triffst du das vordere Tee ständig, zuerst Ballposition und Neigung beim Ansprechen prüfen.",
+        "Von vorne filmen und Ansprechposition und Treffmoment mit dem Trainer anschauen."
+      ],
+      "equipment": [
+        "2 Tees",
+        "iPhone mit Stativ (optional)"
+      ],
+      "levels": [
+        "Halbe Schwünge",
+        "Dreiviertel-Schwünge",
+        "Volle Schwünge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf.com – Want to hit longer drives? Use this drill to increase attack angle",
+          "url": "https://golf.com/instruction/driving/hit-longer-drives-headcover-drill-shaving-strokes/"
+        },
+        {
+          "title": "Trackman – What is Attack Angle?",
+          "url": "https://www.trackman.com/blog/attack-angle"
+        },
+        {
+          "title": "Golf Monthly – How To Increase Your Swing Speed Without Losing Control",
+          "url": "https://www.golfmonthly.com/tips/how-to-increase-your-swing-speed-off-the-tee-without-losing-control"
+        }
+      ]
+    },
+    {
+      "id": "drive-hold-finish",
+      "name": "Finish halten",
+      "area": "driving",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Nach jedem Abschlag das Finish ruhig halten, ohne zu wackeln. Gelingt das auch mit vollem Tempo?",
+      "purpose": "Ein Finish, das du sicher halten kannst, zeigt einen kontrollierten Schwung. Gute Spieler holen ihr Tempo aus der richtigen Reihenfolge der Bewegung und aus dem Gleichgewicht, nicht aus den Armen.",
+      "steps": [
+        "Driver, festes Ziel, Tempo nach Stufe.",
+        "Nach dem Treffen ins Finish drehen und halten: Gewicht fast ganz auf dem vorderen Fuß, hinterer Fuß nur auf der Spitze, Brust zum Ziel, Schläger über der vorderen Schulter.",
+        "Wackelst du oder musst du einen Schritt machen, zählt der Schlag nicht.",
+        "10 Schläge, zähle die mit gehaltenem Finish."
+      ],
+      "tips": [
+        "Erst wenn es mit 70 % Tempo sicher klappt, schneller schwingen.",
+        "Passt gut direkt nach dem Whoosh-Drill: schnell schwingen und trotzdem sicher stehen.",
+        "Klappt es mit dem Driver noch nicht, erst mit Holz oder Hybrid üben."
+      ],
+      "levels": [
+        "70 % Tempo, Finish 3 Sekunden halten",
+        "Volles Tempo, Finish 3 Sekunden halten",
+        "Volles Tempo, Finish 5 Sekunden halten und Ball im Fairway (30 m breit)"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Balanced Finish Drill for Better Tempo and Power",
+          "url": "https://foygolfacademy.com/balanced-finish-drill-for-better-tempo-and-power/"
+        }
+      ]
+    },
+    {
+      "id": "drive-fairway-switch",
+      "name": "Fairway-Wechsel",
+      "area": "driving",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Jeder Abschlag geht auf ein anderes Fairway, mit neuer Ziellinie und neuer Gefahr. Wie auf dem Platz zählt nur der erste Ball.",
+      "purpose": "Auf der Range kannst du nach jedem Schlag nachjustieren, auf dem Platz zählt nur der erste Schwung. Wechselnde Ziele bereiten dich genau darauf vor.",
+      "steps": [
+        "Vor dem Start drei bis vier Fairways auf der Range festlegen, z. B. zwischen Fahnen, Schildern oder Bäumen.",
+        "Vor jedem Ball ein anderes Fairway wählen und ansagen, auf welcher Seite die Gefahr liegt, z. B. Wasser links.",
+        "Hinter dem Ball die Ziellinie so wählen, dass ein Fehlschlag weg von der Gefahr geht. Dann volle Routine, ein Ball.",
+        "Punkt, wenn der Ball im angesagten Fairway landet."
+      ],
+      "tips": [
+        "Nie zweimal hintereinander dasselbe Fairway.",
+        "Ab und zu Holz oder Hybrid statt Driver, so wie auf dem Platz.",
+        "Vor Turnieren die Abschläge des Turnierplatzes nachspielen."
+      ],
+      "levels": [
+        "Fairways 40 m breit",
+        "Fairways 30 m breit",
+        "Fairways 20 m breit"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "MyGolfSpy – Why Can I Hit Driver On The Range But Not On The Course?",
+          "url": "https://mygolfspy.com/news-opinion/why-can-i-hit-driver-on-the-range-but-not-on-the-course/"
+        },
+        {
+          "title": "MASSGOLF – Games For The Driving Range, Putting Green & Short Game Area",
+          "url": "https://www.massgolf.org/news/20-practicegames/"
+        }
+      ]
+    },
+    {
+      "id": "drive-club-choice",
+      "name": "Driver oder Holz?",
+      "area": "driving",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Für jeden Ball ein anderes Loch vorstellen und den Abschlagschläger wählen: Driver, Holz oder Hybrid. Dann in die passende Landezone spielen.",
+      "purpose": "Schlägerwahl am Abschlag. In den Daten von Shot Scope treffen Golfer mit Driver und Holz 3 etwa gleich oft das Fairway, der Driver fliegt aber deutlich weiter. Der Driver ist deshalb meist die erste Wahl, Holz oder Hybrid brauchst du für Löcher mit einer Gefahr in Driver-Länge.",
+      "steps": [
+        "Drei Lochtypen festlegen: offenes Loch, Gefahr in Driver-Länge (z. B. Bach oder Querbunker) und Knick im Fairway.",
+        "Vor jedem Ball einen anderen Lochtyp wählen und den Schläger festlegen: Driver, wenn nichts dagegen spricht, sonst Holz oder Hybrid.",
+        "Die Landezone festlegen, bei Gefahr oder Knick davor. Volle Routine, ein Ball.",
+        "Punkte nach Lage eintragen."
+      ],
+      "tips": [
+        "Kenne deine Längen: Wie weit fliegen Driver, Holz und Hybrid wirklich? Schreib die Werte auf.",
+        "Ein enges Fairway allein ist kein guter Grund für das Holz, denn damit triffst du es kaum öfter.",
+        "Vor Turnieren für jedes Loch des Turnierplatzes den Abschlagschläger planen."
+      ],
+      "equipment": [
+        "Entfernungsmesser (falls vorhanden)"
+      ],
+      "levels": [
+        "Fairway 40 m breit",
+        "Fairway 30 m breit",
+        "Fairway 25 m breit, Landezone vor der Gefahr nur 20 m lang"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Fairway, vor der Gefahr",
+            "points": 2
+          },
+          {
+            "label": "Rough, spielbar",
+            "points": 1
+          },
+          {
+            "label": "Gefahr, Aus oder zu weit",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Shot Scope – Driver or 3 Wood off the tee, what should you use and why?",
+          "url": "https://shotscope.com/blog/practice-green/stats-and-data/driver-versus-3-wood/"
+        },
+        {
+          "title": "MASSGOLF – Games For The Driving Range, Putting Green & Short Game Area",
+          "url": "https://www.massgolf.org/news/20-practicegames/"
+        }
+      ]
+    },
+    {
+      "id": "drive-oob-game",
+      "name": "Aus-Spiel",
+      "area": "driving",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Ein Fairway mit Aus auf einer Seite: Das Fairway bringt die meisten Punkte, die sichere Seite noch einen, das Aus keinen. 15 Abschläge mit voller Routine.",
+      "purpose": "Strategie unter Druck: Ein Ball im Aus ist viel teurer als einer auf der sicheren Seite. Du lernst, von der Gefahr weg zu zielen und die passende Flugkurve zu wählen.",
+      "steps": [
+        "Ein Fairway auf der Range festlegen und eine Seite zum Aus erklären, z. B. rechts. Die andere Seite ist die sichere Seite.",
+        "15 Abschläge mit voller Routine, je nach Stufe nur mit deiner Standardkurve oder je 5 gerade, als Draw und als Fade.",
+        "Vor jedem Ball die Ziellinie so wählen, dass ein Fehlschlag auf der sicheren Seite landet.",
+        "Punkte nach Lage eintragen."
+      ],
+      "tips": [
+        "Deine Standardkurve ist die Flugkurve, die dir am sichersten gelingt, z. B. ein leichter Draw. Ziele so, dass sie den Ball vom Aus wegträgt.",
+        "Die Aus-Seite bei jedem Durchgang wechseln.",
+        "Mit Trainingspartner als Wettkampf spielen: Wer hat nach 15 Bällen mehr Punkte?"
+      ],
+      "levels": [
+        "Fairway 30 m breit, alle Bälle mit deiner Standardkurve",
+        "Fairway 25 m breit, je 5 gerade, als Draw und als Fade",
+        "Fairway 18 m breit, je 5 gerade, als Draw und als Fade"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 15,
+        "zones": [
+          {
+            "label": "Fairway",
+            "points": 2
+          },
+          {
+            "label": "Sichere Seite",
+            "points": 1
+          },
+          {
+            "label": "Aus",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Monthly – 3 Great Driving Range Games That Will Lower Your Scores",
+          "url": "https://www.golfmonthly.com/tips/driving-range-games-168172"
+        }
+      ]
+    },
+    {
+      "id": "putt-mirror",
+      "name": "Spiegel-Drill",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Mit einem Putting-Spiegel findest du die Augenposition, bei der die Linie für dich genau aufs Loch zeigt. Diese Position wiederholst du bei jedem Putt.",
+      "purpose": "Schon kleine Änderungen der Kopfposition verändern, wohin du zu zielen glaubst. Die Augen müssen nicht genau über dem Ball sein: Wichtig ist eine Position, in der du gerade siehst, und dass du sie jedes Mal wieder findest.",
+      "steps": [
+        "Gerader Putt, Distanz nach Stufe. Den Spiegel so hinlegen, dass seine Mittellinie genau auf die Lochmitte zeigt, und den Ball auf die Markierung legen.",
+        "Ansprechen und die Kopfposition langsam verändern, mit mehr oder weniger Abstand zum Ball und mehr oder weniger gebeugtem Nacken, bis die Linie für dich genau aufs Loch zeigt.",
+        "Im Spiegel merken, wo deine Augen dann sind. Vor jedem Putt diese Position einnehmen und im Spiegel prüfen.",
+        "10 Putts. Punkt, wenn die Augenposition stimmt und der Ball fällt."
+      ],
+      "tips": [
+        "Am Anfang jeder Putt-Einheit ein paar Putts mit dem Spiegel.",
+        "Ohne Spiegel geht es auch mit einem Lineal unter dem Ball, das genau auf die Lochmitte zeigt.",
+        "Die gefundene Position mit deinem Trainer besprechen."
+      ],
+      "equipment": [
+        "Putting-Spiegel oder Lineal"
+      ],
+      "levels": [
+        "1 m",
+        "2 m",
+        "3 m, vor jedem Putt einen Schritt zurück und mit voller Routine neu ansprechen"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf.com – Eye alignment is the key to holing more putts",
+          "url": "https://golf.com/instruction/eye-alignment-golftec/"
+        },
+        {
+          "title": "Golf.com – How aligning your eyes properly is the hidden secret to making more putts",
+          "url": "https://golf.com/instruction/putting-mirror-short-game-gains-video/"
+        },
+        {
+          "title": "Today's Golfer – Phil Kenyon: Anyone can become a better putter",
+          "url": "https://www.todays-golfer.com/features/instruction-features/january/june/phil-kenyon-anyone-can-become-a-better-putter/"
+        }
+      ]
+    },
+    {
+      "id": "putt-metronome",
+      "name": "Metronom-Putts",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Putts im Takt eines Metronoms: Der Rhythmus bleibt bei jeder Länge gleich, nur die Länge des Schwungs ändert sich.",
+      "purpose": "Gleichmäßiges Tempo ist die Grundlage für die Längenkontrolle. Untersuchungen zeigen: Die meisten sehr guten Putter putten im Takt von 72 bis 80 Schlägen pro Minute und ändern für die Länge nur die Größe des Schwungs.",
+      "steps": [
+        "Metronom-App auf etwa 75 Schläge pro Minute stellen und anpassen, bis sich der Takt ruhig und natürlich anfühlt.",
+        "Erst ohne Ball: beim ersten Klick ausholen, beim zweiten treffen, beim dritten und vierten das Finish halten.",
+        "Dann Putts im Wechsel aus den Distanzen der Stufe. Der Takt bleibt gleich, für längere Putts wird nur der Schwung länger.",
+        "Punkt, wenn der Treffmoment auf dem Klick liegt und der Ball höchstens eine Putterlänge vom Loch entfernt liegen bleibt."
+      ],
+      "tips": [
+        "Bei langen Putts nicht schneller werden, sondern länger ausholen.",
+        "Schon drei bis fünf Minuten mit dem Metronom helfen, einen verkrampften Schlag zu lösen.",
+        "Leise stellen oder einen Ohrhörer nutzen, damit du andere auf dem Grün nicht störst."
+      ],
+      "equipment": [
+        "Smartphone mit Metronom-App",
+        "Ohrhörer (optional)"
+      ],
+      "levels": [
+        "2, 4 und 6 m",
+        "3, 6 und 9 m",
+        "3 bis 12 m in zufälliger Reihenfolge"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Golf Digest – Coming Up Short",
+          "url": "https://www.golfdigest.com/story/give-every-putt-a-chance-to-go-in"
+        },
+        {
+          "title": "GOLFTEC – Putt to the Beat to Control Your Putting Speed",
+          "url": "https://scramble.golftec.com/blog/2014/05/putting-drills-putt-beat-control-putting-speed/"
+        },
+        {
+          "title": "Golf Digest – A classic sign of tension in your putting stroke and how to fix it",
+          "url": "https://www.golfdigest.com/story/tension-putting-stroke-fix-distance-control"
+        }
+      ]
+    },
+    {
+      "id": "putt-strike-gate",
+      "name": "Sweetspot-Tor",
+      "area": "putting",
+      "mode": "block",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 10,
+      "summary": "Je ein Tee steckt knapp neben Spitze und Ferse des Putters. Der Putter muss durch dieses Tor schwingen, ohne ein Tee zu berühren.",
+      "purpose": "Treffpunkt in der Mitte der Schlagfläche. Wer die Mitte trifft, bringt den Ball besser ins Rollen.",
+      "steps": [
+        "Gerader Putt, Distanz nach Stufe.",
+        "Putter hinter den Ball stellen und je ein Tee knapp außerhalb von Spitze und Ferse in den Boden stecken.",
+        "20 Putts. Der Putter muss durch das Tor schwingen, ohne ein Tee zu berühren.",
+        "Zähle die Putts ohne Berührung."
+      ],
+      "tips": [
+        "Nicht mit dem Start-Tor verwechseln: Hier geht der Putter durchs Tor, nicht der Ball.",
+        "Beide Tore lassen sich kombinieren: Sweetspot-Tor am Putter und Start-Tor vor dem Ball.",
+        "Ruhig und gleichmäßig schwingen, dann fällt es leichter."
+      ],
+      "equipment": [
+        "2 Tees"
+      ],
+      "levels": [
+        "Je 1,5 cm Platz an Spitze und Ferse, 2 m",
+        "Je 1 cm Platz an Spitze und Ferse, 3 m",
+        "Je 0,5 cm Platz an Spitze und Ferse, 4 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 20
+      },
+      "sources": [
+        {
+          "title": "Golf Monthly – 5 Putting Drills Guaranteed To Markedly Lower Your Scores",
+          "url": "https://www.golfmonthly.com/tips/putting-drills-166691"
+        },
+        {
+          "title": "Golf Monthly – Putting Drills Using Tees",
+          "url": "https://www.golfmonthly.com/tips/putting-drills-using-tees-utilise-this-golf-bag-staple"
+        }
+      ]
+    },
+    {
+      "id": "putt-eyes-closed",
+      "name": "Augen-zu-Putts",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Den Putt mit offenen Augen lesen und ansprechen, dann mit geschlossenen Augen putten. Bevor du hinschaust, sagst du an, wo der Ball liegt.",
+      "purpose": "Längengefühl: Ohne Blick auf Ball und Putter spürst du den Schlag genauer. Deine Ansage zeigt, wie gut du die Länge einschätzt, und schärft dieses Gefühl.",
+      "steps": [
+        "Fünf Distanzen nach Stufe wählen. Bei jeder Distanz den ersten Ball mit offenen Augen putten.",
+        "Dann zwei Bälle: mit offenen Augen lesen und ansprechen, kurz vor dem Rückschwung die Augen schließen und putten.",
+        "Augen geschlossen lassen und ansagen, wo der Ball liegen bleibt. Erst dann hinsehen.",
+        "Punkt für jeden der 10 Putts mit geschlossenen Augen, bei dem deine Ansage stimmt."
+      ],
+      "tips": [
+        "Mit Partner: Sag auch „jetzt“, wenn du glaubst, dass der Ball liegen bleibt. Das schult dein Gefühl dafür, wie lange ein Putt rollt.",
+        "Gut vor einer Runde, um dein Längengefühl einzustellen.",
+        "Nur im Training, auf der Runde puttest du mit offenen Augen."
+      ],
+      "equipment": [
+        "Tees als Markierung"
+      ],
+      "levels": [
+        "Distanzen 3–9 m, Ansage: vor oder hinter dem Loch",
+        "Distanzen 3–15 m, Ansage: zu kurz, passend (bis eine Putterlänge vom Loch) oder zu lang",
+        "Distanzen 3–15 m, Ansage wie Stufe 2 und zusätzlich links oder rechts vom Loch"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf.com – Perfect your lag putting and eliminate 3-putts by closing your eyes",
+          "url": "https://golf.com/instruction/eliminate-three-putts-drill-xander-schauffeles-putting-coach/"
+        },
+        {
+          "title": "Golf.com – This calibration trick can help you get better distance control while putting",
+          "url": "https://golf.com/instruction/putting/putting-distance-control-eyes-closed-jon-tattersall/"
+        }
+      ]
+    },
+    {
+      "id": "putt-break-read",
+      "name": "Break lesen",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Vor jedem Putt markierst du deine Linie: eine Münze am Scheitelpunkt der Kurve, ein Tee als Zielpunkt neben dem Loch. Der Putt zeigt dann, ob du richtig gelesen hast.",
+      "purpose": "Grüns lesen. Viele Amateure lesen zu wenig Break, weil sie den ersten Teil des Putts für gerade halten. Mit sichtbarer Linie siehst du sofort, ob du zu wenig oder zu viel Break gespielt hast.",
+      "steps": [
+        "Für jeden Putt eine neue Stelle mit Break wählen und den Putt von allen Seiten lesen.",
+        "Eine Münze an den Scheitelpunkt legen, den höchsten Punkt der Kurve, oft nach etwa zwei Dritteln des Wegs. Ein Tee als Zielpunkt neben das Loch stecken.",
+        "Auf das Tee zielen und putten. Der Zielpunkt liegt immer weiter oben als der Scheitelpunkt, weil der Ball sofort zu brechen beginnt.",
+        "Nach dem Putt prüfen: Rollte der Ball über die Münze? Lief er unterhalb des Lochs vorbei, hast du zu wenig Break gelesen.",
+        "Punkt, wenn der Ball fällt oder oberhalb des Lochs höchstens eine Putterlänge entfernt liegen bleibt."
+      ],
+      "tips": [
+        "Mit zwei Münzen als Zwischenpunkte machst du die ganze Kurve sichtbar.",
+        "Später ohne Markierungen: die Kurve nur noch vorstellen, so wie auf der Runde.",
+        "Vor Turnieren auf dem Übungsgrün des Turnierplatzes üben."
+      ],
+      "equipment": [
+        "1 Tee",
+        "1–2 Münzen"
+      ],
+      "levels": [
+        "2–3 m, leichter Break",
+        "3–5 m, deutlicher Break",
+        "5–8 m, starker Break, auch bergab"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Monthly – Putting Drills Using Tees",
+          "url": "https://www.golfmonthly.com/tips/putting-drills-using-tees-utilise-this-golf-bag-staple"
+        },
+        {
+          "title": "Golf Monthly – How To Read Greens When Putting: Expert Green Reading Drills",
+          "url": "https://www.golfmonthly.com/tips/i-get-asked-how-to-read-greens-all-the-time-heres-a-simple-drill-to-help"
+        }
+      ]
+    },
+    {
+      "id": "putt-three-speeds",
+      "name": "Drei Geschwindigkeiten",
+      "area": "putting",
+      "mode": "variable",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 15,
+      "summary": "Von derselben Stelle drei Putts mit drei Geschwindigkeiten einlochen: gerade so, mittel und fest. Jede Geschwindigkeit braucht eine andere Linie.",
+      "purpose": "Du lernst, wie fest du kurze Putts spielen musst. Tempo und Linie gehören zusammen: Ein langsamer Ball nimmt mehr Break an, ein fester weniger.",
+      "steps": [
+        "Eine Stelle mit Break wählen, Distanz nach Stufe.",
+        "Putt 1: so langsam, dass der Ball gerade noch ins Loch fällt. Putt 2: mittel, der Ball würde knapp hinter dem Loch liegen bleiben. Putt 3: fest, der Ball trifft die Rückseite des Lochs.",
+        "Vor jedem Putt die Linie neu wählen: je langsamer, desto mehr Break.",
+        "Drei Stellen, 9 Putts. Zähle die eingelochten Putts."
+      ],
+      "tips": [
+        "Merke dir, mit welcher Geschwindigkeit du am sichersten einlochst. Die nimmst du auf der Runde.",
+        "Erst mit leichtem Break üben, dann mit stärkerem. Je mehr Break, desto weiter liegen die drei Linien auseinander."
+      ],
+      "levels": [
+        "1 m, leichter Break",
+        "1,5 m, deutlicher Break",
+        "2 m, deutlicher Break, auch bergab"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 9
+      },
+      "sources": [
+        {
+          "title": "Golf Monthly – The Ultimate Putting Improvement Guide (20 Expert Coaches)",
+          "url": "https://www.golfmonthly.com/tips/ultimate-putting-improvement-guide"
+        }
+      ]
+    },
+    {
+      "id": "putt-slope-challenge",
+      "name": "Hang-Challenge",
+      "area": "putting",
+      "mode": "competition",
+      "facilities": [
+        "puttingGreen"
+      ],
+      "minutes": 20,
+      "summary": "20 Putts von vier Stationen am Hang: gerade bergauf, gerade bergab, bergauf mit Break und bergab mit Break. Punkte nach Abstand zum Loch.",
+      "purpose": "Längenkontrolle am Hang. Putts bergauf und bergab können auf derselben Linie starten und trotzdem weit auseinander liegen bleiben, weil der Hang Tempo und Break verändert.",
+      "steps": [
+        "Vier Stationen in der Distanz der Stufe wählen: gerade bergauf, gerade bergab, bergauf mit Break, bergab mit Break.",
+        "Von jeder Station 5 Putts, jeder mit voller Routine.",
+        "Bergauf: längerer Schwung, gleicher Rhythmus. Bergab: kürzerer Schwung, gleicher Rhythmus. Bergab bricht der Ball stärker, wähle dort eine höhere Linie.",
+        "Punkte für jeden Putt nach Lage eintragen."
+      ],
+      "tips": [
+        "Vor jedem Putt ein bis zwei Probeschwünge mit Blick zum Loch.",
+        "Die Station mit den wenigsten Punkten in den nächsten Einheiten gezielt üben.",
+        "Vor Turnieren auf dem Übungsgrün des Turnierplatzes spielen."
+      ],
+      "equipment": [
+        "4 Tees als Markierung"
+      ],
+      "levels": [
+        "Distanzen 3–5 m",
+        "Distanzen 5–8 m",
+        "Distanzen 8–12 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 20,
+        "zones": [
+          {
+            "label": "Eingelocht",
+            "points": 3
+          },
+          {
+            "label": "Bis eine Putterlänge",
+            "points": 2
+          },
+          {
+            "label": "Bis zwei Putterlängen",
+            "points": 1
+          },
+          {
+            "label": "Weiter",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Foy Golf Academy – How to Putt Uphill and Downhill",
+          "url": "https://foygolfacademy.com/how-to-putt-uphill-and-downhill-control-speed-break-and-three-putts/"
+        }
+      ]
+    },
+    {
+      "id": "wedge-flighted",
+      "name": "Flacher Wedge",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block für den flachen Wedge: Ball etwas weiter hinten, Hände vor dem Ball, kürzerer Schwung und ein tiefes Finish.",
+      "purpose": "Tourspieler spielen ihre Wedges oft flach, weil Carry und Spin so berechenbarer werden. Ein flacher Ball wird weniger vom Wind versetzt und lässt sich auf schnellen Grüns besser dosieren.",
+      "steps": [
+        "Ball etwas hinter der Mitte des Stands, Hände ein paar Zentimeter vor dem Ball, 60–70 % des Gewichts auf dem vorderen Fuß.",
+        "Höchstens bis zum Dreiviertel-Schwung ausholen und mit etwa 80 % Tempo schwingen. Mehr Tempo schickt den Ball höher.",
+        "Das Finish kurz halten: Die Hände enden etwa auf Brusthöhe, die Arme bleiben unter Schulterhöhe.",
+        "Erst 3 normale Wedges zum Vergleich, dann 10 flache Bälle. Punkt, wenn der Ball sichtbar flacher fliegt und im Radius um das Ziel landet."
+      ],
+      "tips": [
+        "Zur Kontrolle ein Handtuch ein paar Zentimeter hinter den Ball legen. Berührt der Schläger das Handtuch nicht, triffst du zuerst den Ball.",
+        "Eine Baumreihe oder ein Netz als Höhenmarke nehmen, um die Flughöhe zu vergleichen.",
+        "Die Länge über die Ausholweite steuern, nicht über mehr oder weniger Tempo.",
+        "Von der Seite filmen: Sind die Hände im Treffmoment vor dem Ball?"
+      ],
+      "equipment": [
+        "Handtuch"
+      ],
+      "levels": [
+        "Ziel 50 m, Radius 10 m",
+        "Ziel 65 m, Radius 7 m",
+        "Ziel wechselt zwischen 50 und 80 m, Radius 5 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf Digest – How to hit a flighted wedge (Chris Gotterup)",
+          "url": "https://www.golfdigest.com/how-to/2-minute-clinic/how-to-hit-low-flighted-wedge-shot-chris-gotterup"
+        },
+        {
+          "title": "MyGolfSpy – How to flight your wedges low for maximum control",
+          "url": "https://mygolfspy.com/news-opinion/instruction/how-to-flight-your-wedges-low-for-maximum-control/"
+        },
+        {
+          "title": "Golf Digest – The north-south problem inside 100 yards",
+          "url": "https://www.golfdigest.com/story/golf-digest-game-plan-wedge-strategy-inside-100-yards"
+        }
+      ]
+    },
+    {
+      "id": "wedge-start-gate",
+      "name": "Richtungs-Tor",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block für die Startrichtung: Zwei Stäbe bilden etwa 3 m vor dem Ball ein Tor auf der Ziellinie. Der Ball muss zwischen ihnen starten.",
+      "purpose": "Wedges kurven wegen ihres hohen Lofts kaum. Geht ein Wedge daneben, liegt das fast immer an der Schlagfläche im Treffmoment. Sie bestimmt den größten Teil der Startrichtung, laut TrackMan beim 6er-Eisen rund 75 %.",
+      "steps": [
+        "Ein Ziel auf der Range wählen. Zwei Ausrichtungsstäbe etwa 3 m vor dem Ball senkrecht in den Boden stecken, links und rechts der Ziellinie.",
+        "Mit halben Schwüngen beginnen und das Tempo erst steigern, wenn die Startrichtung stimmt.",
+        "10 Bälle. Nur die Startrichtung zählt, die Länge ist hier zweitrangig.",
+        "Zähle die Bälle, die zwischen den Stäben starten."
+      ],
+      "tips": [
+        "Der Ball fliegt meist über das Tor. Es zählt, ob er zwischen den Stäben startet.",
+        "Startet der Ball immer auf derselben Seite, von hinten filmen und mit dem Trainer die Schlagfläche ansehen.",
+        "Für Fortgeschrittene: einige Bälle bewusst links und rechts am Tor vorbei starten, nur über die Schlagfläche. Stand und Ausrichtung bleiben gleich.",
+        "Die Stäbe nicht näher als 3 m an den Ball stecken, damit kein Ball abprallt."
+      ],
+      "equipment": [
+        "2 Ausrichtungsstäbe"
+      ],
+      "levels": [
+        "Halbe Schwünge (ca. 30 m), Tor 1 m breit",
+        "Dreiviertel-Schwünge (ca. 45 m), Tor 70 cm breit",
+        "Volle Wedges, Tor 50 cm breit"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "GolfWRX – A simple drill to help you stick your wedges closer",
+          "url": "https://golfwrx.com/386946/a-simple-drill-to-help-you-stick-your-wedges-closer/"
+        },
+        {
+          "title": "Today's Golfer – Straighten your crooked irons",
+          "url": "https://www.todays-golfer.com/tips-and-tuition/fault-fixes/video-tips/2018/january/straighten-your-crooked-irons/"
+        },
+        {
+          "title": "Foy Golf Academy – Swing direction vs club path",
+          "url": "https://foygolfacademy.com/how-swing-direction-affects-face-to-path-and-start-line/"
+        }
+      ]
+    },
+    {
+      "id": "wedge-one-arm",
+      "name": "Einarm-Wedges",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Halbe Wedge-Schwünge mit nur einem Arm: erst mit dem Führungsarm, dann mit dem hinteren Arm. Danach mit beiden Händen und dem gleichen Gefühl.",
+      "purpose": "Korrektur-Übung gegen Flippen mit den Händen, das zu dünnen oder fetten Wedges führt. Mit einem Arm kann die dominante Hand nicht eingreifen. So spürst du, wie Körper, Arm und Schläger zusammen durch den Ball gehen.",
+      "steps": [
+        "Sand Wedge, etwas kürzer greifen. Erst ein paar Probeschwünge mit einem Arm, ohne Ball.",
+        "5 Bälle nur mit dem Führungsarm, also dem Arm auf der Zielseite. Das Handgelenk bleibt im Treffmoment flach, im Finish zeigt das Griffende zur vorderen Hüfte.",
+        "5 Bälle nur mit dem hinteren Arm. Locker schwingen, die Hand nicht flippen.",
+        "Zähle die sauber getroffenen Bälle: erst Ball, dann Boden."
+      ],
+      "tips": [
+        "Nur einsetzen, wenn dein Trainer Flippen oder unsauberen Kontakt bei Wedges als Thema sieht.",
+        "Langsam schwingen, die Länge ist hier egal.",
+        "Danach sofort ein paar Bälle mit beiden Händen und das Gefühl mitnehmen.",
+        "Von vorne filmen und prüfen, wohin das Griffende im Finish zeigt."
+      ],
+      "levels": [
+        "Halbe Schwünge, Ziel 20 m",
+        "Halbe Schwünge, Ziel 30 m",
+        "Dreiviertel-Schwünge, Ziel 40 m, Landung im Radius 7 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isCorrective": true,
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf Monthly – Do you flick (and fat) your wedges? Drills for the perfect pitch shot",
+          "url": "https://www.golfmonthly.com/tips/do-you-flick-and-fat-your-wedges-these-drills-will-help-you-to-play-the-perfect-pitch-shot"
+        },
+        {
+          "title": "HackMotion – 6 golf wedge drills to sharpen your short game",
+          "url": "https://hackmotion.com/drills-for-wedge-game/"
+        },
+        {
+          "title": "Golf.com – Why you should practice swinging a club one-handed",
+          "url": "https://golf.com/instruction/driving/practice-golf-swing-one-handed-drill/"
+        }
+      ]
+    },
+    {
+      "id": "wedge-pause",
+      "name": "Pause im Rückschwung",
+      "area": "wedges",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 10,
+      "summary": "Den Rückschwung bei etwa zwei Dritteln anhalten, kurz pausieren, dann durchschwingen. So führt der Körper den Abschwung, nicht die Hände.",
+      "purpose": "Für die richtige Reihenfolge im Wedge-Schwung. Wer mit den Händen schlägt, löst die Handgelenke zu früh und trifft oft den Boden hinter dem Ball. Drehst du den Körper durch den Ball, bringt der Loft den Ball in die Luft und die Flughöhe bleibt kontrolliert.",
+      "steps": [
+        "Pitching oder Sand Wedge, Ziel je nach Stufe, normale Ansprechhaltung.",
+        "Ausholen und bei etwa zwei Dritteln des Rückschwungs anhalten.",
+        "Die Pause der Stufe halten, dann mit einer Drehung des Körpers durchschwingen und den Ball treffen.",
+        "10 Bälle. Zähle die Bälle, bei denen du die Pause gehalten und sauber getroffen hast."
+      ],
+      "tips": [
+        "Es geht um die Reihenfolge der Bewegung, nicht um das Timing.",
+        "Danach ein paar Bälle ohne Pause mit dem gleichen Gefühl.",
+        "Von der Seite filmen: Dreht der Körper durch oder überholen die Hände?"
+      ],
+      "levels": [
+        "Pause 1 Sekunde, Ziel 40 m",
+        "Pause 2 Sekunden, Ziel 50 m",
+        "Pause 1 oder 2 Sekunden im Wechsel, Ziel 60 m, Landung im Radius 7 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "PGA of America – Want lower scores? Start with better wedge play",
+          "url": "https://www.pga.com/story/want-lower-scores-start-with-better-wedge-play"
+        },
+        {
+          "title": "Golf Digest – Become a wedge monster like Dustin Johnson",
+          "url": "https://www.golfdigest.com/story/become-a-wedge-monster-like-dustin-johnson"
+        }
+      ]
+    },
+    {
+      "id": "wedge-three-clubs",
+      "name": "Drei Wedges, ein Ziel",
+      "area": "wedges",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ein Ziel, drei Schläger im Wechsel: Pitching Wedge, Gap Wedge und Sand Wedge auf dieselbe Fahne. Du lernst, wie jeder Wedge fliegt und welcher am nächsten kommt.",
+      "purpose": "Aus derselben Entfernung fliegt jeder Wedge anders: Weniger Loft startet flacher und rollt weiter, mehr Loft fliegt höher und rollt weniger. Kennst du das, wählst du auf dem Platz den passenden Wedge für Fahne und Grün.",
+      "steps": [
+        "Ein Ziel in der Länge der Stufe wählen.",
+        "Reihum spielen: Pitching Wedge, Gap Wedge, Sand Wedge, dann wieder von vorn (12 Bälle). Die Ausholweite passt du für jeden Wedge an.",
+        "Bei jedem Ball auf Flughöhe und Ausrollen achten.",
+        "Punkte nach Abstand zum Ziel eintragen und notieren, welcher Wedge am häufigsten nah liegt."
+      ],
+      "tips": [
+        "Hast du nur zwei Wedges, nimm das 9er-Eisen dazu.",
+        "Steht die Fahne hinten mit viel Grün davor, ist der flachere Wedge oft die bessere Wahl.",
+        "Die Werte aus der Wedge-Matrix als Ausgangspunkt nutzen."
+      ],
+      "levels": [
+        "Ziel 40 m",
+        "Ziel 50 m",
+        "Ziele 40–70 m, nach jedem Durchgang ein neues Ziel"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 12,
+        "zones": [
+          {
+            "label": "Unter 3 m",
+            "points": 3
+          },
+          {
+            "label": "3–6 m",
+            "points": 2
+          },
+          {
+            "label": "6–10 m",
+            "points": 1
+          },
+          {
+            "label": "Weiter als 10 m",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Lob wedge, sand wedge or gap wedge from 50 yards?",
+          "url": "https://foygolfacademy.com/should-you-use-a-lob-wedge-sand-wedge-or-gap-wedge-from-50-yards/"
+        },
+        {
+          "title": "Golf Digest – Luke Donald's 30-ball wedge game",
+          "url": "https://www.golfdigest.com/story/luke-donald-30-ball-wedge-game-golf-digest-improve"
+        }
+      ]
+    },
+    {
+      "id": "wedge-landing-zone",
+      "name": "Wedge-Landezone",
+      "area": "wedges",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Drei Landezonen in unterschiedlicher Länge, die Zone wechselt bei jedem Ball. Es zählt nur die Länge, nicht links oder rechts.",
+      "purpose": "Bei Wedges kosten Fehler in der Länge am meisten: Selbst ein Spieler mit Handicap 5 verfehlt aus rund 90 m im Schnitt etwa 11 m zu kurz oder zu lang, aber nur etwa 6 m zur Seite. Die Übung trainiert genau diese Längenkontrolle.",
+      "steps": [
+        "Drei Ziele in unterschiedlicher Länge wählen, z. B. 40, 55 und 70 m: Fahnen, Schilder oder ein Handtuch, wenn du auf die Übungswiese darfst.",
+        "Vor jedem Ball die Zone ansagen und nach jedem Ball wechseln (12 Bälle).",
+        "Auf den Landepunkt achten, nicht darauf, wo der Ball liegen bleibt. Mit Launch Monitor zählt der Carry.",
+        "Punkt, wenn der Ball höchstens den erlaubten Abstand zu kurz oder zu lang landet."
+      ],
+      "tips": [
+        "Die Länge über die Ausholweite steuern, nicht über mehr oder weniger Kraft.",
+        "Mit einer festen Anker-Distanz beginnen, z. B. 50 m, und von dort aus kürzer und länger werden.",
+        "Im Finish stehen bleiben und den Ball bis zur Landung beobachten."
+      ],
+      "equipment": [
+        "Handtuch oder Zielmarken",
+        "Launch Monitor (falls vorhanden)"
+      ],
+      "levels": [
+        "Zonen 40, 50 und 60 m, höchstens 5 m zu kurz oder zu lang",
+        "Zonen 40, 55 und 70 m, höchstens 4 m zu kurz oder zu lang",
+        "Zonen 35, 60 und 85 m, höchstens 3 m zu kurz oder zu lang"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 12
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Digest – The north-south problem inside 100 yards",
+          "url": "https://www.golfdigest.com/story/golf-digest-game-plan-wedge-strategy-inside-100-yards"
+        },
+        {
+          "title": "Golf Digest – Make The Turn Weekly Challenge #30: 50-Yard Flag Breaker",
+          "url": "https://www.golfdigest.com/story/make-the-turn-50-yard-flag-bre"
+        }
+      ]
+    },
+    {
+      "id": "wedge-step-ladder",
+      "name": "Stück für Stück",
+      "area": "wedges",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Distanz-Drill nach Dustin Johnson: Jeder Wedge soll ein kleines Stück weiter landen als der vorherige. Zu kurz oder zu weit, und die Serie beginnt von vorn.",
+      "purpose": "Feine Distanzkontrolle: Du entwickelst Gefühl für viele Zwischenlängen, z. B. 60, 65 und 70 m, statt nur für ein paar feste Schwünge. Weil ein Fehler die Serie beendet, steigt mit jedem Ball der Druck.",
+      "steps": [
+        "Ein Ziel am kurzen Ende deiner Wedge-Längen wählen, z. B. 40 m. Links oder rechts neben ein Range-Grün zielen, damit du die Landepunkte gut siehst.",
+        "Den ersten Ball auf diese Länge spielen.",
+        "Jeder weitere Ball muss hinter dem vorherigen landen, aber höchstens den erlaubten Abstand weiter.",
+        "Zähle die gelungenen Bälle in Folge (höchstens 10). Bei einem Fehler neu beginnen und die beste Serie eintragen."
+      ],
+      "tips": [
+        "Vor jedem Ball die Länge festlegen, die du spielen willst, z. B. 52 m.",
+        "Mit Launch Monitor zählt der Carry-Wert, das macht die Übung genauer.",
+        "Am Ende deiner Wedge-Längen angekommen, in kleinen Schritten wieder zurück.",
+        "Dustin Johnson übte so 45 Minuten am Stück, Ball für Ball bis ans Ende seiner Wedge-Längen."
+      ],
+      "equipment": [
+        "Launch Monitor (falls vorhanden)"
+      ],
+      "levels": [
+        "Abstand bis 8 m",
+        "Abstand bis 6 m",
+        "Abstand bis 4 m"
+      ],
+      "scoring": {
+        "kind": "streak",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "GolfWRX – Improve your wedge distance control with Dustin Johnson's unique drill",
+          "url": "https://golfwrx.com/509476/improve-your-wedge-distance-control-with-dustin-johnsons-unique-drill/"
+        },
+        {
+          "title": "Golf Digest – Become a wedge monster like Dustin Johnson",
+          "url": "https://www.golfdigest.com/story/become-a-wedge-monster-like-dustin-johnson"
+        }
+      ]
+    },
+    {
+      "id": "iron-knockdown",
+      "name": "Knockdown",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Technik-Block für den flachen Eisenschlag: kürzer greifen, Ball weiter hinten, breiterer Stand, kurzer Schwung mit abgekürztem Finish.",
+      "purpose": "Der Knockdown fliegt flacher und mit weniger Spin. So bleibt der Ball bei Wind und auf engen Plätzen besser unter Kontrolle.",
+      "steps": [
+        "Mittleres Eisen, ein festes Ziel. Erst 3 normale Schläge zum Vergleich.",
+        "Etwa 5 cm kürzer greifen, den Stand etwa 5 cm breiter machen und den Ball etwa 5 cm weiter hinten spielen.",
+        "Kurz ausholen und das Finish abkürzen. Die Drehung des Körpers schlägt den Ball, die Handgelenke bleiben ruhig.",
+        "10 Knockdowns. Punkt, wenn der Ball sichtbar flacher fliegt als dein normaler Schlag und im Radius um das Ziel landet."
+      ],
+      "tips": [
+        "Der Knockdown fliegt kürzer als dein normaler Schlag. Notiere, wie viel, z. B. in deiner Carry-Tabelle.",
+        "Weniger Loft im Treffmoment und ein kurzes Finish nehmen Spin weg. Deshalb fliegt der Ball stabiler im Wind.",
+        "Variante: den hinteren Fuß etwas zurückziehen. Der Ball startet dann flach mit leichtem Draw.",
+        "Von vorne filmen: Das Finish soll deutlich kürzer sein als beim normalen Schlag."
+      ],
+      "levels": [
+        "Ziel 100 m, Radius 15 m",
+        "Ziel 120 m, Radius 10 m",
+        "Eisen und Ziel wechseln zwischen 100 und 150 m, Radius 10 m"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "suggestsVideo": true,
+      "sources": [
+        {
+          "title": "Golf Digest – How to hit a knockdown shot: 5 basics",
+          "url": "https://www.golfdigest.com/story/how-to-hit-knockdown-shot-wind-golf-digest-tip"
+        },
+        {
+          "title": "Golf.com – How to drill knockdown shots with 3 easy setup tweaks",
+          "url": "https://golf.com/instruction/approach-shots/stick-irons-close-knockdown-play-smart/"
+        }
+      ]
+    },
+    {
+      "id": "iron-carry-chart",
+      "name": "Carry-Tabelle",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 30,
+      "summary": "Miss mit vielen Bällen pro Schläger, wie weit deine Eisen und dein Hybrid wirklich fliegen. So entsteht deine Tabelle für die Schlägerwahl.",
+      "purpose": "Nur wenn du deine echten Längen kennst, wählst du auf dem Platz den richtigen Schläger. Deine Standardlänge ist der Durchschnitt deiner gut getroffenen Bälle, nicht der eine beste Schlag.",
+      "steps": [
+        "10–15 Minuten aufwärmen. Diese Bälle nicht messen.",
+        "Pro Schläger 10 oder 20 Bälle je nach Stufe, normaler Schwung, festes Ziel. Die Carry-Länge jedes Balls notieren.",
+        "Jeden Treffer bewerten, von 5 (mittig und wie gewollt) bis 1 (starker Fehlschlag). Dazu notieren, ob der Ball links, im Zielkorridor oder rechts landet.",
+        "Den Durchschnitt nur aus den Treffern mit 4 oder 5 bilden. Das ist deine Carry-Länge für die Tabelle."
+      ],
+      "tips": [
+        "Pro Einheit 2–3 Schläger, bis die Tabelle vom 9er-Eisen bis zum Hybrid vollständig ist.",
+        "Zu Saisonbeginn, nach jedem Schlägerwechsel und nach einem Wachstumsschub neu messen.",
+        "Die Tabelle aufschreiben, z. B. auf ein Kärtchen im Bag, so wie bei der Wedge-Matrix.",
+        "Ohne Launch Monitor: Ziele mit bekannter Entfernung nutzen und den Landepunkt schätzen."
+      ],
+      "equipment": [
+        "Launch Monitor oder Range mit Ball-Tracking (falls vorhanden)",
+        "Ausrichtungsstab",
+        "Stift und Kärtchen"
+      ],
+      "levels": [
+        "Zwei Schläger, je 10 Bälle",
+        "Drei Schläger, je 10 Bälle",
+        "Drei Schläger, je 20 Bälle"
+      ],
+      "scoring": {
+        "kind": "none"
+      },
+      "sources": [
+        {
+          "title": "Foy Golf Academy – How to find your golf club distances with a 20-ball test",
+          "url": "https://foygolfacademy.com/how-to-find-your-golf-club-distances-with-a-20-ball-test/"
+        },
+        {
+          "title": "Golf Monthly – 7 fun golf range games to instantly improve your skills",
+          "url": "https://www.golfmonthly.com/features/7-fun-golf-range-games-to-instantly-improve-your-skills"
+        }
+      ]
+    },
+    {
+      "id": "iron-dispersion",
+      "name": "Eisen-Streubild",
+      "area": "approach",
+      "mode": "block",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Mit einem Eisen sagst du vorher, wo 6 von 10 Bällen landen. Dann schlägst du die 10 Bälle und vergleichst Vorhersage und echtes Streubild.",
+      "purpose": "Kein Ball fliegt genau gleich. Kennst du dein Streubild, zielst du so, dass auch Fehlschläge noch gut liegen. In der Kursmanagement-Methode DECADE ist die Mitte deines Streubilds das Ziel, nicht der perfekte Schlag.",
+      "steps": [
+        "Den Schläger der Stufe nehmen und ein Ziel in seiner normalen Carry-Länge wählen.",
+        "Vorher aufschreiben: In welcher Zone landen 6 der 10 Bälle, wo verfehlen die anderen 4?",
+        "10 Bälle mit voller Routine, jeden Landepunkt merken oder mit Launch Monitor aufzeichnen.",
+        "Zähle die Bälle in deiner vorhergesagten Zone. Dann den Kern (die 6 Bälle am dichtesten beieinander) und das ganze Streubild (alle 10) skizzieren."
+      ],
+      "tips": [
+        "Das ganze Streubild zeigt, wie viel Abstand du zu Bunkern oder Wasser brauchst.",
+        "Liegt der Kern deutlich neben dem Ziel, mit dem Trainer klären, ob Ausrichtung oder Schwung die Ursache ist.",
+        "Mit anderen Schlägern wiederholen und die Streubilder zur Carry-Tabelle legen.",
+        "Passt gut vor der Übung Sichere Seite am Grün."
+      ],
+      "equipment": [
+        "Stift und Kärtchen",
+        "Launch Monitor (falls vorhanden)"
+      ],
+      "levels": [
+        "9er- oder 8er-Eisen",
+        "7er- oder 6er-Eisen",
+        "Hybrid oder längstes Eisen"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Golf shot dispersion: 10-ball test for your iron pattern",
+          "url": "https://foygolfacademy.com/golf-shot-dispersion-use-this-10-ball-test-to-learn-your-iron-pattern/"
+        },
+        {
+          "title": "MyGolfSpy – Course management with DECADE",
+          "url": "https://mygolfspy.com/news-opinion/cracking-the-course-management-code-with-decade/"
+        }
+      ]
+    },
+    {
+      "id": "iron-two-clubs",
+      "name": "Zwei Schläger, ein Ziel",
+      "area": "approach",
+      "mode": "variable",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 15,
+      "summary": "Ein Ziel, zwei Schläger im Wechsel: dein normaler Schläger mit vollem Schwung und ein Schläger mehr, kürzer gegriffen und mit ruhigem Dreiviertel-Schwung.",
+      "purpose": "Auf dem Platz liegt die Fahne oft zwischen zwei Schlägern. Die Übung trainiert Gefühl für die Länge statt nur Technik: Jeder Schläger soll im selben Zielbereich landen.",
+      "steps": [
+        "Ein Ziel wählen, das du mit deinem normalen Schläger voll erreichst, z. B. mit dem 8er-Eisen.",
+        "Abwechselnd spielen: normaler Schläger mit vollem Schwung, dann ein Schläger mehr, etwa 5 cm kürzer gegriffen, mit ruhigem Dreiviertel-Schwung.",
+        "Volle Routine vor jedem Ball. 10 Bälle, 5 mit jedem Schläger.",
+        "Punkt, wenn der Ball im Radius um das Ziel landet."
+      ],
+      "tips": [
+        "Notiere, mit welchem Schläger du öfter triffst. Das ist deine bessere Wahl zwischen zwei Längen.",
+        "Auf das Gefühl für die Länge achten, nicht auf Positionen im Schwung.",
+        "Später andere Paare üben, z. B. 6er-Eisen und Hybrid."
+      ],
+      "levels": [
+        "Ziel ca. 100 m, Radius 15 m",
+        "Ziel ca. 120 m, Radius 10 m",
+        "Ziel ca. 120 m, Radius 10 m, drei Schläger im Wechsel"
+      ],
+      "scoring": {
+        "kind": "count",
+        "attempts": 10
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Golf Monthly – 3 great driving range games that will lower your scores",
+          "url": "https://www.golfmonthly.com/tips/driving-range-games-168172"
+        }
+      ]
+    },
+    {
+      "id": "iron-safe-side",
+      "name": "Sichere Seite am Grün",
+      "area": "approach",
+      "mode": "competition",
+      "facilities": [
+        "range"
+      ],
+      "minutes": 20,
+      "summary": "Vor jedem Ball stellst du dir Wasser oder einen Bunker neben der Fahne vor und spielst auf die sichere Seite. Nach jedem Ball wechseln Ziel und Gefahr.",
+      "purpose": "Auf der Runde führt ein Ball auf der falschen Seite der Fahne oft zum Bogey. Gute Spieler zielen deshalb auf die breite Seite des Grüns. Die Übung trainiert diese Entscheidung mit nur einem Ball, so wie auf dem Platz.",
+      "steps": [
+        "Ein Range-Grün in der Länge der Stufe wählen und eine Gefahr festlegen, z. B. Wasser links der Fahne. Als Grün gilt der Radius der Stufe.",
+        "Ziel auf der sicheren Seite wählen, volle Routine, ein Ball.",
+        "Punkte eintragen: Grün getroffen 2, daneben auf der sicheren Seite 1, Gefahrenseite oder Fehlschlag 0.",
+        "Nach jedem Ball die Gefahr auf die andere Seite legen oder ein neues Grün wählen. 10 Bälle."
+      ],
+      "tips": [
+        "Nie auf die Gefahr zielen und hoffen, dass die Kurve den Ball zurückbringt.",
+        "Dein Eisen-Streubild zeigt dir, wie weit du von der Gefahr weg zielen musst.",
+        "Mit Trainingspartner als Wettkampf spielen."
+      ],
+      "levels": [
+        "Grün mit 15 m Radius, Ziele 100–130 m",
+        "Grün mit 12 m Radius, Ziele 100–150 m",
+        "Grün mit 10 m Radius, Ziele 110–170 m"
+      ],
+      "scoring": {
+        "kind": "zones",
+        "attempts": 10,
+        "zones": [
+          {
+            "label": "Grün getroffen",
+            "points": 2
+          },
+          {
+            "label": "Daneben, sichere Seite",
+            "points": 1
+          },
+          {
+            "label": "Gefahrenseite oder Fehlschlag",
+            "points": 0
+          }
+        ]
+      },
+      "isTournamentPrep": true,
+      "sources": [
+        {
+          "title": "Foy Golf Academy – Why you hit it well on the range but struggle on the golf course",
+          "url": "https://foygolfacademy.com/why-you-hit-it-well-on-the-range-but-struggle-on-the-golf-course/"
+        },
+        {
+          "title": "Golf Digest – Has this data nerd created a golf cheat code? (Scott Fawcett, DECADE)",
+          "url": "https://www.golfdigest.com/story/scott-fawcett-golf-cheat-code"
+        },
+        {
+          "title": "Foy Golf Academy – Swing direction vs club path",
+          "url": "https://foygolfacademy.com/how-swing-direction-affects-face-to-path-and-start-line/"
+        }
+      ]
+    }
+  ]
+}
