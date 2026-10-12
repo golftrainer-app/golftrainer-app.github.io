@@ -29,16 +29,16 @@
 <main id="inhalt" tabindex="-1">
 <h1>Datenschutzerklärung</h1>
 <p class="intro">Was die App „Golf Trainer“ auf iPhone und iPad und die Web-App im Browser mit deinen Daten machen, wo sie liegen und wie du sie löschst.</p>
-<p class="stand">Stand: <time datetime="2026-10-10">10. Oktober 2026</time></p>
+<p class="stand">Stand: <time datetime="2026-10-12">12. Oktober 2026</time></p>
 <section>
 <h2 id="kurz-gesagt">Kurz gesagt</h2>
 <ul>
-<li>Die App funktioniert ohne Konto beim Entwickler. Es gibt keine Werbung, keine Analyse- oder Tracking-Dienste und keinen Server des Entwicklers.</li>
+<li>Die App funktioniert ohne Konto. Ein Konto ist freiwillig: Dann liegen deine Trainingsdaten auch auf einem Server in Frankfurt, damit iPhone, iPad und Web-App sie abgleichen und du einem Team beitreten kannst. Es gibt keine Werbung und keine Analyse- oder Tracking-Dienste.</li>
 <li>Ohne Team bleiben deine Daten auf deinem Gerät und in den Sicherungen deines Geräts.</li>
 <li>Die Web-App für Android-Handys speichert deine Daten nur im Browser auf deinem Gerät.</li>
 <li>Mit Team liegen die Daten des Teams im iCloud des Admins, der die Jugendabteilung eröffnet hat. Für diese Daten ist dein Verein verantwortlich.</li>
-<li>Der Entwickler sieht deine Daten nicht, weder auf dem Gerät noch in iCloud. Was Apple dem Entwickler mitteilt, steht unten unter „Apple“.</li>
-<li>Löschen kannst du alles selbst: in der App unter Einstellungen → Datenschutz und Rechtliches → Meine Daten löschen, in der Web-App unter Mehr → Meine Daten löschen.</li>
+<li>Ohne Konto sieht der Entwickler deine Daten nicht, weder auf dem Gerät noch in iCloud. Mit Konto kann der Anbieter die Datenbank verwalten, siehe „Konto und Abgleich“. Was Apple dem Entwickler mitteilt, steht unten unter „Apple“.</li>
+<li>Löschen kannst du alles selbst: in der App unter Einstellungen → Datenschutz und Rechtliches → Meine Daten löschen, in der Web-App unter Mehr → Meine Daten löschen, das Konto samt Daten auf dem Server unter Einstellungen → Konto → Konto löschen.</li>
 </ul>
 </section>
 <section>
@@ -50,6 +50,7 @@
 <section>
 <h2 id="wer-verantwortlich-ist">Wer verantwortlich ist</h2>
 <p>Daten, die nur auf deinem Gerät liegen, verarbeitet der Entwickler nicht und bekommt sie nie zu sehen.</p>
+<p>Für dein Konto und die Daten, die du damit auf den Server legst, ist der Anbieter verantwortlich (Art. 4 Nr. 7 DSGVO). Supabase betreibt den Server in seinem Auftrag, siehe „Konto und Abgleich“.</p>
 <p>Nutzt du die Team-Funktion, ist der Verein verantwortlich, der sie für seine Jugend einsetzt. Ihn erreichst du über deine Trainer oder den Admin des Teams. Er informiert dich und, bei Spielern unter 16, deine Eltern.</p>
 </section>
 <section>
@@ -99,6 +100,16 @@
 </ul>
 </section>
 <section>
+<h2 id="konto-und-abgleich">Konto und Abgleich</h2>
+<p>Ein Konto ist freiwillig. Ohne Konto bleibt alles so, wie oben unter „Daten auf deinem Gerät“ beschrieben. Mit Konto gleichen iPhone, iPad und die Web-App deine Daten über einen Server ab, und du kannst einem Team beitreten. Du legst es in der App unter Einstellungen → Konto an, in der Web-App unter Mehr → Konto.</p>
+<p><strong>Was gespeichert wird:</strong> deine E-Mail-Adresse, dein Passwort nur als Prüfwert (Hash), die Zeitpunkte von Registrierung und Anmeldungen, ob du unter 16 bist und ob ein Elternteil einverstanden ist, und deine Trainingsdaten als ein Dokument: Golfwoche, Vorschläge der Woche, Ergebnisse, Trainingstagebuch, Runden, Turniere, Schwerpunkte, Launch-Monitor-Daten und die Kennzahlen deiner Schwunganalysen. Nicht gespeichert werden Videos, die Skelette der Schwunganalyse und die Daten des Teams.</p>
+<p><strong>Wo:</strong> auf einem Server von Supabase in Frankfurt am Main (Amazon Web Services, Region eu-central-1). Supabase, Inc., 970 Toa Payoh North #07-04, Singapur 318992, ist Auftragsverarbeiter des Anbieters (Art. 28 DSGVO). Supabase verarbeitet die Daten nur nach Weisung, abgesichert durch einen Vertrag zur Auftragsverarbeitung mit Standardvertragsklauseln. Beim Aufruf speichert Supabase die IP-Adresse deines Geräts kurz zur Sicherheit. Einzelheiten stehen in der <a href="https://supabase.com/privacy">Datenschutzerklärung von Supabase</a>.</p>
+<p><strong>Rechtsgrundlage:</strong> die Nutzung des Kontos, die du mit dem Registrieren vereinbarst (Art. 6 Abs. 1 lit. b DSGVO). Unter 16 braucht das die Einwilligung eines Elternteils (Art. 8 DSGVO). Die App fragt beim Registrieren danach und speichert die Antwort im Profil. Ob wirklich ein Elternteil zustimmt, kann sie nicht prüfen.</p>
+<p><strong>Wer die Daten sieht:</strong> du, mit deinem Passwort. Jedes Konto sieht nur seine eigenen Daten. Der Anbieter kann die Datenbank verwalten und dabei grundsätzlich auch Inhalte sehen. Er tut das nur, wenn es für den Betrieb nötig ist, z. B. bei einer Störung oder auf deine Bitte. Supabase schickt in seinem Auftrag die Bestätigungsmail beim Registrieren und den Link zum Zurücksetzen des Passworts. Werbung gibt es nicht.</p>
+<p><strong>Wie lange:</strong> bis du das Konto löschst. Unter Einstellungen → Konto → Konto löschen entfernst du Konto, Profil und Daten auf dem Server sofort und endgültig, in der Web-App unter Mehr → Konto. Abmelden lässt die Daten auf dem Server. Die Daten auf deinem Gerät bleiben, bis du sie unter „Meine Daten löschen“ entfernst. Sicherungskopien des Servers laufen nach kurzer Zeit von selbst ab.</p>
+<p>Die App bewahrt die Anmeldung im Schlüsselbund des Geräts auf, die Web-App im Speicher des Browsers. Beide schicken beim Abgleich nur das Dokument und die Anmeldung, nichts anderes.</p>
+</section>
+<section>
 <h2 id="apple">Apple</h2>
 <p>iCloud, Push-Mitteilungen, App Store und TestFlight sind Dienste von Apple. Für Nutzer in der EU ist Apple Distribution International Ltd. in Irland zuständig. Apple verarbeitet Daten auch außerhalb der EU, z. B. in den USA, und sichert das nach eigenen Angaben mit Standardvertragsklauseln ab. Einzelheiten stehen in <a href="https://www.apple.com/legal/privacy/de-ww/">Apples Datenschutzrichtlinie</a> und in der <a href="https://support.apple.com/en-us/102651">Übersicht zur Sicherheit von iCloud-Daten</a>.</p>
 <p>Was Apple dem Entwickler mitteilt: Hast du in iOS „Mit App-Entwicklern teilen“ eingeschaltet, bekommt der Entwickler von Apple Absturzberichte und zusammengefasste Nutzungszahlen ohne deinen Namen. Testest du die App über TestFlight, gibt Apple die Angaben weiter, die TestFlight vorsieht, z. B. Name und E-Mail-Adresse bei einer Einladung per E-Mail, Absturzberichte und Feedback, das du selbst schickst. Der Entwickler nutzt sie nur, um Fehler zu finden und die App zu verbessern (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO).</p>
@@ -106,7 +117,7 @@
 <section>
 <h2 id="webseite-und-web-app-im-browser">Webseite und Web-App im Browser</h2>
 <p>Die Webseite der App mit diesen Texten und die Web-App für Android-Handys liegen bei GitHub Pages, einem Dienst von GitHub. Beim Aufruf speichert GitHub deine IP-Adresse zur Sicherheit, auch wenn du kein Konto bei GitHub hast, und verarbeitet Daten auch in den USA. Der Entwickler bekommt diese Daten nicht. Rechtsgrundlage ist das berechtigte Interesse, die Seiten sicher auszuliefern (Art. 6 Abs. 1 lit. f DSGVO). Einzelheiten stehen in der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">Datenschutzerklärung von GitHub</a>.</p>
-<p>Die Web-App funktioniert ohne Konto und ohne Server des Entwicklers:</p>
+<p>Die Web-App funktioniert ohne Konto und ohne Server des Entwicklers. Meldest du dich dort mit deinem Konto an, gilt zusätzlich „Konto und Abgleich“; die Anmeldung liegt im Speicher des Browsers. Ohne Konto:</p>
 <ul>
 <li>Was du einträgst, z. B. deine Golfwoche, Schwerpunkte, die Vorschläge der Woche, Ergebnisse, Turniere, Runden, dein Trainingstagebuch mit der laufenden Stoppuhr und die Einstellung der Erinnerung, speichert sie im Speicher deines Browsers auf deinem Gerät (localStorage). Sie speichert erst etwas, wenn du selbst etwas einträgst oder änderst, und überträgt nichts davon.</li>
 <li>Eine CSV-Datei vom Launch Monitor liest sie im Browser und speichert daraus die Werte der Schläge und, wenn du Spalten von Hand zuordnest, diese Zuordnung. Die Datei selbst lädt sie nicht hoch.</li>
@@ -129,14 +140,15 @@
 <h2 id="kinder-und-jugendliche">Kinder und Jugendliche</h2>
 <ul>
 <li>Die App ist für Jugend-Golfer gemacht. Ohne Team verlässt nichts das Gerät.</li>
-<li>Die Web-App hat keine Team-Funktion. Was du dort einträgst, verlässt das Gerät nicht.</li>
+<li>Die Web-App hat keine Team-Funktion. Was du dort einträgst, verlässt das Gerät nur, wenn du dich mit deinem Konto anmeldest.</li>
+<li>Ein Konto fragt beim Registrieren nach dem Alter. Unter 16 geht es nur mit dem Einverständnis eines Elternteils, siehe „Konto und Abgleich“.</li>
 <li>Im Team fragt die App nach dem Jahrgang. Unter 16 teilt sie Trainingsdaten, Handicap, Spielhand, Videos und Nachrichten an die Trainer erst mit dem Einverständnis der Eltern. Ohne Jahrgang gilt dasselbe. Wird es zurückgezogen, löscht die App das Geteilte aus dem Team, auch Videos und eigene Nachrichten.</li>
 <li>Ob wirklich ein Elternteil zustimmt, kann die App nicht prüfen. Der Verein sollte das Einverständnis deshalb zusätzlich schriftlich einholen.</li>
 </ul>
 </section>
 <section>
 <h2 id="keine-cookies-kein-tracking">Keine Cookies, kein Tracking</h2>
-<p>Die App nutzt keine Cookies, keine Werbe-Kennung, keine Analyse-, Werbe- oder Tracking-Dienste und keine Programmbausteine anderer Anbieter. Deshalb fragt sie auch nicht nach der Erlaubnis zum Tracking. Was sie auf dem Gerät speichert, braucht sie für die Funktionen, die du nutzt. Das gilt auch für die Webseite und die Web-App.</p>
+<p>Die App nutzt keine Cookies, keine Werbe-Kennung, keine Analyse-, Werbe- oder Tracking-Dienste und keine Programmbausteine anderer Anbieter. Deshalb fragt sie auch nicht nach der Erlaubnis zum Tracking. Was sie auf dem Gerät speichert, braucht sie für die Funktionen, die du nutzt. Das gilt auch für die Webseite und die Web-App. Der Server für das Konto bekommt nur, was unter „Konto und Abgleich“ steht.</p>
 </section>
 <section>
 <h2 id="deine-rechte">Deine Rechte</h2>
@@ -147,7 +159,7 @@
 <li>Widerspruch (Art. 21) und Widerruf einer Einwilligung, jederzeit für die Zukunft (Art. 7 Abs. 3)</li>
 <li>Beschwerde bei einer Datenschutzaufsicht, z. B. in deinem Bundesland (Art. 77)</li>
 </ul>
-<p>Vieles geht direkt in der App: Freigaben unter „Was die Trainer sehen“, Einverständnis zurückziehen und Team verlassen unter „Profil“, alles löschen unter Einstellungen → Datenschutz und Rechtliches → Meine Daten löschen, deine Daten als Datei mitnehmen unter Einstellungen → Datensicherung. In der Web-App findest du beides unter „Mehr“. Für Daten im Team wende dich an deinen Verein. Der Entwickler hat keine Daten von dir, außer dem, was Apple dem Entwickler wie oben beschrieben mitteilt.</p>
+<p>Vieles geht direkt in der App: Freigaben unter „Was die Trainer sehen“, Einverständnis zurückziehen und Team verlassen unter „Profil“, alles löschen unter Einstellungen → Datenschutz und Rechtliches → Meine Daten löschen, das Konto unter Einstellungen → Konto, deine Daten als Datei mitnehmen unter Einstellungen → Datensicherung. In der Web-App findest du das alles unter „Mehr“. Für Daten im Team wende dich an deinen Verein. Ohne Konto hat der Entwickler keine Daten von dir, außer dem, was Apple dem Entwickler wie oben beschrieben mitteilt. Mit Konto schreib für Auskunft oder Löschung an die E-Mail-Adresse oben oder nutze „Konto löschen“.</p>
 </section>
 <section>
 <h2 id="aenderungen">Änderungen</h2>
@@ -155,7 +167,7 @@
 </section>
 </main>
 <footer class="colophon">
-<p>Golf Trainer · Stand: <time datetime="2026-10-10">10. Oktober 2026</time></p>
+<p>Golf Trainer · Stand: <time datetime="2026-10-12">12. Oktober 2026</time></p>
 </footer>
 </body>
 </html>

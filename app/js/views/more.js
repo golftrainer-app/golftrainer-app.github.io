@@ -7,6 +7,7 @@ import { emptyGolfWeek } from "../core/golfweek.js";
 import { newID } from "../core/model.js";
 import { timeText } from "../core/reminders.js";
 import { ask, chapter, check, download, empty, headline, html, inform, readFile, shareFile, toast } from "../ui.js";
+import { accountFooter, accountStatusText } from "./account.js";
 import { applyGolfWeekClick, copyGolfWeek, dayButtons, golfDays, minutesRows } from "./golfweek.js";
 
 const PRIORITY_NAMES = ["Normal", "Wichtig", "Sehr wichtig"];
@@ -17,7 +18,7 @@ function isStandalone() {
 }
 
 export function morePage(app) {
-  const { store } = app;
+  const { store, account } = app;
   return {
     title: "Mehr",
     tab: "mehr",
@@ -26,6 +27,11 @@ export function morePage(app) {
     render() {
       const week = store.data.golfWeek ?? emptyGolfWeek();
       return html`
+        ${chapter(
+          "Konto",
+          html`<ul class="rows"><li><a class="row labeled" href="#/mehr/konto"><span class="row-main">Konto</span><span class="row-value">${accountStatusText(account)}</span></a></li></ul>`,
+          { footer: accountFooter(account) },
+        )}
         ${chapter(
           "Golfwoche",
           html`<p class="kicker">Teamtraining</p>
@@ -95,7 +101,7 @@ export function morePage(app) {
               <li><a class="row" href="../support.html">Hilfe und Kontakt</a></li>
               <li><a class="row" href="#/mehr/loeschen">Meine Daten löschen</a></li>
             </ul>`,
-          { footer: "Kein Konto, keine Werbung, keine Cookies, keine Analyse- oder Tracking-Dienste. Deine Daten bleiben in diesem Browser auf deinem Gerät." },
+          { footer: "Ein Konto ist freiwillig. Keine Werbung, keine Cookies, keine Analyse- oder Tracking-Dienste. Ohne Konto bleiben deine Daten in diesem Browser auf deinem Gerät." },
         )}
         ${chapter(
           "Nur in der App für iPhone und iPad",
@@ -104,7 +110,7 @@ export function morePage(app) {
             <li>Kamera mit automatischem Auslöser und zweites Gerät als Bildschirm</li>
             <li>Schwunganalyse und Mitteilungen auf dem Gerät</li>
           </ul>`,
-          { footer: "Was du hier einträgst, nimmst du mit einer Sicherung in die App mit." },
+          { footer: "Was du hier einträgst, nimmst du mit einer Sicherung oder über dein Konto in die App mit." },
         )}
       `;
     },
@@ -345,7 +351,8 @@ export function deletePage(app) {
             <li>Ergebnisse, Bestleistungen, Runden und Turniere</li>
             <li>Trainingstagebuch und eine laufende Stoppuhr</li>
             <li>Sessions vom Launch Monitor und gespeicherte Spaltenzuordnungen</li>
-            <li>Alles, was aus einer zurückgespielten Sicherung stammt</li>
+            <li>Alles, was aus einer zurückgespielten Sicherung oder vom Abgleich über das Konto stammt</li>
+            <li>Die Anmeldung mit deinem Konto in diesem Browser</li>
             <li>Die Dateien der Seite für die Nutzung ohne Netz; die Seite legt sie beim nächsten Öffnen neu ab</li>
           </ul>`,
         )}
@@ -355,6 +362,7 @@ export function deletePage(app) {
             <li>Sicherungen und Kalenderdateien, die du gespeichert hast, z. B. in „Downloads“</li>
             <li>Videos in deiner Galerie</li>
             <li>Die Daten der App auf einem iPhone oder iPad, dort löschst du sie in der App</li>
+            <li>Dein Konto und die Daten auf dem Server; die löschst du unter Konto → Konto löschen</li>
           </ul>`,
           { footer: "Danach startet die Seite wie beim ersten Besuch. Erstelle vorher eine Sicherung, wenn du die Daten noch brauchst." },
         )}
@@ -369,6 +377,7 @@ export function deletePage(app) {
           actions: [{ label: "Alles löschen", value: "delete", style: "danger" }],
         });
         if (choice !== "delete") return;
+        app.account.forgetSession();
         store.deleteAll();
         try {
           const keys = (await globalThis.caches?.keys()) ?? [];

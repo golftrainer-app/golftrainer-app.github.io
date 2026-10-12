@@ -2,14 +2,14 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<!-- Nur eigene Dateien: Selbst wenn einmal fremder Code in die Seite geriete, liefe er nicht und könnte nichts verschicken. Videos kommen als blob: aus dem Browser. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; font-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'">
+<!-- Nur eigene Dateien: Selbst wenn einmal fremder Code in die Seite geriete, liefe er nicht und könnte nichts verschicken, außer an den Server des Kontos. Videos kommen als blob: aus dem Browser. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self' blob:; connect-src 'self' https://vdzydvydngpmxpmarjdb.supabase.co; worker-src 'self'; manifest-src 'self'; font-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="referrer" content="no-referrer">
-<meta name="description" content="Golf Trainer im Browser: Vorschläge für deine Golftage, Übungen, Turniere und Zeitlupe. Deine Daten bleiben auf deinem Gerät.">
+<meta name="description" content="Golf Trainer im Browser: Vorschläge für deine Golftage, Übungen, Turniere und Zeitlupe. Deine Daten bleiben auf deinem Gerät, mit Konto gleichst du sie mit iPhone und iPad ab.">
 <title>Golf Trainer</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">

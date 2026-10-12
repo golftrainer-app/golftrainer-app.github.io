@@ -4,7 +4,7 @@
 //
 // Nach jeder Änderung an den Dateien VERSION erhöhen. Neue Dateien kommen
 // dann beim nächsten Öffnen an, ältere Zwischenspeicher werden gelöscht.
-const VERSION = "2026-10-11-7";
+const VERSION = "2026-10-12-1";
 const CACHE = `golftrainer-${VERSION}`;
 
 const FILES = [
@@ -15,6 +15,9 @@ const FILES = [
   "js/main.js",
   "js/store.js",
   "js/ui.js",
+  "js/config.js",
+  "js/supabase.js",
+  "js/account.js",
   "js/views/week.js",
   "js/views/drills.js",
   "js/views/run.js",
@@ -26,6 +29,7 @@ const FILES = [
   "js/views/diary.js",
   "js/views/stats.js",
   "js/views/launch.js",
+  "js/views/account.js",
   "js/core/backup.js",
   "js/core/bests.js",
   "js/core/calendar.js",
@@ -41,6 +45,7 @@ const FILES = [
   "js/core/reminders.js",
   "js/core/scoring.js",
   "js/core/stats.js",
+  "js/core/sync.js",
   "js/core/tempo.js",
   "js/core/tournament.js",
   "js/core/traininglog.js",

@@ -2,6 +2,7 @@
 // Jede Seite ist eine Funktion, die Titel, HTML und ihre Knöpfe liefert
 // (js/views). Adressen stehen hinter dem #, z. B. #/uebungen/putt-gate, damit
 // die Seite ohne Server-Einstellungen und ohne Netz läuft.
+import { Account } from "./account.js";
 import { ICONS, escape, html, toast } from "./ui.js";
 import { RUNNING_KEY, STORAGE_KEY, Store } from "./store.js";
 import { weekPage } from "./views/week.js";
@@ -13,6 +14,7 @@ import { libraryPage, bestsPage } from "./views/drills.js";
 import { tournamentsPage, tournamentPage, tournamentEditor, phasePage, warmUpPage, roundEditor } from "./views/tournaments.js";
 import { swingPage, tempoPage } from "./views/swing.js";
 import { morePage, focusEditor, deletePage } from "./views/more.js";
+import { accountPage, passwordPage } from "./views/account.js";
 
 const ROUTES = [
   [/^\/woche$/, () => weekPage],
@@ -41,6 +43,8 @@ const ROUTES = [
   [/^\/runden\/neu$/, () => (app) => roundEditor(app, null)],
   [/^\/runden\/([^/]+)$/, ([id]) => (app) => roundEditor(app, id)],
   [/^\/mehr$/, () => morePage],
+  [/^\/mehr\/konto$/, () => accountPage],
+  [/^\/mehr\/konto\/passwort$/, () => passwordPage],
   [/^\/mehr\/schwerpunkte\/neu$/, () => (app) => focusEditor(app, null)],
   [/^\/mehr\/schwerpunkte\/([^/]+)$/, ([id]) => (app) => focusEditor(app, id)],
   [/^\/mehr\/loeschen$/, () => deletePage],
@@ -84,8 +88,9 @@ function notFound() {
 }
 
 class App {
-  constructor(store) {
+  constructor(store, account) {
     this.store = store;
+    this.account = account;
     this.view = document.getElementById("view");
     this.titleElement = document.getElementById("bar-title");
     this.backLink = document.getElementById("back");
@@ -110,9 +115,13 @@ class App {
     store.subscribe(() => {
       if (!this.page?.keepOnChange) this.render({ keepScroll: true });
     });
+    account.subscribe(() => {
+      if (!this.page?.keepOnChange) this.render({ keepScroll: true });
+    });
     // Geändert in einem anderen Tab: dort Gespeichertes übernehmen.
     window.addEventListener("storage", (event) => {
       if (event.key === null || event.key === STORAGE_KEY || event.key === RUNNING_KEY) store.reload();
+      if (event.key === null || event.key?.startsWith("golftrainer.konto.")) account.reload();
     });
   }
 
@@ -134,6 +143,14 @@ class App {
   }
 
   route() {
+    // Ein Link aus einer E-Mail, während die Seite schon offen ist: erst die Sitzung übernehmen.
+    if (isAccountLink()) {
+      handleAccountLink(this.account).then((result) => {
+        this.route();
+        if (result?.type === "signup") toast("E-Mail bestätigt. Du bist angemeldet.");
+      });
+      return;
+    }
     const hash = location.hash || HOME;
     let isBack = false;
     if (this.replacing) {
@@ -207,6 +224,24 @@ class App {
   }
 }
 
+/**
+ * Der Link aus einer E-Mail von Supabase („E-Mail bestätigen“, „Passwort
+ * zurücksetzen“) bringt die Sitzung hinter dem # mit, z. B.
+ * „#access_token=…&type=recovery“, statt einer Seite. Erst übernehmen, dann
+ * die Adresse auf die passende Seite setzen, bevor sie im Verlauf landet.
+ */
+function isAccountLink() {
+  return /^#(access_token|refresh_token|error|error_code|error_description|type)=/.test(location.hash);
+}
+
+async function handleAccountLink(account) {
+  if (!isAccountLink()) return null;
+  const result = await account.handleLink(new URLSearchParams(location.hash.slice(1)));
+  const target = result?.type === "recovery" ? "#/mehr/konto/passwort" : "#/mehr/konto";
+  history.replaceState(null, "", `${location.pathname}${location.search}${target}`);
+  return result;
+}
+
 async function start() {
   const view = document.getElementById("view");
   // „Zum Inhalt springen“ darf die Adresse nicht ändern: „#view“ wäre eine
@@ -223,7 +258,9 @@ async function start() {
       <p class="note">${error.message}</p>`);
     return;
   }
-  const app = new App(store);
+  const account = new Account(store);
+  const link = await handleAccountLink(account);
+  const app = new App(store, account);
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     app.installPrompt = event;
@@ -246,9 +283,14 @@ async function start() {
   plan();
   // Zu Beginn einer neuen Woche, wenn die Seite die ganze Zeit offen war.
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") plan();
+    if (document.visibilityState === "visible") {
+      plan();
+      account.syncIfSignedIn();
+    }
   });
   app.render();
+  if (link?.type === "signup") toast("E-Mail bestätigt. Du bist angemeldet.");
+  account.syncIfSignedIn();
 
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
     navigator.serviceWorker.register("sw.js").catch(() => {

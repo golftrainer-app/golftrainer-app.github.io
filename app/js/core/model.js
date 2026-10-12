@@ -6,6 +6,7 @@ import { AREAS, FACILITIES, SG_CATEGORIES } from "./categories.js";
 import { fromStored, toStored } from "./dates.js";
 import { decodeGolfWeek, encodeGolfWeek } from "./golfweek.js";
 import { normalizedScoring } from "./scoring.js";
+import { DELETION_KINDS, MAXIMUM_DELETIONS } from "./sync.js";
 import { METRICS } from "./launch.js";
 import { defaultSettings as defaultReminders } from "./reminders.js";
 import { KINDS, LOCAL_MEMBER, PLACES } from "./traininglog.js";
@@ -458,6 +459,22 @@ export function decodeWeekPlan(json) {
   };
 }
 
+/**
+ * Löschmarke, wie Deletion in der App: Liste, Kennung des gelöschten Eintrags
+ * und Zeitpunkt. Beim Abgleich über das Konto kommt der Eintrag so nicht von
+ * einem anderen Gerät zurück. Eine Kennung mit mehr als 100 Zeichen fällt
+ * weg, wie beim Lesen in der App.
+ */
+export function decodeDeletion(json) {
+  object(json);
+  if (typeof json.id !== "string" || json.id.length > 100) throw new InvalidValue();
+  return { kind: oneOf(json.kind, DELETION_KINDS), id: json.id, at: date(json.at) };
+}
+
+export function encodeDeletion(deletion) {
+  return { kind: deletion.kind, id: deletion.id, at: toStored(deletion.at) };
+}
+
 /** Liest eine Liste und lässt unlesbare Einträge weg, statt alles zu verlieren (wie decodeLossy in der App). */
 function lossyItems(list, decode, limit) {
   if (!Array.isArray(list)) return [];
@@ -495,6 +512,7 @@ export function decodeData(json = {}) {
     launchSessions: lossy(json.launchSessions, decodeLaunchSession, LIMITS.listLength),
     csvMappings: decodeMappings(json.csvMappings),
     reminders: decodeReminders(json.reminders),
+    deletions: lossy(json.deletions, decodeDeletion, MAXIMUM_DELETIONS),
     weekPlan: (() => {
       try {
         return decodeWeekPlan(json.weekPlan);
@@ -599,6 +617,7 @@ export function encodeData(data) {
     launchSessions: data.launchSessions.map(encodeLaunchSession),
     csvMappings: Object.fromEntries(Object.entries(data.csvMappings).map(([key, mapping]) => [key, encodeColumnMapping(mapping)])),
     reminders: { isEnabled: data.reminders.isEnabled, hour: data.reminders.hour, minute: data.reminders.minute },
+    deletions: (data.deletions ?? []).map(encodeDeletion),
   };
   if (data.handedness) json.handedness = data.handedness;
   if (data.golfWeek) json.golfWeek = encodeGolfWeek(data.golfWeek);

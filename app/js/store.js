@@ -1,6 +1,7 @@
 // Deine Daten in der Web-App. Sie liegen im Speicher des Browsers
 // (localStorage) auf diesem Gerät, im selben JSON-Format wie in der App
-// (AppData in App/Sources/AppModel.swift). Nichts davon geht an einen Server.
+// (AppData in App/Sources/AppModel.swift). An einen Server geht nur etwas,
+// wenn du dich mit deinem Konto anmeldest (account.js).
 // Was nur die App kennt, z. B. Launch-Monitor-Sessions aus einer Sicherung vom
 // iPhone, bleibt unverändert erhalten.
 import { KEPT_LISTS, createBackup, extraFields, merge, mergeResults } from "./core/backup.js";
@@ -11,6 +12,7 @@ import { level as difficultyLevel } from "./core/difficulty.js";
 import { emptyGolfWeek, golfWeekSlots, sanitizeGolfWeek } from "./core/golfweek.js";
 import { LIMITS, decodeData, decodeLibrary, encodeData, newID } from "./core/model.js";
 import { Planner } from "./core/planner.js";
+import { mergedData, noting } from "./core/sync.js";
 import { fingerprint } from "./core/launch.js";
 import { LOCAL_MEMBER, PLACES, entries as logEntries } from "./core/traininglog.js";
 
@@ -177,9 +179,21 @@ export class Store {
    */
   change(mutate, { persist = true } = {}) {
     const result = mutate(this.data);
-    if (persist) this.save();
+    if (persist) {
+      this.save();
+      // Mit Konto: bald abgleichen. account.js hängt sich hier ein.
+      this.changed?.();
+    }
     this.notify();
     return result;
+  }
+
+  /**
+   * Löschmarke setzen, damit ein gelöschter Eintrag nach dem Abgleich über das
+   * Konto nicht von einem anderen Gerät zurückkommt. Innerhalb von `change`.
+   */
+  noteDeletion(kind, id) {
+    this.data.deletions = noting({ kind, id, at: new Date() }, this.data.deletions);
   }
 
   get hasStoredData() {
@@ -367,6 +381,7 @@ export class Store {
   deleteTrainingEntry(id) {
     this.change((data) => {
       data.trainingLog = data.trainingLog.filter((entry) => entry.id !== id);
+      this.noteDeletion("trainingLog", id);
     });
   }
 
@@ -391,6 +406,7 @@ export class Store {
   deleteLaunchSession(id) {
     this.change((data) => {
       data.launchSessions = data.launchSessions.filter((session) => session.id !== id);
+      this.noteDeletion("launchSessions", id);
     });
   }
 
@@ -436,6 +452,7 @@ export class Store {
   deleteTournament(id) {
     this.change((data) => {
       data.tournaments = data.tournaments.filter((tournament) => tournament.id !== id);
+      this.noteDeletion("tournaments", id);
       this.plan(new Date());
     });
   }
@@ -503,6 +520,7 @@ export class Store {
   deleteFocus(id) {
     this.change((data) => {
       data.focusPoints = data.focusPoints.filter((point) => point.id !== id);
+      this.noteDeletion("focusPoints", id);
     });
   }
 
@@ -513,6 +531,7 @@ export class Store {
   deleteRound(id) {
     this.change((data) => {
       data.rounds = data.rounds.filter((round) => round.id !== id);
+      this.noteDeletion("rounds", id);
     });
   }
 
@@ -558,9 +577,27 @@ export class Store {
     return `Stand vom ${formatShortDate(backup.createdAt)}, ${formatTime(backup.createdAt)} Uhr wiederhergestellt.`;
   }
 
+  // MARK: - Konto
+
+  /**
+   * Den Stand vom Server übernehmen: zusammenführen, nicht ersetzen, nach den
+   * Regeln in core/sync.js. Gibt true zurück, wenn sich etwas geändert hat.
+   */
+  applyRemote(backup, { localSavedAt, now = new Date() }) {
+    const merged = mergedData(this.data, backup.data, { localSavedAt, remoteSavedAt: backup.createdAt, now });
+    const before = JSON.stringify({ ...this.data.extra, ...encodeData(this.data) });
+    const after = JSON.stringify({ ...merged.extra, ...encodeData(merged) });
+    if (before === after) return false;
+    this.change(() => {
+      this.data = merged;
+    });
+    this.ensureCurrentWeekPlan(now);
+    return true;
+  }
+
   // MARK: - Löschen
 
-  /** Löscht alles, was die Web-App in diesem Browser gespeichert hat. */
+  /** Löscht alles, was die Web-App in diesem Browser gespeichert hat, auch die Anmeldung mit dem Konto. */
   deleteAll() {
     const store = storage();
     if (store) {

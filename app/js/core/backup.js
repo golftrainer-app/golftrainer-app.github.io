@@ -7,6 +7,8 @@ import { decodeData, encodeData } from "./model.js";
 
 export const FORMAT = "golftrainer-backup";
 export const CURRENT_VERSION = 1;
+/** Steht als `app` in der Sicherung und im Dokument auf dem Server, höchstens 40 Zeichen. */
+export const APP = "Golf Trainer im Browser";
 
 export class BackupError extends Error {
   constructor(kind) {
@@ -21,7 +23,7 @@ export class BackupError extends Error {
 }
 
 /** Sicherungsdatei als Text. `extra`: Felder anderer Versionen, die erhalten bleiben. */
-export function createBackup(data, now = new Date(), app = "Golf Trainer im Browser") {
+export function createBackup(data, now = new Date(), app = APP) {
   return JSON.stringify(
     {
       format: FORMAT,
@@ -49,7 +51,12 @@ export function readBackup(text) {
   } catch {
     throw new BackupError("notABackup");
   }
-  if (!json || json.format !== FORMAT) throw new BackupError("notABackup");
+  return readBackupJSON(json);
+}
+
+/** Eine schon gelesene Sicherung, z. B. das Dokument vom Server. Fehler sind immer BackupError. */
+export function readBackupJSON(json) {
+  if (!json || typeof json !== "object" || json.format !== FORMAT) throw new BackupError("notABackup");
   if (typeof json.version !== "number" || json.version > CURRENT_VERSION) throw new BackupError("newerVersion");
   const payload = json.payload ?? {};
   const createdAt = typeof json.createdAt === "number" ? fromStored(json.createdAt) : new Date(NaN);
@@ -65,10 +72,27 @@ export function readBackup(text) {
   }
 }
 
+/**
+ * Das Dokument für den Server beim Abgleich über das Konto: wie die Sicherung,
+ * mit dem Zeitpunkt der letzten Änderung als Stand, ohne Videos, laufende
+ * Stoppuhr und Kopplungscode fürs iPad, wie syncPayload in der App. Gibt das
+ * Objekt, seinen Text und den Text der Daten allein (für die Prüfsumme) zurück.
+ */
+export function syncDocument(data, changedAt, app = APP) {
+  const payload = { ...(data.extra ?? {}), ...encodeData(data) };
+  delete payload.clips;
+  delete payload.runningTraining;
+  if (payload.captureSettings && typeof payload.captureSettings === "object" && !Array.isArray(payload.captureSettings)) {
+    payload.captureSettings = { ...payload.captureSettings, screenCode: "" };
+  }
+  const object = { format: FORMAT, version: CURRENT_VERSION, createdAt: toStored(changedAt), app, payload };
+  return { object, text: JSON.stringify(object), payloadText: JSON.stringify(payload) };
+}
+
 /** Felder der App, die die Web-App nicht bearbeitet, z. B. Schwunganalysen. */
 export function extraFields(payload) {
   // „slots“ stammt aus älteren Versionen mit festen Trainingszeiten. Es fällt weg, statt mitzureisen.
-  const known = new Set(["handedness", "golfWeek", "slots", "focusPoints", "rounds", "results", "tournaments", "trainingLog", "launchSessions", "csvMappings", "reminders", "weekPlan"]);
+  const known = new Set(["handedness", "golfWeek", "slots", "focusPoints", "rounds", "results", "tournaments", "trainingLog", "launchSessions", "csvMappings", "reminders", "weekPlan", "deletions"]);
   const extra = {};
   for (const [key, value] of Object.entries(payload)) {
     // „__proto__“ würde den Prototyp ändern statt ein Feld anzulegen.
