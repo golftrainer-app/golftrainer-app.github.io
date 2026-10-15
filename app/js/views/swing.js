@@ -78,8 +78,14 @@ export function swingPage(app) {
           </ul>`,
           { footer: "Der CSV-Export der Garmin-Golf-App (Approach R10 und R50): Schläge, Distanztabelle pro Schläger und Verlauf über die Sessions." },
         )}
+        ${chapter(
+          "Schwunganalyse",
+          html`<ul class="rows">
+            <li><a class="row" href="#/schwung/analysen"><span class="row-main row-title">Analysen aus der App</span><span class="row-value">${app.store.analyses().length}</span></a></li>
+          </ul>`,
+          { footer: "Das 3D-Skelett schätzt die App für iPhone und iPad aus dem Video. Mit dem Konto kommen Phasen, Kennzahlen und Rückmeldung hierher, ohne Video." },
+        )}
         ${chapter("So stellst du die Kamera auf", TIPS.map(tip))}
-        <p class="note">Die Schwunganalyse mit 3D-Skelett gibt es nur in der App für iPhone und iPad.</p>
       `;
     },
     mount(root) {

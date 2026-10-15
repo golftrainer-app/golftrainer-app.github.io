@@ -1,0 +1,424 @@
+{
+  "version": 1,
+  "targets": [
+    {
+      "metric": "shoulderTurnTop",
+      "swingTypes": ["full"],
+      "low": 80,
+      "high": 110,
+      "note": "Tour-Spieler drehen die Schultern bis zum Umkehrpunkt im Schnitt um etwa 90 bis 100°, mit dem Driver eher mehr als mit dem Eisen. Kein Wert trennt starke und schwache Spieler so deutlich.",
+      "strength": "Du drehst die Schultern so weit wie gute Spieler.",
+      "hints": [
+        {
+          "id": "shoulder-turn-low",
+          "below": 70,
+          "priority": 2,
+          "title": "Wenig Schulterdrehung",
+          "text": "Deine Schultern drehen sich bis zum Umkehrpunkt nur um {wert}.",
+          "advice": "Mehr Drehung bringt Länge, ohne dass du schneller schlagen musst. Dreh den Rücken zum Ziel, die Arme kommen mit. Das hintere Knie darf sich dabei etwas strecken.",
+          "drills": ["swing-belly-turn", "iron-feet-together"],
+          "focus": "Schultern voll drehen, Rücken zum Ziel"
+        }
+      ],
+      "sources": [
+        {"title": "Golf Digest – Useful swing facts from Sportsbox AI", "url": "https://www.golfdigest.com/story/useful-golf-swingfacts-sportsbox-ai-graph"},
+        {"title": "GOLFTEC – Fix that weak slice with this hip rotation drill", "url": "https://scramble.golftec.com/blog/2022/01/fix-that-weak-slice-with-this-hip-rotation-drill/"},
+        {"title": "Golf Digest – Swing by numbers: new study unlocks 6 swing secrets", "url": "https://www.golfdigest.com/story/swing-by-numbers-new-study-unlocks-6-swing-secrets"}
+      ]
+    },
+    {
+      "metric": "hipTurnTop",
+      "swingTypes": ["full"],
+      "low": 30,
+      "high": 55,
+      "note": "Die Hüfte dreht bis zum Umkehrpunkt bei Tour-Spielern etwa 40 bis 50°, bei Jugendlichen im Leistungssport im Schnitt rund 40 bis 47°.",
+      "strength": "Deine Hüfte dreht im Rückschwung so weit wie bei guten Spielern.",
+      "hints": [
+        {
+          "id": "hip-turn-low",
+          "below": 20,
+          "priority": 1,
+          "title": "Hüfte dreht kaum",
+          "text": "Deine Hüfte dreht sich bis zum Umkehrpunkt nur um {wert}.",
+          "advice": "Eine steife Hüfte bremst die ganze Drehung, oft schiebt sie dann zur Seite. Lass die Hüfte im Rückschwung mitdrehen, das hintere Knie darf sich etwas strecken.",
+          "drills": ["swing-belly-turn"],
+          "focus": "Hüfte im Rückschwung mitdrehen"
+        }
+      ],
+      "sources": [
+        {"title": "Zheng u. a. – Kinematic analysis of swing in pro and amateur golfers (2008)", "url": "https://pubmed.ncbi.nlm.nih.gov/18563677/"},
+        {"title": "Golf.com – GOLFTEC: How much should your hips and shoulders turn", "url": "https://golf.com/instruction/lower-body-shoulder-turn-golftec/"},
+        {"title": "Gryc u. a. – Golf swing of elite youth players (Sports, 2023)", "url": "https://www.mdpi.com/2075-4663/11/3/60"}
+      ]
+    },
+    {
+      "metric": "xFactorTop",
+      "swingTypes": ["full"],
+      "low": 30,
+      "high": 60,
+      "note": "Die Schultern drehen weiter als die Hüfte, bei Tour-Spielern um etwa 40 bis 55°. Mehr ist nicht immer besser: Ein sehr großer Abstand belastet den unteren Rücken.",
+      "strength": "Deine Schultern drehen deutlich weiter als die Hüfte, wie bei guten Spielern.",
+      "hints": [
+        {
+          "id": "x-factor-low",
+          "below": 20,
+          "priority": 1,
+          "title": "Schultern und Hüfte drehen fast gleich",
+          "text": "Am Umkehrpunkt drehen deine Schultern nur {wert} weiter als die Hüfte.",
+          "advice": "Ohne Abstand zwischen Schultern und Hüfte fehlt die Spannung, aus der der Abschwung kommt. Dreh die Schultern weiter und halte die Hüfte etwas ruhiger.",
+          "drills": ["swing-belly-turn", "iron-step"],
+          "focus": "Schultern weiter drehen als die Hüfte"
+        }
+      ],
+      "sources": [
+        {"title": "TPI – X-Factor: why more isn’t always better", "url": "https://www.mytpi.com/articles/swing/x-factor-why-more-isn%27t-always-better"},
+        {"title": "Cheetham u. a. – The importance of stretching the X-Factor in the downswing of golf (2001)", "url": "https://www.philcheetham.com/wp-content/uploads/2011/11/Stretching-the-X-Factor-Paper.pdf"},
+        {"title": "Stanford Medicine – Study of golf swings pinpoints differences between pros and amateurs (2011)", "url": "https://med.stanford.edu/news/all-news/2011/07/study-of-golf-swings-pinpoints-biomechanical-differences-between-pros-and-amateurs.html"}
+      ]
+    },
+    {
+      "metric": "hipOpenImpact",
+      "swingTypes": ["full"],
+      "low": 25,
+      "high": 50,
+      "note": "Im Treffmoment ist die Hüfte bei Tour-Spielern etwa 30 bis 45° zum Ziel geöffnet, im Schnitt um 36°. Spieler mit hohem Handicap kommen auf rund 20°.",
+      "strength": "Deine Hüfte ist im Treffmoment schön zum Ziel geöffnet.",
+      "hints": [
+        {
+          "id": "hip-open-low",
+          "below": 15,
+          "priority": 2,
+          "title": "Hüfte im Treffmoment kaum offen",
+          "text": "Im Treffmoment ist deine Hüfte {wert}.",
+          "advice": "Gute Spieler drehen die Hüfte im Abschwung zuerst zum Ziel. Das gibt den Armen Platz und bringt Tempo. Bleibt die Hüfte stehen, übernehmen die Arme und Hände.",
+          "drills": ["iron-step", "drive-hold-finish"],
+          "focus": "Hüfte im Abschwung zum Ziel aufdrehen"
+        }
+      ],
+      "sources": [
+        {"title": "Golf.com – How much Tour players turn their hips at impact (GOLFTEC)", "url": "https://golf.com/instruction/how-much-tour-players-turn-their-hips-impact/"},
+        {"title": "GOLFTEC – SwingTRU motion study (PR Newswire)", "url": "https://www.prnewswire.com/news-releases/golftec-unveils-big-data-insight-via-swingtru-motion-study-300250390.html"}
+      ]
+    },
+    {
+      "metric": "spineTiltAddress",
+      "swingTypes": ["full"],
+      "low": 25,
+      "high": 45,
+      "note": "Beim Ansprechen neigen gute Spieler den Oberkörper etwa 30° (Driver) bis 40° (Eisen) nach vorne. Viele Amateure stehen mit 20 bis 22° deutlich aufrechter.",
+      "strength": "Deine Vorneigung beim Ansprechen passt.",
+      "hints": [
+        {
+          "id": "posture-upright",
+          "below": 20,
+          "priority": 1,
+          "title": "Sehr aufrecht beim Ansprechen",
+          "text": "Beim Ansprechen neigst du den Oberkörper nur {wert} nach vorne.",
+          "advice": "Neig dich aus der Hüfte nach vorne, der Rücken bleibt gerade und die Arme hängen locker. Dann kann der Oberkörper um die Wirbelsäule drehen.",
+          "drills": ["swing-club-across-chest"],
+          "focus": "Haltung beim Ansprechen: aus der Hüfte neigen"
+        },
+        {
+          "id": "posture-bent",
+          "above": 50,
+          "priority": 1,
+          "title": "Stark gebeugt beim Ansprechen",
+          "text": "Beim Ansprechen neigst du den Oberkörper {wert} nach vorne.",
+          "advice": "So weit gebeugt ist die Drehung schwer, und du richtest dich im Schwung leicht auf. Steh etwas näher am Ball, die Arme hängen locker unter den Schultern.",
+          "drills": ["swing-club-across-chest"],
+          "focus": "Haltung beim Ansprechen: weniger beugen"
+        }
+      ],
+      "sources": [
+        {"title": "Golf.com – The key relationship to maintain your posture (GOLFTEC)", "url": "https://golf.com/instruction/key-relationship-maintain-posture-golftec/"},
+        {"title": "GOLFTEC – What is bending in the golf swing?", "url": "https://scramble.golftec.com/blog/2015/03/what-is-bending-in-golf-swing/"},
+        {"title": "Kim u. a. – Trunk and pelvis kinematics of professional golfers (2018)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6243633/"}
+      ]
+    },
+    {
+      "metric": "spineTiltChange",
+      "swingTypes": ["full"],
+      "low": -5,
+      "high": 5,
+      "note": "Im Rückschwung verliert jeder etwas Vorneigung. Gute Spieler sind im Treffmoment wieder bei der Neigung vom Ansprechen. Unter 5° Unterschied gilt als gehalten, über 10° als Loss of Posture.",
+      "strength": "Du bleibst bis zum Treffmoment in deiner Vorneigung.",
+      "hints": [
+        {
+          "id": "loss-of-posture",
+          "below": -10,
+          "priority": 3,
+          "title": "Aufrichten im Abschwung (Loss of Posture)",
+          "text": "Vom Ansprechen bis zum Treffmoment hast du dich {wert}.",
+          "advice": "Wer sich aufrichtet, trifft den Ball oft dünn, mit der Spitze oder schiebt ihn vom Körper weg (Push). Lass den Po hinten und bleib in deiner Neigung, bis der Ball weg ist.",
+          "drills": ["swing-tailbone-stick", "swing-club-across-chest"],
+          "focus": "In der Vorneigung bleiben, bis der Ball weg ist"
+        }
+      ],
+      "sources": [
+        {"title": "TPI – Swing characteristics: Loss of Posture", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/loss-of-posture"},
+        {"title": "Golf.com – The key relationship to maintain your posture (GOLFTEC)", "url": "https://golf.com/instruction/key-relationship-maintain-posture-golftec/"}
+      ]
+    },
+    {
+      "metric": "headSwayTop",
+      "swingTypes": ["full"],
+      "low": -0.03,
+      "high": 0.06,
+      "note": "Erfahrungswert: Gute Spieler bewegen den Kopf im Rückschwung nur wenige Zentimeter vom Ziel weg, meist weniger als 10 cm. Studien mit genauen Werten gibt es kaum.",
+      "strength": "Dein Kopf bleibt im Rückschwung ruhig.",
+      "hints": [
+        {
+          "id": "head-sway-back",
+          "above": 0.10,
+          "priority": 2,
+          "title": "Kopf wandert nach hinten",
+          "text": "Dein Kopf wandert bis zum Umkehrpunkt {wert}.",
+          "advice": "Wandert der Kopf weit mit, schiebt meist der ganze Körper zur Seite, statt zu drehen. Dann musst du im Abschwung genau zurück, um den Ball zu treffen. Dreh dich um die Wirbelsäule, der Kopf bleibt über dem Ball.",
+          "drills": ["swing-shadow", "swing-hip-sticks"],
+          "focus": "Kopf ruhig halten, drehen statt schieben"
+        },
+        {
+          "id": "head-reverse",
+          "below": -0.04,
+          "priority": 2,
+          "title": "Kopf kippt zum Ziel (Reverse Pivot)",
+          "text": "Dein Kopf geht im Rückschwung {wert}.",
+          "advice": "Im Rückschwung gehört das Gewicht eher auf die hintere Seite. Kippt der Oberkörper zum Ziel, fehlt die Kraft im Abschwung, und das Zurücklehnen belastet den Rücken.",
+          "drills": ["swing-shadow", "swing-club-across-chest"],
+          "focus": "Im Rückschwung hinter dem Ball bleiben"
+        }
+      ],
+      "sources": [
+        {"title": "Sportsbox AI – What are the tracker numbers in the 3D Golf app?", "url": "https://help.sportsbox.ai/what-is-a-tracker-numbers-in-the-sportsbox-3dgolf-app"},
+        {"title": "Golf.com – Nick Clearwater clarifies the hip-sway misunderstanding (GOLFTEC)", "url": "https://golf.com/instruction/nick-clearwater-calrifies-hip-sway-misunderstanding/"},
+        {"title": "TPI – Swing characteristics: Reverse Spine Angle", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/reverse-spine-angle"}
+      ]
+    },
+    {
+      "metric": "headSwayImpact",
+      "swingTypes": ["full"],
+      "low": -0.03,
+      "high": 0.10,
+      "note": "Erfahrungswert: Im Treffmoment ist der Kopf guter Spieler dort, wo er beim Ansprechen war, oder etwas dahinter. Die Hüfte geht zum Ziel, der Kopf bleibt.",
+      "strength": "Im Treffmoment ist dein Kopf hinter dem Ball.",
+      "hints": [
+        {
+          "id": "head-lunge",
+          "below": -0.05,
+          "priority": 2,
+          "title": "Kopf schiebt zum Ziel (Lunge)",
+          "text": "Bis zum Treffmoment ist dein Kopf {wert} gewandert.",
+          "advice": "Schiebt der Oberkörper zum Ziel, trifft der Schläger zu steil und die Schlagfläche bleibt oft offen. Lass die Hüfte zum Ziel gehen und den Kopf hinter dem Ball.",
+          "drills": ["swing-shadow", "iron-feet-together"],
+          "focus": "Kopf hinter dem Ball lassen"
+        }
+      ],
+      "sources": [
+        {"title": "TPI – Swing characteristics: Forward Lunge", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/forward-lunge_v2"},
+        {"title": "Sportsbox AI – What are the tracker numbers in the 3D Golf app?", "url": "https://help.sportsbox.ai/what-is-a-tracker-numbers-in-the-sportsbox-3dgolf-app"}
+      ]
+    },
+    {
+      "metric": "headHeightImpact",
+      "swingTypes": ["full"],
+      "low": -0.06,
+      "high": 0.02,
+      "note": "Im Abschwung sinken gute Spieler etwas ab, bis zur Mitte des Abschwungs um etwa 5 cm, und kommen bis zum Ball ein Stück wieder hoch. Ein paar Zentimeter tiefer als beim Ansprechen sind normal.",
+      "strength": "Dein Kopf bleibt in der Höhe ruhig.",
+      "hints": [
+        {
+          "id": "head-up",
+          "above": 0.04,
+          "priority": 2,
+          "title": "Kopf kommt hoch",
+          "text": "Bis zum Treffmoment geht dein Kopf {wert}.",
+          "advice": "Kommt der Kopf hoch, richtet sich meist der ganze Oberkörper auf, und der Ball wird dünn getroffen. Bleib unten, bis der Ball weg ist.",
+          "drills": ["swing-tailbone-stick", "swing-shadow"],
+          "focus": "Unten bleiben, bis der Ball weg ist"
+        },
+        {
+          "id": "head-drop",
+          "below": -0.10,
+          "priority": 1,
+          "title": "Kopf sinkt stark ab",
+          "text": "Bis zum Treffmoment geht dein Kopf {wert}.",
+          "advice": "Etwas Absinken ist normal. Sinkt der Kopf viel, trifft der Schläger leicht den Boden vor dem Ball. Halte die Knie im Abschwung ruhiger.",
+          "drills": ["swing-shadow"],
+          "focus": "Höhe halten im Abschwung"
+        }
+      ],
+      "sources": [
+        {"title": "GOLFTEC – Explaining head drop in the golf swing", "url": "https://scramble.golftec.com/blog/2015/04/explaining-head-drop-golf-swing/"},
+        {"title": "Sportsbox AI – What are the tracker numbers in the 3D Golf app?", "url": "https://help.sportsbox.ai/what-is-a-tracker-numbers-in-the-sportsbox-3dgolf-app"}
+      ]
+    },
+    {
+      "metric": "hipSwayTop",
+      "swingTypes": ["full"],
+      "low": -0.03,
+      "high": 0.03,
+      "note": "Bis zum Umkehrpunkt bleibt die Hüfte guter Spieler fast an ihrem Platz, im Schnitt keinen Zentimeter daneben. Spieler mit hohem Handicap schieben oft mehrere Zentimeter vom Ziel weg (Sway).",
+      "strength": "Deine Hüfte dreht im Rückschwung, ohne zu schieben.",
+      "hints": [
+        {
+          "id": "hip-sway",
+          "above": 0.05,
+          "priority": 3,
+          "title": "Hüfte schiebt nach hinten (Sway)",
+          "text": "Deine Hüfte schiebt bis zum Umkehrpunkt {wert}.",
+          "advice": "Beim Sway wandert das Gewicht auf die Außenseite des hinteren Fußes. Im Abschwung musst du genau zurück, um den Ball zu treffen. Dreh die Hüfte, statt sie zu schieben, das Gewicht bleibt innen am hinteren Fuß.",
+          "drills": ["swing-hip-sticks", "iron-feet-together"],
+          "focus": "Im Rückschwung drehen, nicht schieben"
+        }
+      ],
+      "sources": [
+        {"title": "TPI – Swing characteristics: Sway", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/sway"},
+        {"title": "Golf.com – Nick Clearwater clarifies the hip-sway misunderstanding (GOLFTEC)", "url": "https://golf.com/instruction/nick-clearwater-calrifies-hip-sway-misunderstanding/"},
+        {"title": "Golf.com – Data that separates low and high handicaps (Sportsbox)", "url": "https://golf.com/instruction/one-piece-swing-data-separate-low-high-handicap/"}
+      ]
+    },
+    {
+      "metric": "hipSlideImpact",
+      "swingTypes": ["full"],
+      "low": -0.13,
+      "high": -0.05,
+      "note": "Bis zum Treffmoment bewegt sich die Hüfte guter Spieler etwa 8 bis 13 cm zum Ziel und dreht dabei auf. Amateure kommen oft nur auf 5 bis 8 cm.",
+      "strength": "Deine Hüfte verschiebt sich im Abschwung wie bei guten Spielern zum Ziel.",
+      "hints": [
+        {
+          "id": "hanging-back",
+          "above": -0.025,
+          "priority": 2,
+          "title": "Hüfte bleibt hinten (Hanging Back)",
+          "text": "Vom Ansprechen bis zum Treffmoment bewegt sich deine Hüfte {wert}.",
+          "advice": "Bleibt das Gewicht auf dem hinteren Fuß, liegt der tiefste Punkt des Schwungs hinter dem Ball. Dann triffst du fett oder dünn. Bring das Gewicht im Abschwung auf den vorderen Fuß.",
+          "drills": ["iron-step", "drive-hold-finish"],
+          "focus": "Gewicht im Abschwung nach vorne bringen"
+        },
+        {
+          "id": "hip-slide",
+          "below": -0.16,
+          "priority": 2,
+          "title": "Hüfte schiebt weit zum Ziel (Slide)",
+          "text": "Vom Ansprechen bis zum Treffmoment bewegt sich deine Hüfte {wert}.",
+          "advice": "Etwas Bewegung zum Ziel ist richtig. Schiebt die Hüfte weit, statt aufzudrehen, kommt der Schläger zu spät und die Schlagfläche bleibt offen. Erst etwas zum Ziel, dann drehen.",
+          "drills": ["swing-hip-sticks"],
+          "focus": "Hüfte drehen statt schieben"
+        }
+      ],
+      "sources": [
+        {"title": "Golf.com – Why hip sway matters (GOLFTEC)", "url": "https://golf.com/instruction/why-hip-sway-matters-golf-tec/"},
+        {"title": "Golf Digest – Pelvis slide: the swing metric to track", "url": "https://www.golfdigest.com/story/pelvis-slide-golf-swing-metric-how-to-track-sports"},
+        {"title": "TPI – Swing characteristics: Hanging Back", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/hanging-back"},
+        {"title": "TPI – Swing characteristics: Slide", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/slide"}
+      ]
+    },
+    {
+      "metric": "hipTowardBallImpact",
+      "swingTypes": ["full"],
+      "high": 0.04,
+      "note": "Gute Spieler lassen die Hüfte im Abschwung hinten. Bis zum Treffmoment kommt sie höchstens wenige Zentimeter zum Ball, oft geht sie sogar zurück.",
+      "strength": "Deine Hüfte bleibt im Abschwung hinten.",
+      "hints": [
+        {
+          "id": "early-extension",
+          "above": 0.08,
+          "priority": 3,
+          "title": "Hüfte kommt zum Ball (Early Extension)",
+          "text": "Bis zum Treffmoment kommt deine Hüfte {wert} zum Ball.",
+          "advice": "Kommt die Hüfte zum Ball, ist kein Platz mehr für die Arme. Du richtest dich auf und musst mit den Händen ausgleichen. Lass den Po im Abschwung hinten, als würde er an einer Wand bleiben.",
+          "drills": ["swing-tailbone-stick", "swing-club-across-chest"],
+          "focus": "Po im Abschwung hinten lassen"
+        }
+      ],
+      "sources": [
+        {"title": "TPI – Swing characteristics: Early Extension", "url": "https://www.mytpi.com/improve-my-game/swing-characteristics/early-extension"},
+        {"title": "Sportsbox AI – What is early extension?", "url": "https://help.sportsbox.ai/what-is-early-extension"}
+      ]
+    },
+    {
+      "metric": "tempoRatio",
+      "swingTypes": ["full"],
+      "low": 2.3,
+      "high": 3.3,
+      "note": "Tour-Spieler schwingen etwa 3 : 1, meist zwischen 2,5 und 3,1 : 1, gemessen am Schläger. Die Hände kehren oben etwas früher um, deshalb misst die App an den Händen meist etwas weniger.",
+      "strength": "Dein Tempo liegt im Bereich guter Spieler.",
+      "minimumFrameRate": 55,
+      "hints": [
+        {
+          "id": "tempo-hasty",
+          "below": 2.0,
+          "priority": 2,
+          "title": "Hastiger Rückschwung",
+          "text": "Dein Tempo liegt bei {wert}. Der Rückschwung ist kurz im Vergleich zum Abschwung.",
+          "advice": "Oft beginnt der Abschwung, bevor der Rückschwung fertig ist. Lass dir oben einen Moment Zeit und beschleunige erst im Abschwung. Ein fester Takt hilft, z. B. mit dem Tempo-Trainer.",
+          "drills": ["drive-tempo", "wedge-pause"],
+          "focus": "Ruhiger Rückschwung, Tempo 3 : 1"
+        },
+        {
+          "id": "tempo-slow-backswing",
+          "above": 4.0,
+          "priority": 1,
+          "title": "Sehr langer Rückschwung",
+          "text": "Dein Tempo liegt bei {wert}. Der Rückschwung dauert lang im Vergleich zum Abschwung.",
+          "advice": "Ein sehr langsamer Rückschwung nimmt dem Schwung oft Rhythmus und Länge. Hol zügig aus, ohne zu reißen. Tour-Spieler sind schneller, als es im Fernsehen aussieht.",
+          "drills": ["drive-tempo"],
+          "focus": "Zügig ausholen, Tempo 3 : 1"
+        }
+      ],
+      "sources": [
+        {"title": "Tour Tempo – What the numbers mean", "url": "https://tourtempo.com/blogs/tips/what-the-numbers-mean"},
+        {"title": "Blast Motion – What is golf swing tempo ratio?", "url": "https://blastmotion.com/blog/what-is-golf-swing-tempo-ratio/"},
+        {"title": "TPI – Measuring the timing of the golf swing from video", "url": "https://www.mytpi.com/articles/biomechanics/measuring-the-timing-of-the-golf-swing-from-video"}
+      ]
+    },
+    {
+      "metric": "tempoRatio",
+      "swingTypes": ["pitch", "chip"],
+      "low": 1.5,
+      "high": 2.5,
+      "note": "Im kurzen Spiel schwingen Tour-Spieler etwa 2 : 1, meist zwischen 1,7 und 2,5 : 1. Die Länge des Schlags kommt aus der Länge des Rückschwungs, nicht aus dem Tempo.",
+      "strength": "Dein Tempo passt zum kurzen Spiel.",
+      "minimumFrameRate": 55,
+      "hints": [
+        {
+          "id": "short-tempo-even",
+          "below": 1.2,
+          "priority": 2,
+          "title": "Abschwung fast so lang wie der Rückschwung",
+          "text": "Dein Tempo liegt bei {wert}. Rückschwung und Abschwung dauern fast gleich lang.",
+          "advice": "Oft ist der Rückschwung hastig, oder du bremst im Abschwung ab. Beides macht die Weite unberechenbar. Hol ruhig aus, im Takt wie ein Pendel, und beschleunige gleichmäßig durch den Ball. Die Weite steuerst du über die Länge des Rückschwungs.",
+          "drills": ["wedge-clock", "wedge-pause"],
+          "focus": "Ruhiger Takt im Kurzspiel, durch den Ball beschleunigen"
+        },
+        {
+          "id": "short-tempo-jab",
+          "above": 3.0,
+          "priority": 1,
+          "title": "Kurzer, harter Abschwung",
+          "text": "Dein Tempo liegt bei {wert}. Der Abschwung ist sehr kurz im Vergleich zum Rückschwung.",
+          "advice": "Das deutet auf ein Zustoßen zum Ball. Im kurzen Spiel dauert der Abschwung etwa halb so lang wie der Rückschwung. Hol etwas zügiger aus und schwing ohne Ruck durch.",
+          "drills": ["wedge-clock"],
+          "focus": "Gleichmäßiger Takt im Kurzspiel, etwa 2 : 1"
+        }
+      ],
+      "sources": [
+        {"title": "Tour Tempo – What the numbers mean", "url": "https://tourtempo.com/blogs/tips/what-the-numbers-mean"},
+        {"title": "Blast Motion – What is golf swing tempo ratio?", "url": "https://blastmotion.com/blog/what-is-golf-swing-tempo-ratio/"}
+      ]
+    },
+    {
+      "metric": "swingTime",
+      "swingTypes": ["full"],
+      "low": 0.85,
+      "high": 1.3,
+      "note": "Vom Beginn des Rückschwungs bis zum Treffmoment brauchen Tour-Spieler etwa 0,93 bis 1,2 Sekunden. Langsamer ist kein Fehler, wichtig ist das Verhältnis.",
+      "minimumFrameRate": 55,
+      "hints": [],
+      "sources": [
+        {"title": "Tour Tempo – What the numbers mean", "url": "https://tourtempo.com/blogs/tips/what-the-numbers-mean"},
+        {"title": "Blast Motion – What is golf swing tempo ratio?", "url": "https://blastmotion.com/blog/what-is-golf-swing-tempo-ratio/"}
+      ]
+    }
+  ]
+}

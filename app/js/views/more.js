@@ -13,6 +13,17 @@ import { teamStatusText } from "./team.js";
 import { applyGolfWeekClick, copyGolfWeek, dayButtons, golfDays, minutesRows } from "./golfweek.js";
 
 const PRIORITY_NAMES = ["Normal", "Wichtig", "Sehr wichtig"];
+
+/** Vorschlag aus der Schwunganalyse für den nächsten neuen Schwerpunkt, bis der Editor ihn liest. */
+let proposedFocus = null;
+export function proposeFocus(point) {
+  proposedFocus = point;
+}
+function takeProposedFocus() {
+  const point = proposedFocus;
+  proposedFocus = null;
+  return point;
+}
 const priorityName = (priority) => PRIORITY_NAMES[Math.min(3, Math.max(1, priority)) - 1];
 
 /** Spielhand wie Handedness im Kern der App. */
@@ -279,9 +290,10 @@ export function focusEditor(app, id) {
   const { store } = app;
   const existing = id ? store.data.focusPoints.find((point) => point.id === id) : null;
   if (id && !existing) return { title: "Schwerpunkt", tab: "mehr", parent: "#/mehr", render: () => empty("Diesen Schwerpunkt gibt es nicht mehr.") };
+  const proposal = existing ? null : takeProposedFocus();
   const point = existing
     ? { ...existing, drillIDs: [...existing.drillIDs] }
-    : { id: newID(), text: "", area: "approach", priority: 2, isActive: true, drillIDs: [] };
+    : { id: newID(), text: "", area: "approach", priority: 2, isActive: true, drillIDs: [], ...(proposal ?? {}) };
 
   /** Technik-Übungen des gewählten Bereichs und alle Korrektur-Übungen. */
   const techniqueDrills = () => store.library.filter((drill) => drill.mode === "block" && !drill.isWarmUp && (drill.area === point.area || drill.isCorrective));
@@ -307,7 +319,7 @@ export function focusEditor(app, id) {
     render() {
       return html`<form class="editor" novalidate>
         <label class="field"><span>Schwerpunkt</span><textarea name="text" rows="2" maxlength="${LIMITS.textLength}" placeholder="z. B. Ruhiger Übergang">${point.text}</textarea></label>
-        <p class="note" id="focus-hint" data-hint aria-live="polite">Trag hier ein, woran du gerade mit deinem Trainer arbeitest.</p>
+        <p class="note" id="focus-hint" data-hint aria-live="polite">${proposal ? "Vorschlag aus der Schwunganalyse. Passe den Text an und besprich ihn mit deinem Trainer." : "Trag hier ein, woran du gerade mit deinem Trainer arbeitest."}</p>
         <label class="field"><span>Bereich</span>
           <select name="area">${AREAS.map((area) => html`<option value="${area}" ${area === point.area ? "selected" : ""}>${AREA_NAMES[area]}</option>`)}</select>
         </label>

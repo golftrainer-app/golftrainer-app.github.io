@@ -4,6 +4,7 @@
 // wenn du dich mit deinem Konto anmeldest (account.js).
 // Was nur die App kennt, z. B. Launch-Monitor-Sessions aus einer Sicherung vom
 // iPhone, bleibt unverändert erhalten.
+import { decodeAnalyses, sortAnalyses } from "./core/analysis.js";
 import { KEPT_LISTS, comparableText, createBackup, extraFields, merge, mergeResults } from "./core/backup.js";
 import { planCalendar } from "./core/calendar.js";
 import { seed, stations } from "./core/challenge.js";
@@ -49,9 +50,11 @@ function storage() {
 }
 
 export class Store {
-  constructor(library, guide) {
+  constructor(library, guide, feedbackRules = null) {
     this.library = library;
     this.guide = guide;
+    /** Richtwerte und Hinweise der Schwunganalyse aus data/swing_feedback.json, wie in der App. */
+    this.feedbackRules = feedbackRules;
     this.planner = new Planner(library);
     this.byID = new Map(library.map((drill) => [drill.id, drill]));
     this.listeners = new Set();
@@ -62,16 +65,16 @@ export class Store {
     this.running = this.readRunning();
   }
 
-  /** Übungen und Turnierleitfaden laden, dann die gespeicherten Daten. */
+  /** Übungen, Turnierleitfaden und Richtwerte der Schwunganalyse laden, dann die gespeicherten Daten. */
   static async open() {
-    const [drills, guide] = await Promise.all(
-      ["data/drills.json", "data/tournament.json"].map(async (path) => {
+    const [drills, guide, feedbackRules] = await Promise.all(
+      ["data/drills.json", "data/tournament.json", "data/swing_feedback.json"].map(async (path) => {
         const response = await fetch(path);
         if (!response.ok) throw new Error(`${path} fehlt (${response.status}).`);
         return response.json();
       }),
     );
-    return new Store(decodeLibrary(drills), guide);
+    return new Store(decodeLibrary(drills), guide, feedbackRules);
   }
 
   // MARK: - Lesen und Schreiben
@@ -200,6 +203,26 @@ export class Store {
 
   get hasStoredData() {
     return Boolean(storage()?.getItem(STORAGE_KEY));
+  }
+
+  // MARK: - Schwunganalysen
+
+  /** Analysen aus der App, wie in `extra.analyses` gespeichert, gelesen und der neueste Schwung zuerst. */
+  analyses() {
+    return sortAnalyses(decodeAnalyses(this.data.extra?.analyses));
+  }
+
+  analysis(id) {
+    return this.analyses().find((analysis) => analysis.id === id) ?? null;
+  }
+
+  /** Löscht eine Analyse mit Löschmarke, damit sie über das Konto auch in der App verschwindet. Das Video bleibt dort als Clip. */
+  deleteAnalysis(id) {
+    this.change((data) => {
+      const list = Array.isArray(data.extra?.analyses) ? data.extra.analyses : [];
+      data.extra = { ...data.extra, analyses: list.filter((item) => String(item?.id) !== String(id)) };
+      this.noteDeletion("analyses", String(id));
+    });
   }
 
   // MARK: - Übungen

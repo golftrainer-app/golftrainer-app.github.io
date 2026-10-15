@@ -1117,3 +1117,24 @@ dialog.dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
 .templates[open] summary .mark { transform: rotate(180deg); }
 .templates .rows { margin-left: 12px; }
 .kicker .flag { color: var(--flag); }
+
+/* MARK: Schwunganalyse */
+
+/* Zeitleiste der Phasen: Rück- und Durchschwung grau, der Abschwung in Tinte, Striche an den Zeitpunkten. */
+.phase-timeline { display: block; width: 100%; height: 32px; margin: 4px 0 8px; }
+.phase-timeline .base { stroke: var(--rule); stroke-width: 1; }
+.phase-timeline .segment { fill: var(--ink-secondary); }
+.phase-timeline .segment.downswing { fill: var(--ink); }
+.phase-timeline .tick { stroke: var(--ink); stroke-width: 1; }
+.phase-timeline .tick.impact { stroke-width: 2; }
+.swatch { display: inline-block; width: 12px; height: 12px; margin-right: 10px; vertical-align: -1px; background: var(--ink-secondary); }
+.swatch.downswing { background: var(--ink); }
+.row.metric .row-value { font-variant-numeric: tabular-nums; text-align: right; }
+.row.metric .row-value.small { font-size: 0.8125rem; }
+.row.unsure .row-title, .row.unsure .row-value { color: var(--ink-secondary); }
+.feedback-hint { padding: 8px 0 4px; }
+.feedback-hint .kicker { margin: 0 0 4px; }
+.feedback-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 6px; font-family: var(--serif); font-size: 1.0625rem; }
+.feedback-text { margin: 0 0 4px; font-family: var(--serif); }
+.feedback-advice { margin: 0 0 6px; font-family: var(--serif); color: var(--ink-secondary); }
+.chart .band { fill: var(--fill); stroke: none; }

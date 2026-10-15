@@ -182,8 +182,10 @@ export function restoring(ids, kind, now, deletions) {
  * Die eigenen Daten mit dem Stand vom Server, wie AppData.merged(with:) in der
  * App: alles von beiden Seiten, Gelöschtes bleibt gelöscht, bei Einstellungen
  * zählt der jüngere Stand, die Erinnerung gehört zu diesem Gerät. Was die
- * Web-App nicht bearbeitet (`extra`, z. B. Schwunganalysen), kommt vom Server,
- * denn hier ändert es sich nie. `preferRemoteSettings`: beim ersten Abgleich
+ * Web-App nicht bearbeitet (`extra`), kommt vom Server, denn hier ändert es
+ * sich nie. Schwunganalysen darin löscht die Web-App seit Oktober 2026, darum
+ * werden sie wie die übrigen Listen zusammengeführt, mit Löschmarken, so wie
+ * `AccountSync.merged` in der App. `preferRemoteSettings`: beim ersten Abgleich
  * nach dem Anmelden gelten die Einstellungen des Kontos, nicht die der eben
  * erst beantworteten Einrichtung.
  */
@@ -206,6 +208,15 @@ export function mergedData(local, remote, { localSavedAt, remoteSavedAt, now, pr
     weekPlan: either(local.weekPlan, remote.weekPlan),
     // Gespeicherte Spaltenzuordnungen: beide, bei gleichem Namen die aus dem jüngeren Stand.
     csvMappings: localWins ? { ...(remote.csvMappings ?? {}), ...(local.csvMappings ?? {}) } : { ...(local.csvMappings ?? {}), ...(remote.csvMappings ?? {}) },
-    extra: { ...(local.extra ?? {}), ...(remote.extra ?? {}) },
+    extra: mergedExtra(local.extra, remote.extra, localSavedAt, remoteSavedAt, deletions),
   };
+}
+
+function mergedExtra(local, remote, localSavedAt, remoteSavedAt, deletions) {
+  const extra = { ...(local ?? {}), ...(remote ?? {}) };
+  if (Array.isArray(local?.analyses) || Array.isArray(remote?.analyses)) {
+    const list = (value) => (Array.isArray(value) ? value.filter((item) => item?.id != null) : []);
+    extra.analyses = merged(list(local?.analyses), localSavedAt, list(remote?.analyses), remoteSavedAt, { deletions, kind: "analyses" });
+  }
+  return extra;
 }
