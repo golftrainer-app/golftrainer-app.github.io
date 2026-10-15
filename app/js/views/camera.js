@@ -520,10 +520,11 @@ function clipRow(clip) {
   return html`<li class="clip">
     <div class="row-main">
       <span class="row-title">${SWING_TYPE_SHORT[clip.swingType] ?? "Voll"} · ${clock(date)} Uhr</span>
-      <span class="row-sub">${oneDecimal.format(clip.duration)} s · Treffmoment bei ${oneDecimal.format(clip.impactOffset)} s · ${TRIGGER_NAMES[clip.trigger] ?? "Knopf"}</span>
+      <span class="row-sub">${oneDecimal.format(clip.duration)} s${clip.impactOffset != null ? ` · Treffmoment bei ${oneDecimal.format(clip.impactOffset)} s` : ""} · ${TRIGGER_NAMES[clip.trigger] ?? (clip.trigger === "import" ? "Aus Fotos" : "Knopf")}</span>
     </div>
     <div class="buttons compact">
       <button type="button" class="button outline" data-action="open" data-id="${clip.id}">Ansehen</button>
+      <a class="button outline" href="#/schwung/analysen/neu/${encodeURIComponent(clip.id)}">Analysieren</a>
       <button type="button" class="button outline" data-action="share" data-id="${clip.id}">Teilen</button>
       <button type="button" class="button outline" data-action="delete" data-id="${clip.id}">Löschen</button>
     </div>

@@ -48,6 +48,11 @@ class MemoryClips {
     return this.items.get(id)?.blob ?? null;
   }
 
+  async update(clip) {
+    const existing = this.items.get(clip.id);
+    if (existing) this.items.set(clip.id, { ...clip, blob: existing.blob });
+  }
+
   async remove(id) {
     this.items.delete(id);
   }
@@ -119,6 +124,16 @@ export class ClipStore {
     const db = await this.open();
     if (!db) return this.fallback.blob(id);
     return (await request(db.transaction("files").objectStore("files").get(id))) ?? null;
+  }
+
+  /** Ändert die Angaben eines Clips, z. B. den Treffmoment. Die Datei bleibt. */
+  async update(clip) {
+    const db = await this.open();
+    if (!db) return this.fallback.update(clip);
+    const transaction = db.transaction("clips", "readwrite");
+    transaction.objectStore("clips").put(clip);
+    await done(transaction);
+    return undefined;
   }
 
   async remove(id) {

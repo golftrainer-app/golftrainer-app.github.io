@@ -216,6 +216,16 @@ export class Store {
     return this.analyses().find((analysis) => analysis.id === id) ?? null;
   }
 
+  /** Legt eine Analyse an oder ersetzt sie, im Format der App (`encodeAnalysis`). */
+  upsertAnalysis(encoded) {
+    this.change((data) => {
+      const list = Array.isArray(data.extra?.analyses) ? data.extra.analyses : [];
+      const index = list.findIndex((item) => String(item?.id) === String(encoded.id));
+      const next = index >= 0 ? list.map((item, position) => (position === index ? encoded : item)) : [...list, encoded];
+      data.extra = { ...data.extra, analyses: next };
+    });
+  }
+
   /** Löscht eine Analyse mit Löschmarke, damit sie über das Konto auch in der App verschwindet. Das Video bleibt dort als Clip. */
   deleteAnalysis(id) {
     this.change((data) => {

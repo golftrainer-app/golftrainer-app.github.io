@@ -81,9 +81,10 @@ export function swingPage(app) {
         ${chapter(
           "Schwunganalyse",
           html`<ul class="rows">
-            <li><a class="row" href="#/schwung/analysen"><span class="row-main row-title">Analysen aus der App</span><span class="row-value">${app.store.analyses().length}</span></a></li>
+            <li><a class="row" href="#/schwung/analysen"><span class="row-main row-title">Analysen</span><span class="row-value">${app.store.analyses().length}</span></a></li>
+            <li><a class="row" href="#/schwung/analysen/neu"><span class="row-main row-title">Schwung analysieren</span><span class="mark" aria-hidden="true">›</span></a></li>
           </ul>`,
-          { footer: "Das 3D-Skelett schätzt die App für iPhone und iPad aus dem Video. Mit dem Konto kommen Phasen, Kennzahlen und Rückmeldung hierher, ohne Video." },
+          { footer: "Aus einem Clip der Kamera oder einem Video aus der Galerie schätzt die Web-App das 3D-Skelett und berechnet Phasen, Drehung, Haltung und Tempo, alles im Browser. Mit dem Konto stehen die Werte auch in der App." },
         )}
         ${chapter("So stellst du die Kamera auf", TIPS.map(tip))}
       `;

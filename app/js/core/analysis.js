@@ -8,7 +8,8 @@
 // Die Analysen liegen unverändert in `extra.analyses` der App-Daten, so wie die
 // App sie speichert. Gelesen wird beim Anzeigen, nachsichtig wie im Kern: Was
 // eine andere Version dazubringt, fällt weg, statt die Analyse unlesbar zu machen.
-import { fromStored } from "./dates.js";
+import { fromStored, toStored } from "./dates.js";
+import { newID } from "./model.js";
 
 export const CAMERA_ANGLES = ["faceOn", "downTheLine"];
 export const CAMERA_ANGLE_NAMES = { faceOn: "Von vorne", downTheLine: "Von hinten" };
@@ -724,4 +725,157 @@ export function historySwingTypes(analyses) {
 export function recentShare(points, target, count = 5) {
   const recent = points.slice(Math.max(0, points.length - Math.max(0, count)));
   return { inside: recent.filter((point) => targetContains(target, point.value)).length, total: recent.length };
+}
+
+// MARK: - Ausschnitt eines Videos (AnalysisRange)
+
+/** Vor dem Treffmoment: Ansprechen, Rückschwung und Abschwung dauern zusammen meist 1,5 bis 2 Sekunden. */
+export const BEFORE_IMPACT = 2.2;
+/** Nach dem Treffmoment bis ins Finish. */
+export const AFTER_IMPACT = 1.3;
+export const MINIMUM_DURATION = 1.0;
+/** Länger dauert kein Schwung. Mehr Bilder kosten nur Rechenzeit. */
+export const MAXIMUM_DURATION = 6.0;
+
+/** Ausschnitt um einen Treffmoment. Reicht das Video nicht so weit, endet er am Rand. */
+export function rangeAround(impact, duration) {
+  const total = Math.max(0, duration);
+  if (!(total > MINIMUM_DURATION)) return [0, total];
+  const center = Math.min(Math.max(impact, 0), total);
+  let lower = Math.max(0, center - BEFORE_IMPACT);
+  let upper = Math.min(total, center + AFTER_IMPACT);
+  // Am Rand des Videos mindestens die Mindestlänge.
+  if (upper - lower < MINIMUM_DURATION) {
+    if (lower === 0) upper = MINIMUM_DURATION;
+    else lower = total - MINIMUM_DURATION;
+  }
+  return [lower, upper];
+}
+
+/** Vorschlag für ein Video: um den Treffmoment, sonst das ganze Video, bei langen Videos ein Stück aus der Mitte. */
+export function suggestedRange(duration, impact) {
+  const total = Math.max(0, duration);
+  if (impact != null) return rangeAround(impact, total);
+  if (total <= MAXIMUM_DURATION) return [0, total];
+  return rangeAround(total / 2, total);
+}
+
+/** Neuer Beginn beim Ziehen des linken Griffs: mindestens die Mindestlänge vor dem Ende, höchstens die Höchstlänge davor. */
+export function movingStart(time, range, duration) {
+  const total = Math.max(0, duration);
+  if (!(total > MINIMUM_DURATION)) return [0, total];
+  const upper = Math.min(Math.max(range[1], MINIMUM_DURATION), total);
+  const lower = Math.min(Math.max(time, 0, upper - MAXIMUM_DURATION), upper - MINIMUM_DURATION);
+  return [lower, upper];
+}
+
+/** Neues Ende beim Ziehen des rechten Griffs. */
+export function movingEnd(time, range, duration) {
+  const total = Math.max(0, duration);
+  if (!(total > MINIMUM_DURATION)) return [0, total];
+  const lower = Math.max(Math.min(range[0], total - MINIMUM_DURATION), 0);
+  const upper = Math.max(Math.min(time, total, lower + MAXIMUM_DURATION), lower + MINIMUM_DURATION);
+  return [lower, upper];
+}
+
+/** Hinweis, wenn der Ausschnitt sehr kurz oder lang ist. */
+export function lengthHint(range) {
+  const seconds = range[1] - range[0];
+  if (seconds < 1.5) return "Sehr kurz. Ansprechen und Finish sollten im Ausschnitt sein, sonst fehlen Phasen und Tempo.";
+  if (seconds > 5) return "Lang. Die Auswertung dauert dann länger. Schneide auf Ansprechen bis Finish zu.";
+  return null;
+}
+
+/** Zeitpunkte für die Prüfung des Bildausschnitts: gleichmäßig vom Anfang bis zum Ende. */
+export function checkTimes(range, count = 3) {
+  if (count <= 1) return count === 1 ? [(range[0] + range[1]) / 2] : [];
+  const span = range[1] - range[0];
+  return Array.from({ length: count }, (_, index) => range[0] + (span * index) / (count - 1));
+}
+
+/** Bildrate: ab 110 B/s gut, ab 200 sehr gut, unter 50 zu wenig für Tempo-Werte, wie `FrameRateRating`. */
+export function frameRateRating(frameRate) {
+  const rating = frameRate >= 200 ? "excellent" : frameRate >= 110 ? "good" : frameRate >= 50 ? "limited" : "tooLow";
+  const advice = {
+    excellent: "Sehr gut für Tempo und Treffmoment.",
+    good: "Gut für die Analyse.",
+    limited: "Geht, aber Tempo und Treffmoment werden ungenauer. Besser 120 bis 240 Bilder pro Sekunde.",
+    tooLow: "Zu wenig für Tempo-Werte. Besser 120 bis 240 Bilder pro Sekunde, in der Kamera unter Einstellungen.",
+  }[rating];
+  return { rating, isRecommended: rating === "excellent" || rating === "good", advice };
+}
+
+/** Abschnitt, in dem ein Zeitpunkt liegt. Null ohne Umkehrpunkt, denn dann gibt es keinen Schwung. */
+export function phaseAt(phases, time) {
+  if (!phases || phases.top == null) return null;
+  if (phases.address != null && time < phases.address) return "address";
+  if (time <= phases.top) return "backswing";
+  if (phases.impact == null) return "downswing";
+  if (time <= phases.impact) return "downswing";
+  if (phases.finish != null && time >= phases.finish) return "finish";
+  return "followThrough";
+}
+
+// MARK: - Neue Analysen schreiben, wie die App
+
+/** Eine neue Analyse zu einem Clip, noch nicht ausgewertet. */
+export function makeAnalysis({ id = newID(), date, clipID, range, cameraAngle, frameRate, swingType = "full", club = "", now = new Date() }) {
+  const start = Math.min(range[0], range[1]);
+  const end = Math.max(range[0], range[1]);
+  return { id, date, createdAt: now, clipID, start, end, range: [start, end], cameraAngle, frameRate, swingType, club, status: "pending", note: "", pose: null, phases: null, metrics: null };
+}
+
+const compact = (object) => Object.fromEntries(Object.entries(object).filter(([, value]) => value !== undefined && value !== null));
+
+export function encodeCheck(check) {
+  return compact({ spread: check.spread, issue: check.issue, parts: check.parts ?? [], moment: check.moment });
+}
+
+export function encodePoseSummary(pose) {
+  return compact({
+    frameCount: pose.frameCount,
+    detectedCount: pose.detectedCount,
+    handedness: compact({ handedness: pose.handedness.handedness, confidence: pose.handedness.confidence, topTime: pose.handedness.topTime, sidesDisagree: pose.handedness.sidesDisagree === true }),
+    warnings: pose.warnings.map((warning) => ({ kind: warning.kind, share: warning.share, parts: warning.parts ?? [] })),
+    bodyHeight: pose.bodyHeight,
+    heightIsMeasured: pose.heightIsMeasured === true,
+    source: pose.source ?? "",
+    analyzedAt: pose.analyzedAt ? toStored(pose.analyzedAt) : toStored(new Date()),
+  });
+}
+
+export function encodePhases(phases) {
+  const json = compact({ address: phases.address, armBack: phases.armBack, top: phases.top, armDown: phases.armDown, impact: phases.impact, impactSource: phases.impactSource, finish: phases.finish, notes: phases.notes.map((note) => ({ kind: note.kind })) });
+  const checks = Object.entries(phases.checks ?? {});
+  if (checks.length > 0) json.checks = Object.fromEntries(checks.map(([event, check]) => [event, encodeCheck(check)]));
+  return json;
+}
+
+export function encodeMetrics(metrics) {
+  return {
+    values: metrics.values.map((metric) => compact({ kind: metric.kind, value: metric.value, check: metric.check ? encodeCheck(metric.check) : null })),
+    handedness: metrics.handedness,
+    scaleIsMeasured: metrics.scaleIsMeasured === true,
+  };
+}
+
+/** Die Analyse im Format der App, für `extra.analyses`: Zeitpunkte als Sekunden seit 2001. */
+export function encodeAnalysis(analysis) {
+  return compact({
+    id: analysis.id,
+    date: toStored(analysis.date),
+    createdAt: toStored(analysis.createdAt ?? analysis.date),
+    clipID: analysis.clipID,
+    start: analysis.range ? analysis.range[0] : analysis.start,
+    end: analysis.range ? analysis.range[1] : analysis.end,
+    cameraAngle: analysis.cameraAngle,
+    frameRate: analysis.frameRate,
+    swingType: analysis.swingType,
+    club: analysis.club ?? "",
+    status: analysis.status,
+    note: analysis.note ?? "",
+    pose: analysis.pose ? encodePoseSummary(analysis.pose) : null,
+    phases: analysis.phases ? encodePhases(analysis.phases) : null,
+    metrics: analysis.metrics ? encodeMetrics(analysis.metrics) : null,
+  });
 }

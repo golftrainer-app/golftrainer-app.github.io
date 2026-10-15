@@ -28,7 +28,7 @@ import {
   settingsPage, staffHomePage, trainingCalendarPage,
 } from "./views/coach.js";
 import { teamClipPage, teamClipsPage } from "./views/clips.js";
-import { analysesPage, analysisHistoryPage, feedbackTargetsPage, swingAnalysisPage } from "./views/analysis.js";
+import { analysesPage, analysisHistoryPage, feedbackTargetsPage, newAnalysisPage, swingAnalysisPage, trimAnalysisPage } from "./views/analysis.js";
 
 const ROUTES = [
   [/^\/woche$/, () => weekPage],
@@ -43,6 +43,8 @@ const ROUTES = [
   [/^\/schwung$/, () => swingPage],
   [/^\/schwung\/tempo$/, () => tempoPage],
   [/^\/schwung\/analysen$/, () => analysesPage],
+  [/^\/schwung\/analysen\/neu$/, () => newAnalysisPage],
+  [/^\/schwung\/analysen\/neu\/([^/]+)$/, ([clipID]) => (app) => trimAnalysisPage(app, clipID)],
   [/^\/schwung\/analysen\/verlauf$/, () => analysisHistoryPage],
   [/^\/schwung\/analysen\/verlauf\/([^/]+)\/([^/]+)$/, ([swingType, metric]) => (app) => analysisHistoryPage(app, swingType, metric)],
   [/^\/schwung\/analysen\/richtwerte\/([^/]+)$/, ([swingType]) => (app) => feedbackTargetsPage(app, swingType)],
