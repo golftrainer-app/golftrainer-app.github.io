@@ -130,12 +130,24 @@ export class MotionGrid {
     return new MotionGrid(width, height, values);
   }
 
-  /** Mittlere absolute Helligkeitsänderung, normiert auf 0 bis 1. */
+  /** Anteil der Zellen, die für die Bewegung zählen: die stärksten 5 %. */
+  static strongestShare = 0.05;
+
+  /**
+   * Helligkeitsänderung der am stärksten veränderten Zellen, normiert auf 0 bis 1.
+   * Nicht der Durchschnitt über das ganze Bild: Ein Spieler füllt nur einen Teil
+   * davon, ein Schwung bewegt Arme und Schläger durch wenige Zellen. Darum zählen
+   * die stärksten 5 % der Zellen, mindestens vier, wie im Kern der App.
+   */
   difference(other) {
     if (!other || this.width !== other.width || this.height !== other.height || this.values.length !== other.values.length || this.values.length === 0) return 0;
+    const differences = new Array(this.values.length);
+    for (let i = 0; i < this.values.length; i += 1) differences[i] = Math.abs(this.values[i] - other.values[i]);
+    differences.sort((a, b) => b - a);
+    const count = Math.min(differences.length, Math.max(4, Math.round(differences.length * MotionGrid.strongestShare)));
     let sum = 0;
-    for (let i = 0; i < this.values.length; i += 1) sum += Math.abs(this.values[i] - other.values[i]);
-    return sum / this.values.length / 255;
+    for (let i = 0; i < count; i += 1) sum += differences[i];
+    return sum / count / 255;
   }
 }
 
@@ -176,16 +188,40 @@ export class MotionTracker {
     return energies[Math.floor(energies.length / 2)];
   }
 
-  /** Bestätigt einen Schlag, wenn kurz vor oder im Treffmoment deutlich mehr Bewegung war als in Ruhe. */
-  confirmsSwing(time, { factor = 3, minimumEnergy = 0.01 } = {}) {
+  /** Nötige Bewegung: das Vielfache des Ruhepegels, mindestens die Schwelle der Schlagart. */
+  required({ factor = 3, minimumEnergy = 0.01 } = {}) {
+    return Math.max(minimumEnergy, this.baseline * factor);
+  }
+
+  requiredFor(swingType) {
+    const t = thresholds(swingType);
+    return this.required({ factor: t.motionFactor, minimumEnergy: t.minimumMotion });
+  }
+
+  /**
+   * Prüft einen Schlag: kurz vor oder im Treffmoment deutlich mehr Bewegung als in Ruhe.
+   * Gibt zurück, was gemessen wurde und was nötig wäre, damit die Seite es anzeigen kann.
+   * `peak` ist null, wenn es in dem Zeitraum keine Bewegungsdaten gibt.
+   */
+  swingCheck(time, { factor = 3, minimumEnergy = 0.01 } = {}) {
     const peak = this.peak(time - 0.6, time + 0.3);
-    return peak ? peak.energy >= Math.max(minimumEnergy, this.baseline * factor) : false;
+    const required = this.required({ factor, minimumEnergy });
+    return { confirmed: peak ? peak.energy >= required : false, peak: peak?.energy ?? null, required, baseline: this.baseline };
+  }
+
+  swingCheckFor(time, swingType) {
+    const t = thresholds(swingType);
+    return this.swingCheck(time, { factor: t.motionFactor, minimumEnergy: t.minimumMotion });
+  }
+
+  /** Bestätigt einen Schlag, wenn kurz vor oder im Treffmoment deutlich mehr Bewegung war als in Ruhe. */
+  confirmsSwing(time, options) {
+    return this.swingCheck(time, options).confirmed;
   }
 
   /** Wie oben, mit den Schwellen der Schlagart: Ein Chip bewegt weniger als ein Driver. */
   confirmsSwingFor(time, swingType) {
-    const t = thresholds(swingType);
-    return this.confirmsSwing(time, { factor: t.motionFactor, minimumEnergy: t.minimumMotion });
+    return this.swingCheckFor(time, swingType).confirmed;
   }
 
   /** Fürs Speichern per Knopf: Zeitpunkt der stärksten Bewegung der letzten Sekunden. */

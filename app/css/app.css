@@ -570,6 +570,8 @@ button.row {
   color: #ffffff;
   font-size: 0.875rem;
 }
+/* Bewegung zum Ablesen unter dem Bild: Zahlen mit fester Breite, damit nichts springt. */
+.camera-motion { font-variant-numeric: tabular-nums; }
 .choice.wrap {
   grid-auto-flow: row;
   grid-template-columns: 1fr 1fr;

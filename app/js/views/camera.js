@@ -99,13 +99,20 @@ function describeCameraError(error) {
   }
 }
 
+/** Bewegung in Prozent mit einer Nachkommastelle, wie in der Doku: 0,004 ergibt „0,4 %“. */
+function percent(energy) {
+  return `${String(Math.round(energy * 1000) / 10).replace(".", ",")} %`;
+}
+
 /** Kamera, Mikrofon, rollende Aufnahme und Erkennung, solange die Seite offen ist. */
 class CameraSession {
-  constructor({ preview, settings, onStatus, onClip }) {
+  constructor({ preview, settings, onStatus, onClip, onMotion }) {
     this.preview = preview;
     this.settings = settings;
     this.onStatus = onStatus;
     this.onClip = onClip;
+    this.onMotion = onMotion;
+    this.motionReported = 0;
     this.stream = null;
     this.segments = [];
     this.withoutMicrophone = false;
@@ -367,8 +374,13 @@ class CameraSession {
     this.holdUntil = now() + 0.6;
     setTimeout(() => {
       if (!this.stream) return;
-      if (this.tracker.confirmsSwingFor(impact, this.settings.swingType)) this.capture(impact, "soundAndMotion");
-      else this.flash("Geräusch ignoriert: keine Bewegung im Bild.");
+      const check = this.tracker.swingCheckFor(impact, this.settings.swingType);
+      if (check.confirmed) this.capture(impact, "soundAndMotion");
+      else if (check.peak == null) {
+        // Keine Bewegungsdaten um den Treffmoment, etwa weil das Bild nicht lesbar ist: Dann zählt das Geräusch allein.
+        this.flash("Keine Bewegungsdaten, Geräusch zählt.");
+        this.capture(impact, "sound");
+      } else this.flash(`Geräusch ignoriert: Bewegung ${percent(check.peak)}, nötig ${percent(check.required)}.`);
     }, 400);
   }
 
@@ -393,11 +405,24 @@ class CameraSession {
     this.tracker.add(MotionGrid.fromRGBA(GRID_WIDTH, GRID_HEIGHT, data), time);
     const sample = this.tracker.samples[this.tracker.samples.length - 1];
     if (!sample || sample.time !== time) return;
+    this.reportMotion(time);
     const swing = this.motionDetector.add(sample, this.tracker.baseline);
     if (swing == null) return;
     this.detectedSwings.push(swing);
     if (this.detectedSwings.length > 20) this.detectedSwings.shift();
     if (this.effectiveTrigger === "motion") this.capture(swing, "motion");
+  }
+
+  /** Viermal pro Sekunde zum Ablesen: stärkste Bewegung der letzten Sekunde, Ruhepegel und nötige Schwelle. */
+  reportMotion(time) {
+    if (!this.onMotion || time - this.motionReported < 0.25) return;
+    this.motionReported = time;
+    const trigger = this.effectiveTrigger;
+    if (trigger !== "soundAndMotion" && trigger !== "motion") {
+      this.onMotion(null);
+      return;
+    }
+    this.onMotion({ recent: this.tracker.peak(time - 1, time)?.energy ?? 0, baseline: this.tracker.baseline, required: this.tracker.requiredFor(this.settings.swingType) });
   }
 
   /** „Schwung speichern“: der letzte erkannte Schwung, sonst die stärkste Bewegung. Am Handy getippt zählt die letzte Sekunde nicht. */
@@ -528,6 +553,7 @@ export function cameraPage(app) {
               <video autoplay muted playsinline data-preview></video>
               <p class="camera-status" data-status>Kamera aus. Tippe auf „Kamera starten“.</p>
             </div>
+            <p class="hint camera-motion" data-motion hidden></p>
             <div class="buttons">
               <button type="button" class="button flag" data-action="toggle">Kamera starten</button>
               <button type="button" class="button outline" data-action="save" disabled>Schwung speichern</button>
@@ -574,12 +600,17 @@ export function cameraPage(app) {
     mount(root) {
       const preview = root.querySelector("[data-preview]");
       const statusLine = root.querySelector("[data-status]");
+      const motionLine = root.querySelector("[data-motion]");
       const message = root.querySelector("[data-message]");
       const toggle = root.querySelector("[data-action='toggle']");
       const save = root.querySelector("[data-action='save']");
       const list = root.querySelector("[data-clips]");
       const setStatus = (text) => {
         statusLine.textContent = text;
+      };
+      const showMotion = (motion) => {
+        motionLine.hidden = !motion;
+        motionLine.textContent = motion ? `Bewegung zuletzt ${percent(motion.recent)} · Ruhe ${percent(motion.baseline)} · nötig ${percent(motion.required)}` : "";
       };
       const setMessage = (text) => {
         message.textContent = text ?? "";
@@ -634,6 +665,7 @@ export function cameraPage(app) {
           setStatus(text);
           pushStatus();
         },
+        onMotion: showMotion,
         onClip: async ({ blob, start, end, impact, trigger }) => {
           const clip = {
             id: newID(),
@@ -670,6 +702,7 @@ export function cameraPage(app) {
         } catch (error) {
           session.stop();
           setStatus("Kamera aus.");
+          showMotion(null);
           setMessage(describeCameraError(error));
         }
         toggle.disabled = false;
@@ -681,6 +714,7 @@ export function cameraPage(app) {
         toggle.textContent = "Kamera starten";
         save.disabled = true;
         setStatus("Kamera aus.");
+        showMotion(null);
       };
 
       root.addEventListener("click", async (event) => {
