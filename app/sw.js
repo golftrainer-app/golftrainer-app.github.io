@@ -11,7 +11,7 @@
 // Browser den neuen Stand, beim nächsten Öffnen ist er da, und ältere
 // Zwischenspeicher werden gelöscht. Neue Dateien in FILES eintragen,
 // test/sw.test.mjs prüft das.
-const VERSION = "2026-10-15-7";
+const VERSION = "2026-10-15-8";
 const CACHE = `golftrainer-${VERSION}`;
 
 const FILES = [
@@ -21,6 +21,9 @@ const FILES = [
   "css/app.css",
   "js/boot.js",
   "js/main.js",
+  "js/pose/estimator.js",
+  "js/pose/mediapipe.js",
+  "js/pose/pose-worker.js",
   "js/store.js",
   "js/ui.js",
   "js/config.js",
@@ -54,6 +57,7 @@ const FILES = [
   "js/core/bests.js",
   "js/core/calendar.js",
   "js/core/capture.js",
+  "js/core/pose.js",
   "js/core/analysis.js",
   "js/core/screenlink.js",
   "js/core/categories.js",
@@ -90,8 +94,24 @@ const FILES = [
   "icons/icon-maskable-512.png",
 ];
 
+/**
+ * Große Dateien der Pose-Erkennung (MediaPipe, etwa 19 MB): nicht vorab, sondern
+ * beim ersten Auswerten geladen und dann in einem eigenen Zwischenspeicher
+ * behalten, der neue Versionen der Web-App überlebt. Ändert sich MediaPipe,
+ * bekommt VENDOR_CACHE einen neuen Namen, und der alte Speicher fällt weg.
+ */
+const LAZY_FILES = [
+  "vendor/mediapipe/LICENSE",
+  "vendor/mediapipe/pose_landmarker_full.task",
+  "vendor/mediapipe/vision_bundle.mjs",
+  "vendor/mediapipe/wasm/vision_wasm_internal.js",
+  "vendor/mediapipe/wasm/vision_wasm_internal.wasm",
+];
+const VENDOR_CACHE = "golftrainer-vendor-mediapipe-0.10.14";
+
 /** Volle Adressen der Dateien ohne Abfrage, z. B. „…/app/“ für „./“. */
 const PRECACHED = new Set(FILES.map((file) => new URL(file, self.location).href));
+const LAZY = new Set(LAZY_FILES.map((file) => new URL(file, self.location).href));
 
 self.addEventListener("install", (event) => {
   // Am Zwischenspeicher des Browsers vorbei und mit der VERSION in der Abfrage
@@ -110,7 +130,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("golftrainer-") && key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("golftrainer-") && key !== CACHE && key !== VENDOR_CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
@@ -125,6 +145,18 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   url.search = "";
   url.hash = "";
+  if (LAZY.has(url.href)) {
+    event.respondWith(
+      caches.open(VENDOR_CACHE).then(async (cache) => {
+        const cached = await cache.match(request, { ignoreSearch: true });
+        if (cached) return cached;
+        const response = await fetch(request);
+        if (response.ok) await cache.put(request, response.clone());
+        return response;
+      }),
+    );
+    return;
+  }
   if (!PRECACHED.has(url.href)) return;
   event.respondWith(caches.open(CACHE).then(async (cache) => (await cache.match(request, { ignoreSearch: true })) ?? fetch(request)));
 });
