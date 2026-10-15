@@ -14,6 +14,7 @@ import { libraryPage, bestsPage } from "./views/drills.js";
 import { tournamentsPage, tournamentPage, tournamentEditor, phasePage, warmUpPage, roundEditor } from "./views/tournaments.js";
 import { swingPage, tempoPage } from "./views/swing.js";
 import { cameraPage } from "./views/camera.js";
+import { screenPage } from "./views/screen.js";
 import { morePage, focusEditor, deletePage } from "./views/more.js";
 import { accountPage, passwordPage } from "./views/account.js";
 import { TEAM_KEY, TeamStore } from "./team.js";
@@ -40,6 +41,7 @@ const ROUTES = [
   [/^\/schwung$/, () => swingPage],
   [/^\/schwung\/tempo$/, () => tempoPage],
   [/^\/schwung\/kamera$/, () => cameraPage],
+  [/^\/schwung\/bildschirm$/, () => screenPage],
   [/^\/schwung\/launch$/, () => launchPage],
   [/^\/schwung\/launch\/zuordnen$/, () => mappingPage],
   [/^\/schwung\/launch\/tabelle$/, () => distanceTablePage],

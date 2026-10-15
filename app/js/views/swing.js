@@ -52,6 +52,7 @@ export function swingPage(app) {
         ${chapter(
           "Zeitlupe",
           html`<a class="action" href="#/schwung/kamera">Kamera mit automatischem Auslöser<span class="mark" aria-hidden="true">›</span></a>
+            <a class="action" href="#/schwung/bildschirm">Dieses Gerät als Bildschirm<span class="mark" aria-hidden="true">›</span></a>
             <div class="buttons">
               <label class="button flag">Video aufnehmen<input class="visually-hidden" type="file" accept="video/*" capture="environment" data-file></label>
               <label class="button outline">Video wählen<input class="visually-hidden" type="file" accept="video/*" data-file></label>
@@ -78,7 +79,7 @@ export function swingPage(app) {
           { footer: "Der CSV-Export der Garmin-Golf-App (Approach R10 und R50): Schläge, Distanztabelle pro Schläger und Verlauf über die Sessions." },
         )}
         ${chapter("So stellst du die Kamera auf", TIPS.map(tip))}
-        <p class="note">Ein zweites Gerät als Bildschirm und die Schwunganalyse mit 3D-Skelett gibt es nur in der App für iPhone und iPad.</p>
+        <p class="note">Die Schwunganalyse mit 3D-Skelett gibt es nur in der App für iPhone und iPad.</p>
       `;
     },
     mount(root) {

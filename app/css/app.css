@@ -565,6 +565,10 @@ button.row {
 .clips .clip:last-child { border-bottom: none; }
 .buttons.compact { margin: 8px 0 0; }
 .buttons.compact .button { min-height: 36px; padding: 6px 12px; font-size: 0.875rem; }
+/* Bildschirm-Modus: Live-Bild vom Handy und der letzte Schwung in Zeitlupe. */
+.video-frame.screen-live { min-height: 160px; }
+.video-frame.screen-live video { max-height: 40vh; }
+.screen-progress { margin: 6px 0 0; font-size: 0.8125rem; color: var(--ink-secondary); }
 input[type="range"] { width: 100%; accent-color: var(--ink); }
 
 .tempo-phase {

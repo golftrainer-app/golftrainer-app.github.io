@@ -16,6 +16,8 @@ import {
   clipFileName, listensForSound, manualImpact, segmentFor,
 } from "../core/capture.js";
 import { newID } from "../core/model.js";
+import { displayCode, isCode, normalizeCode } from "../core/screenlink.js";
+import { CameraLink } from "../link.js";
 import { ask, chapter, empty, html, toast } from "../ui.js";
 import { openClip } from "./swing.js";
 
@@ -33,7 +35,14 @@ const GRID_HEIGHT = 18;
 const MIME_TYPES = ["video/mp4;codecs=avc1", "video/webm;codecs=h264", "video/webm;codecs=vp8", "video/webm;codecs=vp9", "video/webm"];
 const FACINGS = ["environment", "user"];
 const FACING_NAMES = { environment: "Rückseite", user: "Vorderseite" };
-const DEFAULTS = { trigger: "soundAndMotion", sensitivity: "medium", swingType: "full", facing: "environment" };
+const DEFAULTS = { trigger: "soundAndMotion", sensitivity: "medium", swingType: "full", facing: "environment", screenCode: "", liveVideo: true };
+const LINK_TEXT = {
+  idle: "Nicht verbunden.",
+  searching: "Sucht den Bildschirm … Dort muss „Dieses Gerät als Bildschirm“ offen sein.",
+  connecting: "Bildschirm gefunden, verbindet …",
+  connected: "Verbunden. Live-Bild und Clips gehen an den Bildschirm.",
+  error: "Keine Verbindung zum Server.",
+};
 const oneDecimal = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 const now = () => performance.now() / 1000;
@@ -51,7 +60,14 @@ export function loadSettings(storage = globalThis.localStorage) {
   if (!SENSITIVITIES.includes(settings.sensitivity)) settings.sensitivity = DEFAULTS.sensitivity;
   if (!SWING_TYPES.includes(settings.swingType)) settings.swingType = DEFAULTS.swingType;
   if (!FACINGS.includes(settings.facing)) settings.facing = DEFAULTS.facing;
-  return { trigger: settings.trigger, sensitivity: settings.sensitivity, swingType: settings.swingType, facing: settings.facing };
+  return {
+    trigger: settings.trigger,
+    sensitivity: settings.sensitivity,
+    swingType: settings.swingType,
+    facing: settings.facing,
+    screenCode: isCode(settings.screenCode) ? normalizeCode(settings.screenCode) : "",
+    liveVideo: settings.liveVideo !== false,
+  };
 }
 
 function saveSettings(settings) {
@@ -93,6 +109,7 @@ class CameraSession {
     this.stream = null;
     this.segments = [];
     this.withoutMicrophone = false;
+    this.paused = false;
   }
 
   get isRunning() {
@@ -105,6 +122,7 @@ class CameraSession {
   }
 
   get listeningText() {
+    if (this.paused) return "Pausiert. Weiter geht es hier oder vom Bildschirm.";
     if (listensForSound(this.settings.trigger) && this.withoutMicrophone) return "Ohne Mikrofon: erkennt Schwünge an der Bewegung im Bild.";
     switch (this.settings.trigger) {
       case "soundAndMotion":
@@ -264,9 +282,35 @@ class CameraSession {
     segment.chunks = [];
   }
 
+  /** Für den Bildschirm: Was die Kamera gerade tut. */
+  get snapshot() {
+    return { isRecording: this.stream != null && !this.paused, paused: this.paused, text: this.stream ? this.listeningText : "Kamera aus." };
+  }
+
+  /** Pause vom Bildschirm: Kamera bleibt an, Aufnahme und Erkennung ruhen. */
+  pause() {
+    if (!this.stream || this.paused) return;
+    this.paused = true;
+    clearInterval(this.rotation);
+    clearInterval(this.motionTimer);
+    this.rotation = null;
+    this.motionTimer = null;
+    for (const segment of [...this.segments]) this.stopSegment(segment);
+    this.segments = [];
+    this.status(this.listeningText);
+  }
+
+  resume() {
+    if (!this.stream || !this.paused) return;
+    this.paused = false;
+    this.startRecorders();
+    this.startMotion();
+    this.status(this.listeningText);
+  }
+
   /** Hält den Treffmoment fest: Die Aufnahme mit dem meisten Vorlauf läuft bis 1,5 Sekunden danach weiter. */
   capture(impact, trigger) {
-    if (!this.stream) return false;
+    if (!this.stream || this.paused) return false;
     if (this.savedImpacts.some((saved) => Math.abs(saved - impact) < 1.5)) return false;
     let segment = segmentFor(this.segments, impact);
     if (!segment) {
@@ -356,10 +400,10 @@ class CameraSession {
     if (this.effectiveTrigger === "motion") this.capture(swing, "motion");
   }
 
-  /** „Schwung speichern“: der letzte erkannte Schwung, sonst die stärkste Bewegung, die letzte Sekunde zählt nicht. */
-  saveManually() {
-    if (!this.stream) return false;
-    const impact = manualImpact({ now: now(), detectedSwings: this.detectedSwings, savedImpacts: this.savedImpacts, motion: this.tracker, tappedOnCamera: true });
+  /** „Schwung speichern“: der letzte erkannte Schwung, sonst die stärkste Bewegung. Am Handy getippt zählt die letzte Sekunde nicht. */
+  saveManually({ fromScreen = false } = {}) {
+    if (!this.stream || this.paused) return false;
+    const impact = manualImpact({ now: now(), detectedSwings: this.detectedSwings, savedImpacts: this.savedImpacts, motion: this.tracker, tappedOnCamera: !fromScreen });
     const saved = this.capture(impact, "manual");
     if (!saved) this.flash("Schon gespeichert oder noch keine Aufnahme.");
     return saved;
@@ -408,6 +452,7 @@ class CameraSession {
     for (const track of this.stream?.getTracks() ?? []) track.stop();
     this.stream = null;
     this.videoStream = null;
+    this.paused = false;
     if (this.preview) this.preview.srcObject = null;
     this.lock?.release?.().catch(() => {});
     this.lock = null;
@@ -416,7 +461,7 @@ class CameraSession {
 }
 
 /** Teilen über das Menü des Handys, sonst herunterladen. */
-async function shareClip(clip, blob) {
+export async function shareClip(clip, blob) {
   const name = clipFileName(new Date(clip.date), clip.swingType, blob.type || clip.mimeType);
   if (typeof File !== "undefined" && navigator.canShare) {
     const file = new File([blob], name, { type: blob.type || "video/webm" });
@@ -460,7 +505,7 @@ function clipRow(clip) {
   </li>`;
 }
 
-function clipsMarkup(clips) {
+export function clipsMarkup(clips) {
   if (clips.length === 0) return empty("Noch kein Clip. Starte die Kamera und schlag ein paar Bälle.");
   return html`<ul class="rows clips">${clips.map(clipRow)}</ul>`;
 }
@@ -507,6 +552,18 @@ export function cameraPage(app) {
               "Geräusch + Bewegung ist der Standard auf der Range: Schläge vom Nachbarplatz klingen ähnlich, bewegen aber nichts im Bild. Nur Bewegung hilft bei Wind oder sehr weichen Chips, nimmt aber auch Probeschwünge. Chip und Pitch sind leiser und bewegen weniger, dafür sinken die Schwellen. Hohe Empfindlichkeit für weiten Abstand und leise Treffer, niedrige bei vielen lauten Nachbarn.",
           },
         )}
+        ${chapter(
+          "Bildschirm",
+          html`<label class="field"><span>Code vom Bildschirm</span><input name="screenCode" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="14" placeholder="ABCD-EFGH-JKLM" value="${displayCode(settings.screenCode)}" data-key="screenCode"></label>
+            <div class="buttons"><button type="button" class="button outline" data-action="connect">${settings.screenCode ? "Trennen" : "Verbinden"}</button></div>
+            <p class="note" data-screen-state>${settings.screenCode ? LINK_TEXT.idle : "Kein Bildschirm eingerichtet."}</p>
+            <p class="kicker">Live-Bild</p>
+            ${choice("liveVideo", ["true", "false"], { true: "Live-Bild an", false: "Nur Clips" }, String(settings.liveVideo !== false))}`,
+          {
+            footer:
+              "Ein Tablet oder iPad zeigt jeden Schwung sofort in Zeitlupe: Dort die Web-App öffnen, Schwung → „Dieses Gerät als Bildschirm“, und den Code hier eintippen. Beide Geräte im selben WLAN oder am Hotspot des Handys. Den Weg zueinander vermittelt der Server des Kontos, Bild und Clips gehen direkt von Gerät zu Gerät. Vom Bildschirm aus lassen sich Schwünge speichern und die Aufnahme pausieren.",
+          },
+        )}
         ${chapter("Clips", html`<div data-clips>${clipsMarkup(clips)}</div>`, {
           footer:
             "Die Clips liegen im Speicher dieses Browsers, bis du sie löschst, höchstens 50; beim nächsten geht der älteste. Teilen schickt die Datei z. B. per WhatsApp, sonst landet sie in den Downloads. „Meine Daten löschen“ unter Mehr nimmt die Clips mit.",
@@ -540,10 +597,43 @@ export function cameraPage(app) {
         })
         .catch(() => {});
 
-      const session = new CameraSession({
+      const screenState = root.querySelector("[data-screen-state]");
+      const codeInput = root.querySelector("input[name='screenCode']");
+      const connectButton = root.querySelector("[data-action='connect']");
+      let link = null;
+      let session = null;
+      const pushStatus = () => link?.sendStatus({ ...session.snapshot, clipCount: clips.length });
+      const setLinkState = (state, detail) => {
+        screenState.textContent = state === "error" && detail ? `${LINK_TEXT.error} ${detail}` : (LINK_TEXT[state] ?? LINK_TEXT.idle);
+      };
+      const stopLink = () => {
+        link?.stop();
+        link = null;
+      };
+      const startLink = () => {
+        if (link || !isCode(settings.screenCode) || !session?.isRunning) return;
+        link = new CameraLink({
+          code: settings.screenCode,
+          liveVideo: settings.liveVideo !== false,
+          onState: setLinkState,
+          onCommand: (command) => {
+            if (command === "save") session.saveManually({ fromScreen: true });
+            else if (command === "pause") session.pause();
+            else if (command === "resume") session.resume();
+            pushStatus();
+          },
+        });
+        link.start(session.stream);
+        // Der erste Stand wartet, bis die Verbindung steht.
+        pushStatus();
+      };
+      session = new CameraSession({
         preview,
         settings: { ...settings },
-        onStatus: setStatus,
+        onStatus: (text) => {
+          setStatus(text);
+          pushStatus();
+        },
         onClip: async ({ blob, start, end, impact, trigger }) => {
           const clip = {
             id: newID(),
@@ -564,6 +654,7 @@ export function cameraPage(app) {
           }
           renderClips();
           if (session.isRunning) session.flash(`Schwung gespeichert (${clips.length}).`);
+          link?.sendClip(clip, blob);
         },
       });
 
@@ -575,6 +666,7 @@ export function cameraPage(app) {
           await session.start();
           toggle.textContent = "Kamera stoppen";
           save.disabled = false;
+          startLink();
         } catch (error) {
           session.stop();
           setStatus("Kamera aus.");
@@ -583,6 +675,8 @@ export function cameraPage(app) {
         toggle.disabled = false;
       };
       const stop = () => {
+        stopLink();
+        if (settings.screenCode) setLinkState("idle");
         session.stop();
         toggle.textContent = "Kamera starten";
         save.disabled = true;
@@ -594,14 +688,42 @@ export function cameraPage(app) {
         if (!button || button.disabled) return;
         if (button.dataset.setting) {
           const key = button.dataset.setting;
-          settings[key] = button.dataset.value;
+          settings[key] = key === "liveVideo" ? button.dataset.value === "true" : button.dataset.value;
           saveSettings(settings);
           for (const other of root.querySelectorAll(`[data-setting='${key}']`)) other.setAttribute("aria-pressed", String(other === button));
+          if (key === "liveVideo") {
+            if (link) {
+              stopLink();
+              startLink();
+            }
+            return;
+          }
           const wasRunning = session.isRunning;
           if (session.apply({ ...settings }) && wasRunning) {
             stop();
             await start();
           }
+          return;
+        }
+        if (button.dataset.action === "connect") {
+          if (settings.screenCode) {
+            stopLink();
+            settings.screenCode = "";
+            saveSettings(settings);
+            connectButton.textContent = "Verbinden";
+            screenState.textContent = "Getrennt. Der Code bleibt im Feld.";
+            return;
+          }
+          if (!isCode(codeInput.value)) {
+            screenState.textContent = "Der Code hat zwölf Zeichen, ohne 0, O, 1 und I.";
+            return;
+          }
+          settings.screenCode = normalizeCode(codeInput.value);
+          codeInput.value = displayCode(settings.screenCode);
+          saveSettings(settings);
+          connectButton.textContent = "Trennen";
+          if (session.isRunning) startLink();
+          else screenState.textContent = "Verbindet sich, sobald die Kamera läuft.";
           return;
         }
         const id = button.dataset.id;
@@ -656,6 +778,7 @@ export function cameraPage(app) {
       document.addEventListener("visibilitychange", onVisibility);
       return () => {
         document.removeEventListener("visibilitychange", onVisibility);
+        stopLink();
         session.stop();
       };
     },
