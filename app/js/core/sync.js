@@ -24,9 +24,24 @@ export function action(localRevision, isDirty, remoteRevision) {
   return "merge";
 }
 
-/** Der Wert aus dem neueren Stand, bei Gleichstand der eigene. Für Einstellungen wie Golfwoche oder Spielhand. */
+/**
+ * Der Wert aus dem neueren Stand, bei Gleichstand der vom Server. Für
+ * Einstellungen wie Golfwoche oder Spielhand. Bei Gleichstand zählt immer der
+ * Server, damit zwei Geräte mit demselben Stand nicht abwechselnd ihren
+ * eigenen Wert hochladen.
+ */
 export function newer(local, localSavedAt, remote, remoteSavedAt) {
-  return remoteSavedAt > localSavedAt ? remote : local;
+  return remoteSavedAt >= localSavedAt ? remote : local;
+}
+
+/**
+ * Der Zeitpunkt der letzten Änderung nach dem Zusammenführen: der jüngere von
+ * beiden. Übernommene Änderungen zählen nicht als eigene, sonst wäre jedes
+ * Gerät nach jedem Abgleich „jünger“ als der Server und gewänne beim nächsten
+ * Mal mit seinem alten Stand.
+ */
+export function stamp(localSavedAt, remoteSavedAt) {
+  return remoteSavedAt.getTime() > localSavedAt.getTime() ? remoteSavedAt : localSavedAt;
 }
 
 function mergedItems(local, localSavedAt, remote, remoteSavedAt, deleted, updatedAt) {
@@ -49,8 +64,8 @@ function mergedItems(local, localSavedAt, remote, remoteSavedAt, deleted, update
     }
     const localTime = updatedAt(item);
     const remoteTime = updatedAt(other);
-    if (localTime != null && remoteTime != null) items.push(remoteTime > localTime ? other : item);
-    else items.push(remoteSavedAt > localSavedAt ? other : item);
+    if (localTime != null && remoteTime != null) items.push(remoteTime >= localTime ? other : item);
+    else items.push(remoteSavedAt >= localSavedAt ? other : item);
   }
   for (const item of remote) {
     const key = String(item.id);
@@ -66,30 +81,52 @@ function mergedItems(local, localSavedAt, remote, remoteSavedAt, deleted, update
  * Zwei Listen zu einer: alles von beiden, jede Kennung einmal. Gibt es einen
  * Eintrag auf beiden Seiten, zählt bei Einträgen mit eigenem Zeitpunkt
  * (`updatedAt`) der neuere, sonst der aus dem neueren Stand, bei Gleichstand
- * der eigene. Was eine Löschmarke der Liste `kind` nennt, fehlt. Reihenfolge:
- * die eigene Liste, dann, was nur der andere Stand hat.
+ * der vom Server. Was eine Löschmarke der Liste `kind` nennt, fehlt; eine
+ * Marke mit `restored` hebt die Löschung auf. Reihenfolge: die eigene Liste,
+ * dann, was nur der andere Stand hat.
  */
 export function merged(local, localSavedAt, remote, remoteSavedAt, { deletions = [], kind = null, updatedAt = () => null } = {}) {
-  const deleted = new Set(deletions.filter((deletion) => deletion.kind === kind).map((deletion) => deletion.id));
+  const deleted = new Set(deletions.filter((deletion) => deletion.kind === kind && !deletion.restored).map((deletion) => deletion.id));
   return mergedItems(local, localSavedAt, remote, remoteSavedAt, deleted, updatedAt);
+}
+
+/** Übung plus geplante Einheit oder Trainer-Einheit. Freie Übungen haben keinen Schlüssel. */
+function sessionKey(result) {
+  const reference = result.planReference;
+  if (reference) {
+    const weekStart = reference.weekStart instanceof Date ? reference.weekStart.getTime() : reference.weekStart;
+    return `plan|${weekStart}|${reference.slotID}|${result.drillID}`;
+  }
+  if (result.sessionID) return `session|${result.sessionID}|${result.drillID}`;
+  return null;
+}
+
+/** Von zwei Ergebnissen derselben Einheit bleibt das zuerst eingetragene, bei gleichem Zeitpunkt das mit der kleineren Kennung. */
+function prevails(result, other) {
+  const time = (value) => (value instanceof Date ? value.getTime() : Number(value));
+  if (time(result.date) !== time(other.date)) return time(result.date) < time(other.date);
+  return String(result.id) < String(other.id);
 }
 
 /**
  * Ergebnisse: wie `merged`, ohne Löschmarken. Dazu gibt es Ergebnisse derselben
- * geplanten Übung nur einmal, auch von zwei Geräten mit zwei Kennungen, wie
- * mergeResults in backup.js. Sonst stiege die Stufe zu früh.
+ * Übung in derselben geplanten Einheit oder Trainer-Einheit nur einmal, auch
+ * von zwei Geräten mit zwei Kennungen, wie mergeResults in backup.js. Sonst
+ * stiege die Stufe zu früh. Beide Geräte behalten dasselbe Ergebnis.
  */
 export function mergedResults(local, localSavedAt, remote, remoteSavedAt) {
   const items = mergedItems(local, localSavedAt, remote, remoteSavedAt, new Set(), () => null);
-  const keys = new Set();
+  const winners = new Map();
+  for (const result of items) {
+    const key = sessionKey(result);
+    if (key == null) continue;
+    const other = winners.get(key);
+    if (other && !prevails(result, other)) continue;
+    winners.set(key, result);
+  }
   return items.filter((result) => {
-    const reference = result.planReference;
-    if (!reference) return true;
-    const weekStart = reference.weekStart instanceof Date ? reference.weekStart.getTime() : reference.weekStart;
-    const key = `${weekStart}|${reference.slotID}|${result.drillID}`;
-    if (keys.has(key)) return false;
-    keys.add(key);
-    return true;
+    const key = sessionKey(result);
+    return key == null || winners.get(key)?.id === result.id;
   });
 }
 
@@ -128,16 +165,33 @@ export function noting(deletion, deletions) {
 }
 
 /**
+ * Nach dem Übernehmen einer Sicherung: Für Kennungen, die hier eine Löschmarke
+ * haben, kommt eine jüngere Marke mit `restored` dazu. Sonst verschwände der
+ * zurückgeholte Eintrag beim nächsten Abgleich wieder.
+ */
+export function restoring(ids, kind, now, deletions) {
+  const marked = new Set(deletions.filter((deletion) => deletion.kind === kind && !deletion.restored).map((deletion) => deletion.id));
+  let result = deletions;
+  for (const id of ids) {
+    if (marked.has(id)) result = noting({ kind, id, at: now, restored: true }, result);
+  }
+  return result;
+}
+
+/**
  * Die eigenen Daten mit dem Stand vom Server, wie AppData.merged(with:) in der
  * App: alles von beiden Seiten, Gelöschtes bleibt gelöscht, bei Einstellungen
  * zählt der jüngere Stand, die Erinnerung gehört zu diesem Gerät. Was die
  * Web-App nicht bearbeitet (`extra`, z. B. Schwunganalysen), kommt vom Server,
- * denn hier ändert es sich nie.
+ * denn hier ändert es sich nie. `preferRemoteSettings`: beim ersten Abgleich
+ * nach dem Anmelden gelten die Einstellungen des Kontos, nicht die der eben
+ * erst beantworteten Einrichtung.
  */
-export function mergedData(local, remote, { localSavedAt, remoteSavedAt, now }) {
+export function mergedData(local, remote, { localSavedAt, remoteSavedAt, now, preferRemoteSettings = false }) {
   const deletions = mergedDeletions(local.deletions ?? [], remote.deletions ?? [], now);
   const list = (key, updatedAt) => merged(local[key], localSavedAt, remote[key], remoteSavedAt, { deletions, kind: key, updatedAt });
-  const either = (mine, theirs) => (mine == null ? theirs : theirs == null ? mine : newer(mine, localSavedAt, theirs, remoteSavedAt));
+  const either = (mine, theirs) => (mine == null ? theirs : theirs == null ? mine : preferRemoteSettings ? theirs : newer(mine, localSavedAt, theirs, remoteSavedAt));
+  const localWins = !preferRemoteSettings && localSavedAt.getTime() > remoteSavedAt.getTime();
   return {
     ...local,
     deletions,
@@ -150,8 +204,8 @@ export function mergedData(local, remote, { localSavedAt, remoteSavedAt, now }) 
     golfWeek: either(local.golfWeek, remote.golfWeek),
     handedness: either(local.handedness, remote.handedness),
     weekPlan: either(local.weekPlan, remote.weekPlan),
-    // Gespeicherte Spaltenzuordnungen: beide, bei gleichem Namen die eigene.
-    csvMappings: { ...(remote.csvMappings ?? {}), ...(local.csvMappings ?? {}) },
+    // Gespeicherte Spaltenzuordnungen: beide, bei gleichem Namen die aus dem jüngeren Stand.
+    csvMappings: localWins ? { ...(remote.csvMappings ?? {}), ...(local.csvMappings ?? {}) } : { ...(local.csvMappings ?? {}), ...(remote.csvMappings ?? {}) },
     extra: { ...(local.extra ?? {}), ...(remote.extra ?? {}) },
   };
 }

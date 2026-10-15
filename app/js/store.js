@@ -4,7 +4,7 @@
 // wenn du dich mit deinem Konto anmeldest (account.js).
 // Was nur die App kennt, z. B. Launch-Monitor-Sessions aus einer Sicherung vom
 // iPhone, bleibt unverändert erhalten.
-import { KEPT_LISTS, createBackup, extraFields, merge, mergeResults } from "./core/backup.js";
+import { KEPT_LISTS, comparableText, createBackup, extraFields, merge, mergeResults } from "./core/backup.js";
 import { planCalendar } from "./core/calendar.js";
 import { seed, stations } from "./core/challenge.js";
 import { addDays, daysBetween, formatShortDate, formatTime, fromStored, planCovers, startOfDay, startOfWeek, toStored } from "./core/dates.js";
@@ -12,7 +12,7 @@ import { level as difficultyLevel } from "./core/difficulty.js";
 import { emptyGolfWeek, golfWeekSlots, sanitizeGolfWeek } from "./core/golfweek.js";
 import { LIMITS, decodeData, decodeLibrary, encodeData, newID } from "./core/model.js";
 import { Planner } from "./core/planner.js";
-import { mergedData, noting } from "./core/sync.js";
+import { DELETION_KINDS, mergedData, mergedDeletions, noting, restoring } from "./core/sync.js";
 import { fingerprint } from "./core/launch.js";
 import { LOCAL_MEMBER, PLACES, entries as logEntries } from "./core/traininglog.js";
 
@@ -177,12 +177,14 @@ export class Store {
    * rechnet nur im Speicher, z. B. den ersten Plan: Die Seite legt erst etwas
    * im Browser ab, wenn du selbst etwas einträgst oder änderst.
    */
-  change(mutate, { persist = true } = {}) {
+  change(mutate, { persist = true, stamp = true } = {}) {
     const result = mutate(this.data);
     if (persist) {
       this.save();
-      // Mit Konto: bald abgleichen. account.js hängt sich hier ein.
-      this.changed?.();
+      // Mit Konto: bald abgleichen. account.js hängt sich hier ein. `stamp:
+      // false` für Änderungen, die nicht von dir kommen, z. B. neue Vorschläge
+      // zu Wochenbeginn: Sie zählen beim Abgleich nicht als eigene Änderung.
+      this.changed?.({ stamp });
     }
     this.notify();
     return result;
@@ -239,7 +241,7 @@ export class Store {
   ensureCurrentWeekPlan(now = new Date()) {
     const plan = this.data.weekPlan;
     if (plan && planCovers(plan.weekStart, now)) return false;
-    this.change(() => this.plan(now), { persist: this.hasStoredData });
+    this.change(() => this.plan(now), { persist: this.hasStoredData, stamp: false });
     return true;
   }
 
@@ -267,7 +269,7 @@ export class Store {
       weekStart,
       slots: golfWeekSlots(this.data.golfWeek),
       rounds: this.data.rounds,
-      focus: this.data.focusPoints,
+      focus: this.allFocusPoints(),
       results: this.data.results,
       tournaments: this.data.tournaments,
       kept,
@@ -277,6 +279,13 @@ export class Store {
 
   session(slotID) {
     return this.data.weekPlan?.sessions.find((session) => session.slot.id === slotID) ?? null;
+  }
+
+  /** Schwerpunkte für den Wochenplan: eigene und die vom Trainer im Team (`teamFocus` setzt team.js). */
+  allFocusPoints() {
+    const team = this.teamFocus?.() ?? [];
+    const ids = new Set(team.map((point) => point.id));
+    return [...this.data.focusPoints.filter((point) => !ids.has(point.id)), ...team];
   }
 
   /**
@@ -292,6 +301,12 @@ export class Store {
     return { weekStart: startOfWeek(session.date), slotID: session.slot.id };
   }
 
+  /** Ergebnis einer Übung in einer Einheit vom Trainer. */
+  resultInSession(drillID, sessionID) {
+    const index = findLastIndex(this.data.results, (result) => result.drillID === drillID && result.sessionID != null && result.sessionID.toUpperCase() === sessionID.toUpperCase());
+    return index >= 0 ? this.data.results[index] : null;
+  }
+
   resultFor(planned, session) {
     const reference = this.reference(session);
     const index = findLastIndex(this.data.results, (result) => result.drillID === planned.drillID && sameReference(result.planReference, reference));
@@ -303,8 +318,18 @@ export class Store {
    * eintragen korrigiert es, statt ein zweites anzulegen, das doppelt zählen
    * und die Stufe zu früh steigen lassen würde.
    */
-  record(score, planned, session) {
+  record(score, planned, session, { sessionID = null } = {}) {
     this.change((data) => {
+      // In einer Einheit vom Trainer: pro Übung und Einheit ein Ergebnis, wie im Wochenplan.
+      if (sessionID) {
+        const index = findLastIndex(data.results, (result) => result.drillID === planned.drillID && result.sessionID != null && result.sessionID.toUpperCase() === sessionID.toUpperCase());
+        if (index >= 0) {
+          data.results[index].score = score;
+          return;
+        }
+        data.results.push({ id: newID(), drillID: planned.drillID, date: new Date(), level: planned.level, score, planReference: null, sessionID: sessionID.toUpperCase(), note: null });
+        return;
+      }
       const reference = session ? this.reference(session) : null;
       if (reference) {
         const index = findLastIndex(data.results, (result) => result.drillID === planned.drillID && sameReference(result.planReference, reference));
@@ -544,6 +569,16 @@ export class Store {
   /** Übernimmt eine gelesene Sicherung und sagt, was passiert ist. Wie restore in der App. */
   restore(backup, mode, now = new Date()) {
     const imported = backup.data;
+    // Was aus der Sicherung zurückkommt, darf der Abgleich über das Konto nicht
+    // wieder löschen: Löschmarken dieser Kennungen aufheben.
+    const lifting = (deletions) => {
+      let result = deletions;
+      for (const kind of DELETION_KINDS) {
+        const ids = (imported[kind] ?? imported.extra?.[kind] ?? []).map((item) => item?.id).filter((id) => id != null).map(String);
+        result = restoring(ids, kind, now, result);
+      }
+      return result;
+    };
     if (mode === "merge") {
       let added = 0;
       this.change((data) => {
@@ -553,6 +588,7 @@ export class Store {
           data[key] = result.items;
           added += result.added;
         }
+        data.deletions = lifting(data.deletions ?? []);
         // Gespeicherte Spaltenzuordnungen: Was es hier noch nicht gibt, kommt dazu.
         for (const [key, mapping] of Object.entries(imported.csvMappings ?? {})) {
           if (!data.csvMappings[key]) data.csvMappings = { ...data.csvMappings, [key]: mapping };
@@ -566,12 +602,18 @@ export class Store {
           added += result.added;
         }
       });
+      // Neue Turniere und Schwerpunkte wirken gleich auf die Woche, wie beim Eintragen von Hand und wie in der App.
+      if (added > 0) this.plan(now);
       if (added === 0) return "Nichts Neues: Alles aus der Sicherung ist schon auf diesem Gerät.";
       return added === 1 ? "1 Eintrag aus der Sicherung übernommen." : `${added} Einträge aus der Sicherung übernommen.`;
     }
+    const current = this.data;
     this.change(() => {
       this.data = imported;
       this.data.extra = { ...(imported.extra ?? {}) };
+      // Die Erinnerung gehört zu diesem Gerät, wie in der App.
+      this.data.reminders = current.reminders;
+      this.data.deletions = lifting(mergedDeletions(current.deletions ?? [], imported.deletions ?? [], now));
     });
     this.ensureCurrentWeekPlan(now);
     return `Stand vom ${formatShortDate(backup.createdAt)}, ${formatTime(backup.createdAt)} Uhr wiederhergestellt.`;
@@ -581,18 +623,21 @@ export class Store {
 
   /**
    * Den Stand vom Server übernehmen: zusammenführen, nicht ersetzen, nach den
-   * Regeln in core/sync.js. Gibt true zurück, wenn sich etwas geändert hat.
+   * Regeln in core/sync.js. Gibt zurück, ob sich hier etwas geändert hat
+   * (`changed`) und ob der eigene Stand danach derselbe ist wie der vom Server
+   * (`sameAsRemote`): Dann gibt es nichts hochzuladen.
    */
-  applyRemote(backup, { localSavedAt, now = new Date() }) {
-    const merged = mergedData(this.data, backup.data, { localSavedAt, remoteSavedAt: backup.createdAt, now });
-    const before = JSON.stringify({ ...this.data.extra, ...encodeData(this.data) });
-    const after = JSON.stringify({ ...merged.extra, ...encodeData(merged) });
-    if (before === after) return false;
-    this.change(() => {
-      this.data = merged;
-    });
+  applyRemote(backup, { localSavedAt, now = new Date(), preferRemoteSettings = false }) {
+    const merged = mergedData(this.data, backup.data, { localSavedAt, remoteSavedAt: backup.createdAt, now, preferRemoteSettings });
+    const before = comparableText(this.data);
+    const after = comparableText(merged);
+    if (before !== after) {
+      this.change(() => {
+        this.data = merged;
+      }, { stamp: false });
+    }
     this.ensureCurrentWeekPlan(now);
-    return true;
+    return { changed: before !== after, sameAsRemote: comparableText(this.data) === comparableText(backup.data) };
   }
 
   // MARK: - Löschen

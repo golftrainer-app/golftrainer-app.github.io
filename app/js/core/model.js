@@ -174,6 +174,7 @@ export function decodeDrill(json) {
     isCorrective: json.isCorrective ?? false,
     isTournamentPrep: json.isTournamentPrep ?? false,
     suggestsVideo: json.suggestsVideo ?? false,
+    isIndoor: json.indoor ?? false,
     generator: json.generator ?? null,
     sources: json.sources ?? [],
   };
@@ -244,13 +245,23 @@ export function decodeRound(json) {
   };
 }
 
+/**
+ * Ein unlesbarer Verweis auf den Plan macht das Ergebnis nicht unlesbar, wie
+ * in der App: Es bleibt, nur ohne den Verweis.
+ */
+function planReferenceOf(json) {
+  if (json == null) return null;
+  try {
+    object(json);
+    return { weekStart: date(json.weekStart), slotID: identifier(json.slotID) };
+  } catch {
+    return null;
+  }
+}
+
 export function decodeResult(json) {
   object(json);
-  let planReference = null;
-  if (json.planReference) {
-    object(json.planReference);
-    planReference = { weekStart: date(json.planReference.weekStart), slotID: identifier(json.planReference.slotID) };
-  }
+  const planReference = planReferenceOf(json.planReference);
   return {
     id: identifier(json.id),
     drillID: drillIdentifier(json.drillID),
@@ -468,11 +479,14 @@ export function decodeWeekPlan(json) {
 export function decodeDeletion(json) {
   object(json);
   if (typeof json.id !== "string" || json.id.length > 100) throw new InvalidValue();
-  return { kind: oneOf(json.kind, DELETION_KINDS), id: json.id, at: date(json.at) };
+  return { kind: oneOf(json.kind, DELETION_KINDS), id: json.id, at: date(json.at), restored: json.restored === true };
 }
 
+/** `restored` steht nur in den Daten, wenn es gilt, wie in der App. */
 export function encodeDeletion(deletion) {
-  return { kind: deletion.kind, id: deletion.id, at: toStored(deletion.at) };
+  const json = { kind: deletion.kind, id: deletion.id, at: toStored(deletion.at) };
+  if (deletion.restored) json.restored = true;
+  return json;
 }
 
 /** Liest eine Liste und lässt unlesbare Einträge weg, statt alles zu verlieren (wie decodeLossy in der App). */
@@ -554,7 +568,8 @@ function encodeLoggedDrill(drill) {
   return json;
 }
 
-function encodeLogEntry(entry) {
+/** Eine Einheit im Tagebuch als JSON der App, z. B. für das Team. */
+export function encodeLogEntry(entry) {
   const json = {
     id: entry.id,
     memberID: entry.memberID,
@@ -594,15 +609,18 @@ function encodeColumnMapping(mapping) {
   return json;
 }
 
+/** Eine Runde als JSON der App, z. B. für das Team. */
+export function encodeRound(round) {
+  const item = { id: round.id, date: toStored(round.date), course: round.course, strokesGained: { ...round.strokesGained } };
+  if (round.score != null) item.score = round.score;
+  return item;
+}
+
 /** Eigene Daten als JSON im Format der App. Nur Felder, die die Web-App kennt. */
 export function encodeData(data) {
   const json = {
     focusPoints: data.focusPoints.map((point) => ({ ...point })),
-    rounds: data.rounds.map((round) => {
-      const item = { id: round.id, date: toStored(round.date), course: round.course, strokesGained: { ...round.strokesGained } };
-      if (round.score != null) item.score = round.score;
-      return item;
-    }),
+    rounds: data.rounds.map(encodeRound),
     results: data.results.map((result) => {
       const item = { id: result.id, drillID: result.drillID, date: toStored(result.date), level: result.level, score: result.score };
       if (result.planReference) {

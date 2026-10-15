@@ -154,6 +154,16 @@ export function isoWeek(date) {
   return Math.ceil(((day - yearStart) / 86400000 + 1) / 7);
 }
 
+/**
+ * Feld als fehlerhaft markieren oder nicht. Bildschirmleser lesen am Feld dann
+ * auch den Hinweis vor, der sagt, was fehlt (`message`: Element mit id).
+ */
+export function markField(field, isInvalid, message = null) {
+  field.setAttribute("aria-invalid", String(isInvalid));
+  if (isInvalid && message?.id) field.setAttribute("aria-describedby", message.id);
+  else field.removeAttribute("aria-describedby");
+}
+
 // MARK: - Meldungen
 
 let toastTimer = null;
@@ -168,26 +178,45 @@ export function toast(message) {
   toastTimer = setTimeout(() => element.classList.remove("show"), 4000);
 }
 
+let dialogCount = 0;
+
+/** Dialog mit Titel und Text als Namen und Beschreibung für Bildschirmleser. */
+function makeDialog(title, message, actions) {
+  dialogCount += 1;
+  const id = `dialog-${dialogCount}`;
+  const dialog = document.createElement("dialog");
+  dialog.className = "dialog";
+  dialog.setAttribute("aria-labelledby", `${id}-title`);
+  if (message) dialog.setAttribute("aria-describedby", `${id}-message`);
+  dialog.innerHTML = html`<form method="dialog">
+    <h2 id="${id}-title">${title}</h2>
+    ${message ? html`<p id="${id}-message">${message}</p>` : ""}
+    <div class="dialog-actions">${actions}</div>
+  </form>`.text;
+  return dialog;
+}
+
 /**
  * Frage mit Knöpfen, z. B. Zusammenführen oder Ersetzen. Gibt den Wert des
  * gewählten Knopfs zurück, null bei Abbrechen oder Zurück.
  * actions: [{ label, value, style: "flag" | "outline" | "danger" }]
+ *
+ * Löscht oder ersetzt eine der Aktionen etwas („danger“), steht der Fokus
+ * zuerst auf „Abbrechen“: Enter löst dann nichts aus, was sich nicht
+ * rückgängig machen lässt.
  */
 export function ask({ title, message = "", actions }) {
   return new Promise((resolve) => {
-    const dialog = document.createElement("dialog");
-    dialog.className = "dialog";
-    dialog.innerHTML = html`<form method="dialog">
-      <h2>${title}</h2>
-      ${message ? html`<p>${message}</p>` : ""}
-      <div class="dialog-actions">
-        ${actions.map(
-          (action, index) =>
-            html`<button class="button ${action.style === "outline" ? "outline" : action.style === "danger" ? "danger" : action.style === "flag" ? "flag" : ""}" value="${index}">${action.label}</button>`,
-        )}
-        <button class="button outline" value="cancel">Abbrechen</button>
-      </div>
-    </form>`.text;
+    const isDangerous = actions.some((action) => action.style === "danger");
+    const dialog = makeDialog(
+      title,
+      message,
+      html`${actions.map(
+        (action, index) =>
+          html`<button class="button ${action.style === "outline" ? "outline" : action.style === "danger" ? "danger" : action.style === "flag" ? "flag" : ""}" value="${index}">${action.label}</button>`,
+      )}
+        <button class="button outline" value="cancel" ${isDangerous ? "autofocus" : ""}>Abbrechen</button>`,
+    );
     document.body.append(dialog);
     dialog.addEventListener("close", () => {
       // Esc oder die Zurück-Geste schließen ohne Antwort: `returnValue` bleibt
@@ -205,13 +234,7 @@ export function ask({ title, message = "", actions }) {
 /** Hinweis mit einem Knopf „OK“. */
 export function inform(title, message) {
   return new Promise((resolve) => {
-    const dialog = document.createElement("dialog");
-    dialog.className = "dialog";
-    dialog.innerHTML = html`<form method="dialog">
-      <h2>${title}</h2>
-      <p>${message}</p>
-      <div class="dialog-actions"><button class="button" value="ok">OK</button></div>
-    </form>`.text;
+    const dialog = makeDialog(title, message, html`<button class="button" value="ok">OK</button>`);
     document.body.append(dialog);
     dialog.addEventListener("close", () => {
       dialog.remove();

@@ -114,7 +114,11 @@ export function setMinutes(week, weekday, minutes) {
 
 // MARK: - Lesen und Schreiben
 
-/** Gültige Wochentage, jeder nur einmal, ein Teamtag nie zugleich Golftag, Zeiten im Bereich der Eingabe. */
+/**
+ * Gültige Wochentage, jeder nur einmal, ein Teamtag nie zugleich Golftag,
+ * Zeiten im Bereich der Eingabe. Ohne jede Anlage gäbe es keine Übung mehr,
+ * dann gelten alle, wie in der App (`GolfWeek.sanitized`).
+ */
 export function sanitizeGolfWeek(week) {
   const teamDays = [...new Set(week.teamDays.filter(isWeekday))].sort((a, b) => a - b);
   const taken = new Set(teamDays);
@@ -124,12 +128,14 @@ export function sanitizeGolfWeek(week) {
     taken.add(day.weekday);
     golfDays.push({ weekday: day.weekday, minutes: day.minutes == null ? null : clamp(day.minutes, MINUTE_RANGE) });
   }
-  return { teamDays, golfDays, facilities: [...week.facilities] };
+  const facilities = [...new Set(week.facilities)];
+  return { teamDays, golfDays, facilities: facilities.length > 0 ? facilities : [...FACILITIES] };
 }
 
 /**
  * Golfwoche aus dem gespeicherten JSON, wie in der App: Unlesbare Tage fallen
- * weg, fehlen die Anlagen, gelten alle. Null, solange sie noch nicht gewählt ist.
+ * weg, unbekannte Anlagen auch. Fehlen die Anlagen, ist die Liste unlesbar oder
+ * bleibt keine übrig, gelten alle. Null, solange sie noch nicht gewählt ist.
  */
 export function decodeGolfWeek(json) {
   if (json == null || typeof json !== "object" || Array.isArray(json)) return null;
@@ -141,7 +147,8 @@ export function decodeGolfWeek(json) {
         return [{ weekday: day.weekday, minutes: day.minutes ?? null }];
       })
     : [];
-  const facilities = Array.isArray(json.facilities) ? json.facilities.filter((facility) => FACILITIES.includes(facility)) : [...FACILITIES];
+  const readable = Array.isArray(json.facilities) && json.facilities.every((facility) => typeof facility === "string");
+  const facilities = readable ? json.facilities.filter((facility) => FACILITIES.includes(facility)) : [...FACILITIES];
   return sanitizeGolfWeek({ teamDays, golfDays, facilities });
 }
 

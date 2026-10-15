@@ -2,8 +2,8 @@
 // AccountManager in der App (App/Sources/Account/AccountManager.swift). Ohne
 // Anmeldung passiert hier nichts, die Web-App läuft wie bisher.
 import { BackupError, readBackupJSON, syncDocument } from "./core/backup.js";
-import { action as syncAction } from "./core/sync.js";
-import { MAXIMUM_DOCUMENT_BYTES, MINIMUM_PASSWORD_LENGTH, SupabaseClient, SupabaseError } from "./supabase.js";
+import { action as syncAction, stamp } from "./core/sync.js";
+import { MINIMUM_PASSWORD_LENGTH, SAFE_DOCUMENT_BYTES, SupabaseClient, SupabaseError } from "./supabase.js";
 
 /** Stand des Abgleichs im Speicher des Browsers: bekannter Stand, Prüfsumme, Zeitpunkte. */
 export const STATE_KEY = "golftrainer.konto.stand";
@@ -75,14 +75,25 @@ export class Account {
     /** "signedOut", "awaitingConfirmation" (die Bestätigungsmail ist unterwegs) oder "signedIn". */
     this.status = this.client.session ? "signedIn" : this.state.awaitingEmail ? "awaitingConfirmation" : "signedOut";
     this.email = this.client.session?.email ?? this.state.awaitingEmail ?? "";
+    /** Die zuletzt angemeldete Adresse, um das Feld nach einer abgelaufenen Anmeldung vorzubelegen. Nur im Speicher. */
+    this.lastEmail = this.client.session?.email ?? null;
     /** Eine Anfrage läuft gerade, z. B. Anmelden. */
     this.isBusy = false;
     this.isSyncing = false;
     /** Warum der letzte Abgleich nicht geklappt hat, null nach einem guten. */
     this.syncProblem = null;
+    /** Warum die Seite abgemeldet wurde, z. B. eine abgelaufene Anmeldung; null nach dem Abmelden von Hand. */
+    this.signedOutReason = null;
     /** Was ein Link aus einer E-Mail ergeben hat, für die Seite Konto. */
     this.linkMessage = null;
-    store.changed = () => this.dataDidChange();
+    /** Eine Sitzung aus einem Link, die erst nach einer Rückfrage gilt: { session, type }. */
+    this.pendingLink = null;
+    /** Nach dem Link „Passwort zurücksetzen“: Die Sitzung gilt nur zum Ändern, bis du entscheidest, ob sie bleibt. */
+    this.pendingRecovery = false;
+    /** Während ein Abgleich läuft, kam eine Änderung: danach noch einmal. */
+    this.needsResync = false;
+    this.isApplyingRemote = false;
+    store.changed = (options) => this.dataDidChange(options);
   }
 
   // MARK: - Stand
@@ -112,6 +123,7 @@ export class Account {
     this.client.session = this.client.loadSession();
     this.status = this.client.session ? "signedIn" : this.state.awaitingEmail ? "awaitingConfirmation" : "signedOut";
     this.email = this.client.session?.email ?? this.state.awaitingEmail ?? "";
+    if (this.client.session) this.lastEmail = this.client.session.email;
     this.notify();
   }
 
@@ -137,11 +149,22 @@ export class Account {
     for (const listener of this.listeners) listener();
   }
 
-  /** Nach jeder Änderung der Daten: Zeitpunkt merken und, mit Konto, bald abgleichen. */
-  dataDidChange() {
-    this.state.changedAt = this.now().getTime();
-    this.writeState();
-    if (this.status === "signedIn") this.syncSoon(5000);
+  /**
+   * Nach jeder Änderung der Daten: Zeitpunkt merken und, mit Konto, bald
+   * abgleichen. `stamp: false` für Änderungen, die nicht von dir kommen, z. B.
+   * neue Vorschläge zu Wochenbeginn: Sie zählen nicht als eigene Änderung,
+   * sonst gewänne beim Zusammenführen die alte Golfwoche dieses Browsers
+   * gegen die neuere eines anderen Geräts.
+   */
+  dataDidChange({ stamp: counts = true } = {}) {
+    if (this.isApplyingRemote) return;
+    if (counts) {
+      this.state.changedAt = this.now().getTime();
+      this.writeState();
+    }
+    if (this.status !== "signedIn") return;
+    if (this.isSyncing) this.needsResync = true;
+    else this.syncSoon(5000);
   }
 
   // MARK: - Anmelden und Registrieren
@@ -159,14 +182,17 @@ export class Account {
     }
   }
 
-  /** null, wenn es geklappt hat, sonst der Satz für die Anzeige. */
+  /** null, wenn es geklappt hat, sonst der Satz für die Anzeige. `underSixteen` muss gewählt sein, nichts ist vorausgewählt. */
   async signUp({ email, password, underSixteen, parentalConsent }) {
+    if (typeof underSixteen !== "boolean") return "Sag uns, ob du unter 16 bist.";
     if (underSixteen && !parentalConsent) return "Unter 16 geht es nur mit dem Einverständnis eines Elternteils.";
     if (password.length < MINIMUM_PASSWORD_LENGTH) return `Das Passwort braucht mindestens ${MINIMUM_PASSWORD_LENGTH} Zeichen.`;
     const address = trimmed(email);
+    // Das Einverständnis zählt nur unter 16, sonst stünde im Profil etwas, das nicht gefragt war.
+    const consent = underSixteen && Boolean(parentalConsent);
     return this.busy(async () => {
       // Alter und Einverständnis merken, bis die erste Anmeldung sie ins Profil schreibt.
-      this.state.pending = { underSixteen: Boolean(underSixteen), parentalConsent: Boolean(parentalConsent), consentAt: parentalConsent ? this.now().getTime() : null };
+      this.state.pending = { underSixteen, parentalConsent: consent, consentAt: consent ? this.now().getTime() : null };
       this.writeState();
       const outcome = await this.client.signUp(address, password);
       if (outcome.kind === "signedIn") {
@@ -200,8 +226,11 @@ export class Account {
     }
     this.writeState();
     this.syncProblem = null;
+    this.signedOutReason = null;
+    this.pendingRecovery = false;
     this.status = "signedIn";
     this.email = session.email;
+    this.lastEmail = session.email;
     this.notify();
     await this.writePendingProfile();
     this.syncSoon(0);
@@ -248,7 +277,14 @@ export class Account {
   /**
    * Der Link aus einer E-Mail von Supabase („E-Mail bestätigen“, „Passwort
    * zurücksetzen“) bringt die Sitzung hinter dem # mit. `params` sind diese
-   * Felder. Gibt { type } zurück, z. B. "signup" oder "recovery", null ohne Link.
+   * Felder. Gibt { type } zurück: "signup" (angemeldet), "recovery" (Sitzung
+   * nur zum Ändern des Passworts), "confirm" (erst nach einer Rückfrage
+   * anmelden), "error", null ohne Link.
+   *
+   * Ohne Rückfrage meldet nur der Link an, dessen Adresse in diesem Browser
+   * registriert wurde. Jeder andere Link könnte von jemand anderem stammen:
+   * Er meldete den Browser in einem fremden Konto an, und deine Daten gingen
+   * dorthin. Deshalb zeigt die Seite Konto die Adresse und fragt.
    */
   async handleLink(params) {
     if (params.has("error") || params.has("error_code")) {
@@ -264,13 +300,60 @@ export class Account {
       const user = await this.client.user(accessToken);
       const expiresAt = params.get("expires_at") ? Number(params.get("expires_at")) * 1000 : this.now().getTime() + (Number(params.get("expires_in")) || 3600) * 1000;
       const session = { accessToken, refreshToken, expiresAt, userID: user.id, email: user.email };
-      this.client.adopt(session);
-      await this.didSignIn(session);
-      return { type };
+      if (type === "recovery") {
+        // Nur zum Ändern des Passworts. Ob die Sitzung bleibt, fragt die Seite danach.
+        this.client.adopt(session);
+        this.pendingRecovery = true;
+        this.status = "signedIn";
+        this.email = session.email;
+        this.notify();
+        return { type };
+      }
+      if (this.state.awaitingEmail && trimmed(this.state.awaitingEmail) === trimmed(user.email)) {
+        this.client.adopt(session);
+        await this.didSignIn(session);
+        return { type: "signup" };
+      }
+      this.pendingLink = { session, type };
+      this.notify();
+      return { type: "confirm" };
     } catch (error) {
       this.linkMessage = describe(error);
       return { type: "error" };
     }
+  }
+
+  /** Nach der Rückfrage zu einem Link: anmelden. */
+  async acceptPendingLink() {
+    const pending = this.pendingLink;
+    if (!pending) return;
+    this.pendingLink = null;
+    this.client.adopt(pending.session);
+    await this.didSignIn(pending.session);
+  }
+
+  /** Nach der Rückfrage zu einem Link: nicht anmelden. Die Adresse ist trotzdem bestätigt. */
+  discardPendingLink() {
+    this.pendingLink = null;
+    this.notify();
+  }
+
+  /**
+   * Nach dem neuen Passwort: Die Sitzung aus dem Link bleibt (`stay`), oder
+   * sie wird vergessen, z. B. auf einem fremden Gerät. Erst mit „bleiben“
+   * beginnt der Abgleich.
+   */
+  async finishRecovery(stay) {
+    const session = this.client.session;
+    this.pendingRecovery = false;
+    if (stay && session) {
+      await this.didSignIn(session);
+      return;
+    }
+    this.client.forget();
+    this.status = "signedOut";
+    this.email = "";
+    this.notify();
   }
 
   /** Die Meldung zum Link, einmal für die Anzeige. */
@@ -291,16 +374,32 @@ export class Account {
 
   // MARK: - Abmelden und Löschen
 
-  /** Abmelden: Die Daten bleiben in diesem Browser. */
+  /** Abmelden, nur diesen Browser: Die Daten bleiben hier. */
   async signOut() {
     await this.busy(async () => {
       this.cancelScheduledSync();
       await this.client.signOut();
       this.clearLocalState();
+      this.signedOutReason = null;
+      this.pendingRecovery = false;
       this.status = "signedOut";
       this.email = "";
       return null;
     });
+  }
+
+  /** Die Anmeldung gilt nicht mehr, z. B. abgelaufen: abmelden und den Grund zeigen. Die Daten bleiben. */
+  signOutLocally(reason) {
+    this.cancelScheduledSync();
+    this.client.forget();
+    this.clearLocalState();
+    this.pendingRecovery = false;
+    this.pendingLink = null;
+    this.status = "signedOut";
+    this.email = "";
+    this.signedOutReason = reason;
+    this.syncProblem = reason;
+    this.notify();
   }
 
   /** „Meine Daten löschen“: die Anmeldung in diesem Browser vergessen, ohne den Server. */
@@ -339,9 +438,20 @@ export class Account {
 
   // MARK: - Abgleich
 
-  /** Beim Öffnen der Seite und beim Zurückkehren. */
+  /** Beim Öffnen der Seite, beim Zurückkehren und wenn das Netz zurückkommt. */
   syncIfSignedIn() {
     if (this.status === "signedIn") this.syncSoon(500);
+  }
+
+  /**
+   * Beim Verlassen der Seite: sofort, ohne Wartezeit. Im Hintergrund frieren
+   * Browser auf dem Handy die Zeitgeber ein, der Abgleich käme sonst erst beim
+   * nächsten Öffnen.
+   */
+  syncBeforeLeaving() {
+    if (this.status !== "signedIn") return;
+    this.cancelScheduledSync();
+    this.sync();
   }
 
   syncSoon(milliseconds) {
@@ -359,35 +469,49 @@ export class Account {
   }
 
   /**
-   * Abgleich nach `action` in sync.js: laden, bei Bedarf zusammenführen,
-   * hochladen. Hat ein anderes Gerät dazwischen geschrieben, noch einmal von
-   * vorn, höchstens dreimal.
+   * Abgleich nach `action` in sync.js: zuerst nur den Stand laden, bei Bedarf
+   * das Dokument, zusammenführen, hochladen. Hat ein anderes Gerät dazwischen
+   * geschrieben, noch einmal von vorn, höchstens dreimal. Ist der eigene
+   * Stand nach dem Zusammenführen derselbe wie auf dem Server, gibt es
+   * nichts hochzuladen.
    */
   async sync() {
-    if (this.status !== "signedIn" || this.isSyncing) return;
+    if (this.status !== "signedIn" || this.isSyncing || this.pendingRecovery) return;
     this.cancelScheduledSync();
     this.isSyncing = true;
+    this.needsResync = false;
     this.notify();
     try {
       for (let attempt = 0; attempt < 3; attempt += 1) {
-        const row = await this.client.fetchDocument();
+        const remoteRevision = await this.client.fetchRevision();
         let document = this.document();
         const isDirty = (await hash(document.payloadText)) !== this.state.pushedHash;
-        const what = syncAction(this.state.revision, isDirty, row ? row.revision : null);
+        const what = syncAction(this.state.revision, isDirty, remoteRevision);
         if (what === "nothing") {
           this.finishSync();
           return;
         }
+        let expectedRevision = remoteRevision;
         if (what === "merge") {
+          const row = await this.client.fetchDocument();
           if (!row) continue;
-          this.applyRemote(row.document);
+          expectedRevision = row.revision;
+          const outcome = this.applyRemote(row.document);
           document = this.document();
+          if (outcome.sameAsRemote) {
+            // Alles Neue kam vom Server, hier gibt es nichts, was dort fehlt.
+            this.state.revision = row.revision;
+            this.state.pushedHash = await hash(document.payloadText);
+            this.writeState();
+            this.finishSync();
+            return;
+          }
         }
-        if (new TextEncoder().encode(document.text).length > MAXIMUM_DOCUMENT_BYTES) {
+        if (new TextEncoder().encode(document.text).length > SAFE_DOCUMENT_BYTES) {
           this.syncProblem = TOO_LARGE;
           return;
         }
-        const revision = await this.client.pushDocument(document.object, { expectedRevision: row ? row.revision : null, device: deviceName(), app: APP_NAME });
+        const revision = await this.client.pushDocument(document.object, { expectedRevision, device: deviceName(), app: APP_NAME });
         if (revision != null) {
           this.state.revision = revision;
           this.state.pushedHash = await hash(document.payloadText);
@@ -401,14 +525,15 @@ export class Account {
     } catch (error) {
       this.syncProblem = describe(error);
       if (error instanceof SupabaseError && error.isSessionProblem) {
-        this.clearLocalState();
-        this.status = "signedOut";
-        this.email = "";
-        this.syncProblem = error.message;
+        this.signOutLocally(error.message);
       }
     } finally {
       this.isSyncing = false;
       this.notify();
+      if (this.needsResync && this.status === "signedIn") {
+        this.needsResync = false;
+        this.syncSoon(5000);
+      }
     }
   }
 
@@ -423,9 +548,24 @@ export class Account {
     return syncDocument(this.store.data, this.changedAt, APP_NAME);
   }
 
-  /** Den Stand vom Server übernehmen: zusammenführen, nicht ersetzen. Ein kaputtes Dokument ist ein BackupError. */
+  /**
+   * Den Stand vom Server übernehmen: zusammenführen, nicht ersetzen. Ein
+   * kaputtes Dokument ist ein BackupError. Beim ersten Abgleich nach dem
+   * Anmelden gelten die Einstellungen des Kontos. Danach zählt als Zeitpunkt
+   * der letzten Änderung der jüngere von beiden, nicht „jetzt“.
+   */
   applyRemote(json) {
     const backup = readBackupJSON(json);
-    this.store.applyRemote(backup, { localSavedAt: this.changedAt, now: this.now() });
+    const preferRemoteSettings = this.state.revision === 0;
+    this.isApplyingRemote = true;
+    let outcome;
+    try {
+      outcome = this.store.applyRemote(backup, { localSavedAt: this.changedAt, now: this.now(), preferRemoteSettings });
+    } finally {
+      this.isApplyingRemote = false;
+    }
+    this.state.changedAt = stamp(this.changedAt, backup.createdAt).getTime();
+    this.writeState();
+    return outcome;
   }
 }

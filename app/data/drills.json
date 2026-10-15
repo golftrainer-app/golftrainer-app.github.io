@@ -43,6 +43,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Technik-Block für die Startrichtung: Der Ball muss durch ein schmales Tor aus zwei Tees rollen.",
       "steps": [
@@ -134,6 +135,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Feine Längenkontrolle: Jeder Putt soll knapp hinter dem vorherigen liegen bleiben.",
       "steps": [
@@ -175,6 +177,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Kurze Putts unter Druck: 12 Bälle im Kreis um das Loch wie die Zahlen einer Uhr. Alle müssen nacheinander fallen.",
       "steps": [
@@ -314,6 +317,7 @@
       "facilities": [
         "shortGameArea"
       ],
+      "indoor": true,
       "minutes": 20,
       "summary": "Technik-Block: immer derselbe Chip auf denselben Landepunkt, mit Fokus auf die Vorgabe deines Trainers.",
       "steps": [
@@ -928,6 +932,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 20,
       "summary": "Ein Schläger, ein Ziel, Fokus auf die Vorgabe deines Trainers. Hier entstehen die Videos für die Schwunganalyse.",
       "steps": [
@@ -1160,6 +1165,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Driver mit Fokus auf die Vorgabe deines Trainers. Einige Schwünge filmen.",
       "steps": [
@@ -1332,6 +1338,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Eine Münze liegt kurz vor dem Ball auf der Linie. Der Ball muss genau darüber rollen.",
       "purpose": "Zielgenauigkeit auf einen kleinen Punkt und ein ruhiger Kopf bis nach dem Treffmoment.",
@@ -1371,6 +1378,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Je 5 Putts nur mit der unteren und nur mit der oberen Hand.",
       "purpose": "Gefühl und Tempo: Zu aktive Hände zerstören die Längenkontrolle. Mit einer Hand spürst du, wie ruhig der Schlag sein muss.",
@@ -1411,6 +1419,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Ein Schläger liegt kurz hinter dem Loch. Der Ball soll fallen oder vorbeirollen, ohne den Schläger zu berühren.",
       "purpose": "Richtiges Tempo: Putts, die kurz bleiben, fallen nie. Die Übung trainiert, den Ball sicher bis zum Loch zu bringen, ohne weit vorbeizuschießen.",
@@ -1496,6 +1505,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "15 kurze Putts im Wechsel aus 1, 1,5 und 2 m. Drei Fehlschläge hintereinander, und die Serie beginnt von vorn.",
       "purpose": "Druck mit Folgen: Weil Fehler etwas kosten, lernst du, kurze Putts auch dann einzulochen, wenn es zählt.",
@@ -1729,6 +1739,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Ein gefaltetes Handtuch liegt kurz hinter dem Ball. Der Schläger darf es nicht berühren.",
       "purpose": "Korrektur-Übung gegen fette Schläge und zu frühes Abwinkeln (Casting): Der Schläger muss den Ball zuerst treffen.",
@@ -1774,6 +1785,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Zwei Ausrichtungsstäbe bilden ein Tor, das leicht nach außen zeigt, also vom Körper weg. Der Schläger muss durch, ohne sie zu berühren.",
       "purpose": "Korrektur-Übung gegen Slice und Pull: Das Tor erzwingt eine Schwungbahn von innen.",
@@ -1820,6 +1832,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Schwünge mit geschlossenen Füßen.",
       "purpose": "Korrektur-Übung für Balance, Rhythmus und Drehung: Ohne breiten Stand fällt jeder Ausfallschritt mit dem Oberkörper sofort auf.",
@@ -1861,6 +1874,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Vom höchsten Punkt den Schläger dreimal halb nach unten führen, dann den Schwung durchziehen.",
       "purpose": "Korrektur-Übung für den Übergang: Du spürst, wie der Schläger von innen nach unten fällt, statt von oben über den Ball zu kommen.",
@@ -1899,6 +1913,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Mit geschlossenen Füßen ausholen und beim Rückschwung mit dem vorderen Fuß in den Stand treten.",
       "purpose": "Korrektur-Übung für die richtige Reihenfolge: Der Unterkörper startet den Abschwung, das bringt Kraft und eine Bahn von innen.",
@@ -1936,6 +1951,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Das Griffende des Schlägers steckt am Bauchnabel, die Arme sind am Schaft gestreckt. Du drehst, bis der Schläger vom Ziel weg zeigt und dein Rücken zum Ziel.",
       "purpose": "Korrektur-Übung für mehr Drehung: Schultern und Hüfte drehen mit dem Rumpf, statt dass nur die Arme ausholen. Mehr Drehung bringt Länge, ohne dass du schneller schlagen musst.",
@@ -1974,6 +1990,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Zwei Ausrichtungsstäbe stecken senkrecht neben deinen Hüften. Im Schwung drehst du dich, ohne einen Stab wegzuschieben.",
       "purpose": "Korrektur-Übung gegen Sway und Slide: Die Hüfte soll drehen, nicht zur Seite schieben. Gute Spieler bleiben bis zum Umkehrpunkt fast an ihrem Platz und verschieben die Hüfte bis zum Treffmoment nur etwa 8 bis 13 cm zum Ziel.",
@@ -2025,6 +2042,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Ein Ausrichtungsstab steckt senkrecht hinter dir, dein Steißbein berührt ihn beim Ansprechen. Im ganzen Schwung bleibt der Po hinten am Stab.",
       "purpose": "Korrektur-Übung gegen Early Extension und Aufrichten: Die Hüfte bleibt im Abschwung hinten, statt zum Ball zu schieben. So bleibt Platz für die Arme und du bleibst in deiner Vorneigung.",
@@ -2077,6 +2095,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "In Ansprechhaltung hältst du den Schläger quer vor der Brust, die Arme gekreuzt. Du drehst zum Umkehrpunkt und durch bis ins Finish, ohne dich aufzurichten.",
       "purpose": "Korrektur-Übung für die Haltung: Du spürst, wie der Oberkörper um die Wirbelsäule dreht und dabei in der Vorneigung bleibt. Die vordere Schulter geht im Rückschwung zum Ball, im Abschwung bleibt die Brust zum Boden geneigt.",
@@ -2198,6 +2217,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Zwei Tees knapp breiter als der Driverkopf. Der Schläger muss durch, ohne sie zu berühren.",
       "purpose": "Treffpunkt in der Mitte der Schlagfläche: Treffer an der Spitze oder an der Ferse kosten Länge und Richtung.",
@@ -2651,6 +2671,7 @@
       "facilities": [
         "shortGameArea"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Ein Ausrichtungsstab verlängert den Griff nach oben und zeigt an der Zielseite deines Oberkörpers vorbei. Beim Chippen darf er deine Seite nicht berühren.",
       "purpose": "Korrektur-Übung gegen Löffeln, also abknickende Handgelenke im Treffmoment. Der Stab stößt sofort an deine Seite, wenn die Handgelenke abknicken oder der Körper nicht mitdreht. So lernst du, den Chip mit der Körperdrehung zu spielen.",
@@ -2704,6 +2725,7 @@
       "facilities": [
         "shortGameArea"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Zwei Tees liegen flach auf der Ziellinie, eins hinter und eins vor dem Ball. Beim Chip fliegen Ball und vorderes Tee weg, das hintere bleibt liegen.",
       "purpose": "Für einen sauberen Treffmoment: erst der Ball, dann der Boden. Der tiefste Punkt des Schwungs liegt vor dem Ball, und du spürst, wie der Schläger dort das Gras streift.",
@@ -2749,6 +2771,7 @@
       "facilities": [
         "shortGameArea"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Chippen mit zurückgezogenem hinteren Fuß, der nur mit den Zehenspitzen den Boden berührt. So bleibt der Druck auf dem vorderen Fuß.",
       "purpose": "Beim Chip soll der Druck auf dem vorderen Fuß liegen und während des ganzen Schlags dort bleiben. Dann triffst du erst den Ball und dann den Boden, und der Kontakt wird solide.",
@@ -2993,6 +3016,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Speed-Training mit dem umgedrehten Driver: Schwinge so schnell du kannst und hör hin, wo das lauteste Whoosh entsteht.",
       "purpose": "Mehr Schlägerkopfgeschwindigkeit und ein besseres Timing. Das Whoosh soll im Treffbereich am lautesten sein. Ist es leise oder zu früh, verschenkst du Tempo schon oben im Schwung.",
@@ -3044,6 +3068,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Abschläge im Takt des Tempo-Trainers: Der Rückschwung dauert dreimal so lang wie der Abschwung.",
       "purpose": "Ein gleichmäßiger Rhythmus macht deine Abschläge konstanter. Nach John Novosel (Tour Tempo) schwingen die besten Spieler mit einem Verhältnis von etwa 3 zu 1 zwischen Rückschwung und Abschwung.",
@@ -3093,6 +3118,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Ein zweites Tee steckt eine Schlägerkopflänge vor dem Ball. Der Driver soll nach dem Treffen darüber hinweg nach oben schwingen.",
       "purpose": "Korrektur-Übung gegen Abschläge, bei denen du von oben auf den Ball triffst. Laut Trackman brauchst du mit dem Driver einen positiven Anstellwinkel (Attack Angle), also einen Treffer in der Aufwärtsbewegung, um die maximale Länge zu erreichen.",
@@ -3146,6 +3172,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Nach jedem Abschlag das Finish ruhig halten, ohne zu wackeln. Gelingt das auch mit vollem Tempo?",
       "purpose": "Ein Finish, das du sicher halten kannst, zeigt einen kontrollierten Schwung. Gute Spieler holen ihr Tempo aus der richtigen Reihenfolge der Bewegung und aus dem Gleichgewicht, nicht aus den Armen.",
@@ -3340,6 +3367,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Mit einem Putting-Spiegel findest du die Augenposition, bei der die Linie für dich genau aufs Loch zeigt. Diese Position wiederholst du bei jedem Putt.",
       "purpose": "Schon kleine Änderungen der Kopfposition verändern, wohin du zu zielen glaubst. Die Augen müssen nicht genau über dem Ball sein: Wichtig ist eine Position, in der du gerade siehst, und dass du sie jedes Mal wieder findest.",
@@ -3389,6 +3417,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Putts im Takt eines Metronoms: Der Rhythmus bleibt bei jeder Länge gleich, nur die Länge des Schwungs ändert sich.",
       "purpose": "Gleichmäßiges Tempo ist die Grundlage für die Längenkontrolle. Untersuchungen zeigen: Die meisten sehr guten Putter putten im Takt von 72 bis 80 Schlägen pro Minute und ändern für die Länge nur die Größe des Schwungs.",
@@ -3439,6 +3468,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Je ein Tee steckt knapp neben Spitze und Ferse des Putters. Der Putter muss durch dieses Tor schwingen, ohne ein Tee zu berühren.",
       "purpose": "Treffpunkt in der Mitte der Schlagfläche. Wer die Mitte trifft, bringt den Ball besser ins Rollen.",
@@ -3484,6 +3514,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Den Putt mit offenen Augen lesen und ansprechen, dann mit geschlossenen Augen putten. Bevor du hinschaust, sagst du an, wo der Ball liegt.",
       "purpose": "Längengefühl: Ohne Blick auf Ball und Putter spürst du den Schlag genauer. Deine Ansage zeigt, wie gut du die Länge einschätzt, und schärft dieses Gefühl.",
@@ -3578,6 +3609,7 @@
       "facilities": [
         "puttingGreen"
       ],
+      "indoor": true,
       "minutes": 15,
       "summary": "Von derselben Stelle drei Putts mit drei Geschwindigkeiten einlochen: gerade so, mittel und fest. Jede Geschwindigkeit braucht eine andere Linie.",
       "purpose": "Du lernst, wie fest du kurze Putts spielen musst. Tempo und Linie gehören zusammen: Ein langsamer Ball nimmt mehr Break an, ein fester weniger.",
@@ -3777,6 +3809,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Halbe Wedge-Schwünge mit nur einem Arm: erst mit dem Führungsarm, dann mit dem hinteren Arm. Danach mit beiden Händen und dem gleichen Gefühl.",
       "purpose": "Korrektur-Übung gegen Flippen mit den Händen, das zu dünnen oder fetten Wedges führt. Mit einem Arm kann die dominante Hand nicht eingreifen. So spürst du, wie Körper, Arm und Schläger zusammen durch den Ball gehen.",
@@ -3826,6 +3859,7 @@
       "facilities": [
         "range"
       ],
+      "indoor": true,
       "minutes": 10,
       "summary": "Den Rückschwung bei etwa zwei Dritteln anhalten, kurz pausieren, dann durchschwingen. So führt der Körper den Abschwung, nicht die Hände.",
       "purpose": "Für die richtige Reihenfolge im Wedge-Schwung. Wer mit den Händen schlägt, löst die Handgelenke zu früh und trifft oft den Boden hinter dem Ball. Drehst du den Körper durch den Ball, bringt der Loft den Ball in die Luft und die Flughöhe bleibt kontrolliert.",

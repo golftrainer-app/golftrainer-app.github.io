@@ -58,7 +58,7 @@ export function swingPage(app) {
           footer:
             "Beide Videos laufen im selben Abstand zum Treffmoment und starten 1,5 Sekunden davor, oder später, wenn eines nicht so weit zurückreicht. Ohne gesetzten Treffmoment gilt 1,5 Sekunden nach dem Anfang. Mit „Spiegeln“ vergleichst du Links- und Rechtshänder.",
         })}
-        ${chapter("Tempo", html`<a class="action" href="#/schwung/tempo">Tempo-Trainer<span class="mark">›</span></a>`, {
+        ${chapter("Tempo", html`<a class="action" href="#/schwung/tempo">Tempo-Trainer<span class="mark" aria-hidden="true">›</span></a>`, {
           footer: "Drei Töne geben den Takt vor: ausholen, oben umkehren, treffen. Volle Schwünge 3 : 1, Kurzspiel und Putten 2 : 1.",
         })}
         ${chapter(
@@ -409,6 +409,8 @@ class TempoPlayer {
     this.stop();
     const AudioContextClass = globalThis.AudioContext ?? globalThis.webkitAudioContext;
     if (!AudioContextClass) throw new Error("Dieser Browser kann keine Töne erzeugen.");
+    // Wie Musik abspielen: Dann klingt der Takt auf dem iPhone auch im Stummmodus (Safari ab iOS 17).
+    setAudioSession("playback");
     this.context = new AudioContextClass();
     await this.context.resume();
     this.tempo = tempo;
@@ -457,15 +459,33 @@ class TempoPlayer {
     this.timer = null;
     this.startTime = null;
     this.context?.close().catch(() => {});
+    if (this.context) setAudioSession("auto");
     this.context = null;
     this.wakeLock?.release().catch(() => {});
     this.wakeLock = null;
   }
 }
 
+/** Art der Tonausgabe (Audio Session API), nur wo der Browser sie kennt. */
+function setAudioSession(type) {
+  try {
+    if (globalThis.navigator?.audioSession) navigator.audioSession.type = type;
+  } catch {
+    // Unbekannter Wert in einem älteren Browser: Dann bleibt es, wie es ist.
+  }
+}
+
 const TONES = ["takeaway", "top", "impact"];
 
-export function tempoPage() {
+/**
+ * Tempo-Trainer. Kommst du von einer Übung, z. B. „Drive im Takt“, führt
+ * „Zurück“ wieder dorthin, sonst zum Tab Schwung. Die vorige Adresse steht im
+ * Verlauf der Navigation (`app.stack` in main.js); fehlt er, gilt der Tab.
+ */
+export function tempoPage(app) {
+  const previous = Array.isArray(app?.stack) ? app.stack[app.stack.length - 2] : null;
+  const fromDrill = typeof previous === "string" && /^#\/(woche|uebungen)\/./.test(previous);
+  const parent = fromDrill ? previous : "#/schwung";
   const player = new TempoPlayer();
   let style = "fullSwing";
   let frames = STYLES.fullSwing.standard;
@@ -519,8 +539,9 @@ export function tempoPage() {
 
   return {
     title: "Tempo-Trainer",
-    tab: "schwung",
-    parent: "#/schwung",
+    // Von einer Übung aus bleibt deren Tab markiert.
+    tab: fromDrill ? previous.split("/")[1] : "schwung",
+    parent,
     keepOnChange: true,
     render() {
       const selected = tempo();
@@ -541,7 +562,7 @@ export function tempoPage() {
           "So geht es",
           html`<p class="tip">Ton 1: ausholen. Ton 2: oben, der Abschwung beginnt. Ton 3, etwas höher: Treffmoment.</p>
             <p class="tip">Erst ein paar Schwünge ohne Ball, dann mit Ball. Reagiere auf die Töne, statt sie vorauszuahnen.</p>
-            <p class="tip">Stell die Medienlautstärke laut genug. Solange der Takt läuft, bleibt der Bildschirm an. Am besten mit einem Ohrhörer, dann hört niemand sonst mit.</p>`,
+            <p class="tip">Stell die Medienlautstärke laut genug. Hörst du auf dem iPhone nichts, schalte den Stummmodus aus. Solange der Takt läuft, bleibt der Bildschirm an. Am besten mit einem Ohrhörer, dann hört niemand sonst mit.</p>`,
         )}
       `;
     },

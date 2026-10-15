@@ -54,7 +54,7 @@ export function compareMarkup() {
             <button type="button" class="button outline" data-compare="next" aria-label="Beide ein Bild vor">Bild ›</button>
           </div>
           <div class="choice" role="group" aria-label="Geschwindigkeit">${RATES.map(([rate, label]) => html`<button type="button" data-compare-rate="${rate}" aria-pressed="${String(rate === compare.rate)}">${label}</button>`)}</div>
-          <button type="button" class="action" data-compare="close">Vergleich schließen<span class="mark">×</span></button>`
+          <button type="button" class="action" data-compare="close">Vergleich schließen<span class="mark" aria-hidden="true">×</span></button>`
       : html`<p class="note">Wähle links und rechts je ein Video, such in jedem mit ‹ und › das Bild des Treffmoments und tippe „Treffmoment: hier setzen“. Danach laufen beide im selben Abstand dazu.</p>`}
   </div>`;
 }

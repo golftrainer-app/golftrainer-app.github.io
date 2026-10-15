@@ -97,6 +97,18 @@ function withoutScore(drill) {
   return { ...drill, score: null, maxScore: null };
 }
 
+/** Erster Index der aufsteigend sortierten Zeiten, ab dem `isPast` gilt, sonst die Länge. */
+function firstIndex(times, isPast) {
+  let low = 0;
+  let high = times.length;
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (isPast(times[middle])) high = middle;
+    else low = middle + 1;
+  }
+  return low;
+}
+
 /**
  * Das Tagebuch, neueste Einheit zuerst.
  *
@@ -114,11 +126,31 @@ export function entries({ memberID = LOCAL_MEMBER, manual, results, library, inc
   const warmUps = new Set(library.filter((drill) => drill.isWarmUp).map((drill) => drill.id));
   // Ein Eintrag, der vor `since` beginnt und danach endet, bleibt dabei. Sonst
   // fiele er weg, und seine Übungen nach `since` würden zum Tageseintrag.
-  const manualEntries = manual.filter((entry) => !since || entryEnd(entry) >= since).sort((a, b) => a.start - b.start);
+  const manualEntries = manual.filter((entry) => !since || entryEnd(entry) >= since).sort((a, b) => a.start.getTime() - b.start.getTime());
   let remaining = results
     .filter((result) => !since || result.date >= since)
     .filter((result) => drills.has(result.drillID))
-    .sort((a, b) => a.date - b.date);
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  // Jedes Ergebnis gehört zum ersten Eintrag (nach Beginn), in dessen Zeit es
+  // fällt. Die Ergebnisse sind nach Zeit sortiert: Eine binäre Suche findet
+  // die Zeit eines Eintrags, und `next` springt über Ergebnisse, die schon ein
+  // früherer Eintrag hat. So bleibt es auch mit Tausenden Einträgen und
+  // Ergebnissen schnell, statt für jeden Eintrag alle Ergebnisse zu prüfen.
+  const times = remaining.map((result) => result.date.getTime());
+  // next[i]: das erste noch freie Ergebnis ab i, times.length heißt keins mehr.
+  const next = new Int32Array(times.length + 1);
+  for (let index = 0; index < next.length; index += 1) next[index] = index;
+  const free = (start) => {
+    let root = start;
+    while (next[root] !== root) root = next[root];
+    for (let index = start; next[index] !== root; ) {
+      const following = next[index];
+      next[index] = root;
+      index = following;
+    }
+    return root;
+  };
 
   const list = [];
   for (const original of manualEntries) {
@@ -126,10 +158,13 @@ export function entries({ memberID = LOCAL_MEMBER, manual, results, library, inc
     if (!includeScores) entry.drills = entry.drills.map(withoutScore);
     const windowStart = entry.start.getTime();
     const windowEnd = Math.max(windowStart, entryEnd(entry).getTime()) + ATTACH_TOLERANCE;
-    const inWindow = (result) => result.date.getTime() >= windowStart && result.date.getTime() <= windowEnd;
-    const attached = remaining.filter(inWindow);
+    const end = firstIndex(times, (time) => time > windowEnd);
+    const attached = [];
+    for (let index = free(firstIndex(times, (time) => time >= windowStart)); index < end; index = free(index + 1)) {
+      attached.push(remaining[index]);
+      next[index] = index + 1;
+    }
     if (attached.length > 0) {
-      remaining = remaining.filter((result) => !inWindow(result));
       const known = new Set(entry.drills.map((drill) => `${drill.drillID}|${drill.date.getTime()}`));
       const added = attached
         .map((result) => loggedDrill(result, drills.get(result.drillID), includeScores))
@@ -138,11 +173,13 @@ export function entries({ memberID = LOCAL_MEMBER, manual, results, library, inc
       if (Object.keys(entry.areaMinutes).length === 0) {
         entry.areaMinutes = areaMinutes(entry.drills.filter((drill) => !warmUps.has(drill.drillID)));
       }
-      const latest = Math.max(...attached.map((result) => result.date.getTime()));
+      // Nach Zeit sortiert: Das letzte ist das jüngste.
+      const latest = attached[attached.length - 1].date.getTime();
       if (latest > entry.updatedAt.getTime()) entry.updatedAt = new Date(latest);
     }
     list.push(entry);
   }
+  remaining = remaining.filter((_, index) => next[index] === index);
 
   const byDay = new Map();
   for (const result of remaining) {
@@ -154,10 +191,13 @@ export function entries({ memberID = LOCAL_MEMBER, manual, results, library, inc
     const logged = dayResults.map((result) => loggedDrill(result, drills.get(result.drillID), includeScores));
     const first = logged[0];
     const last = logged[logged.length - 1];
+    // Beginn: so lange vor dem ersten Ergebnis, wie die Übung dauert, aber nicht
+    // vor Mitternacht. Sonst zählte ein Ergebnis um 0:05 Uhr für den Vortag.
+    const earliest = first.date.getTime() - first.minutes * 60000;
     list.push({
       id: `${memberID}_${day}`,
       memberID,
-      start: new Date(first.date.getTime() - first.minutes * 60000),
+      start: new Date(Math.max(startOfDay(first.date).getTime(), earliest)),
       minutes: logged.reduce((total, drill) => total + drill.minutes, 0),
       kind: "plan",
       place: null,

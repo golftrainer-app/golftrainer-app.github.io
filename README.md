@@ -1,12 +1,14 @@
 <!-- Automatisch erzeugt mit tools/generate_site.py. Bitte nicht von Hand ändern. -->
 
-# Golf Trainer: Webseite
+# Golf Trainer: Webseite und Web-App
 
-Die öffentliche Webseite der App „Golf Trainer“: Datenschutzerklärung, Nutzungsbedingungen, Anbieter und Kontakt, Lizenzen und Hilfe. App Store Connect verlangt eine öffentliche Datenschutz-URL und eine Support-URL. Beide kommen von hier.
+Die öffentliche Webseite der App „Golf Trainer“: Datenschutzerklärung, Nutzungsbedingungen, Anbieter und Kontakt, Lizenzen und Hilfe. App Store Connect verlangt eine öffentliche Datenschutz-URL und eine Support-URL. Beide kommen von hier. Im Ordner `app/` liegt die Web-App für Android-Handys, erreichbar unter `https://golftrainer-app.github.io/app/`.
 
-Das Repository der App ist privat, und GitHub Pages gibt es im kostenlosen Plan nur für öffentliche Repositorys. Deshalb liegt die Webseite in einem eigenen, öffentlichen Repository, das nur diese Dateien enthält. Leg hier nichts anderes ab, alles darin ist öffentlich.
+Das Repository der App ist privat, und GitHub Pages gibt es im kostenlosen Plan nur für öffentliche Repositorys. Deshalb liegen Webseite und Web-App in einem eigenen, öffentlichen Repository, das nur diese Dateien enthält. Leg hier nichts anderes ab, alles darin ist öffentlich.
 
-Die Texte stammen aus `legal.json` im Repository der App, genau wie in der App. Ändere sie dort, nicht hier. Die Seiten laden nichts von anderen Servern: keine Webfonts, kein JavaScript, keine Cookies, keine Analyse.
+Die Texte stammen aus `legal.json` im Repository der App, genau wie in der App. Ändere sie dort, nicht hier. Die Seiten mit den Texten laden nichts von anderen Servern: keine Webfonts, kein JavaScript, keine Cookies, keine Analyse.
+
+Die Web-App ist JavaScript ohne Bibliotheken anderer Anbieter. Was jemand dort einträgt, speichert sie im Browser auf dem Gerät. Nur wer sich mit dem freiwilligen Konto anmeldet, gleicht die Daten mit dem Server des Kontos ab (Supabase in Frankfurt). Mit anderen Servern spricht die Web-App nicht. Ihr Code liegt im Repository der App unter `site/app/`. Die Tests und `package.json` kommen nicht hierher.
 
 ## Einmal einrichten
 
@@ -19,7 +21,7 @@ Die Dateien kommen über den Workflow „Webseite“ aus dem Repository der App 
 5. **Erste Übertragung:** Im Repository der App **Actions** → **Webseite** → **Run workflow** → **Run workflow**. Nach etwa einer Minute liegen alle Dateien hier, auch die leere Datei `.nojekyll`, damit GitHub Pages die Dateien unverändert ausliefert.
 6. **GitHub Pages prüfen:** Bei einem Repository mit dem Namen `….github.io` schaltet GitHub Pages von selbst ein. Zur Sicherheit hier **Settings** → **Pages**: bei **Source** „Deploy from a branch“, bei **Branch** `main` und der Ordner `/ (root)`. Nach ein paar Minuten ist die Seite unter `https://golftrainer-app.github.io/` erreichbar.
 
-Ohne den Workflow geht es auch von Hand: alle Dateien aus dem Ordner `site/` über **Add file** → **Upload files** hochladen und `.nojekyll` über **Add file** → **Create new file** anlegen. Ordner lassen sich auf dem iPad schlecht hochladen, deshalb ist der Workflow der einfachere Weg.
+Ohne den Workflow geht es auch von Hand: alle Dateien aus dem Ordner `site/` ohne `app/test/` und `app/package.json` über **Add file** → **Upload files** hochladen und `.nojekyll` über **Add file** → **Create new file** anlegen. Ordner lassen sich auf dem iPad schlecht hochladen, deshalb ist der Workflow der einfachere Weg.
 
 ## In App Store Connect eintragen
 

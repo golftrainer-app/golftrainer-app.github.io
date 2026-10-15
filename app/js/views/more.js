@@ -1,20 +1,32 @@
-// Tab „Mehr“: Golfwoche, Schwerpunkte, Datensicherung, Installieren,
+// Tab „Mehr“: Spielhand, Golfwoche, Schwerpunkte, Datensicherung, Installieren,
 // Datenschutz und „Meine Daten löschen“, wie SettingsView in der App.
 import { readBackup, fileName, summary, BackupError } from "../core/backup.js";
 import { AREAS, AREA_NAMES, FACILITIES, FACILITY_NAMES } from "../core/categories.js";
 import { formatShortDate, formatTime } from "../core/dates.js";
 import { emptyGolfWeek } from "../core/golfweek.js";
-import { newID } from "../core/model.js";
+import { LIMITS, newID } from "../core/model.js";
 import { timeText } from "../core/reminders.js";
-import { ask, chapter, check, download, empty, headline, html, inform, readFile, shareFile, toast } from "../ui.js";
+import { ask, chapter, check, download, empty, headline, html, inform, markField, readFile, shareFile, toast } from "../ui.js";
 import { accountFooter, accountStatusText } from "./account.js";
+import { teamStatusText } from "./team.js";
 import { applyGolfWeekClick, copyGolfWeek, dayButtons, golfDays, minutesRows } from "./golfweek.js";
 
 const PRIORITY_NAMES = ["Normal", "Wichtig", "Sehr wichtig"];
 const priorityName = (priority) => PRIORITY_NAMES[Math.min(3, Math.max(1, priority)) - 1];
 
+/** Spielhand wie Handedness im Kern der App. */
+const HANDS = [
+  ["right", "Rechtshänder"],
+  ["left", "Linkshänder"],
+];
+
 function isStandalone() {
   return globalThis.matchMedia?.("(display-mode: standalone)").matches || globalThis.navigator?.standalone === true;
+}
+
+/** iPhone oder iPad. iPadOS meldet sich im Browser wie ein Mac, hat aber einen Touchscreen. */
+export function isAppleMobile({ userAgent = "", maxTouchPoints = 0 } = globalThis.navigator ?? {}) {
+  return /iPhone|iPad|iPod/.test(userAgent) || (/Macintosh/.test(userAgent) && maxTouchPoints > 1);
 }
 
 export function morePage(app) {
@@ -26,11 +38,28 @@ export function morePage(app) {
     wantsInstallPrompt: true,
     render() {
       const week = store.data.golfWeek ?? emptyGolfWeek();
+      // Ohne Antwort gilt Rechtshänder, wie in der App.
+      const handedness = store.data.handedness ?? "right";
       return html`
         ${chapter(
           "Konto",
           html`<ul class="rows"><li><a class="row labeled" href="#/mehr/konto"><span class="row-main">Konto</span><span class="row-value">${accountStatusText(account)}</span></a></li></ul>`,
           { footer: accountFooter(account) },
+        )}
+        ${chapter(
+          "Team",
+          html`<ul class="rows"><li><a class="row labeled" href="#/team"><span class="row-main">Team</span><span class="row-value">${app.team ? teamStatusText(app.team) : "Nicht im Team"}</span></a></li></ul>`,
+          { footer: "Die Jugendabteilung deines Vereins: Termine mit Zu- und Absagen, Pinnwand, Challenges, Schwerpunkte und Einheiten von den Trainern. Braucht ein Konto und einen Einladungslink." },
+        )}
+        ${chapter(
+          "Spielhand",
+          html`<div class="choice" role="group" aria-label="Spielhand">${HANDS.map(
+            ([value, name]) => html`<button type="button" data-hand="${value}" data-key="hand-${value}" aria-pressed="${String(value === handedness)}">${name}</button>`,
+          )}</div>`,
+          {
+            footer:
+              "Danach richten sich im Launch Monitor die Namen der Flugkurven wie Draw und Fade und die Bedeutung von Schwungbahn und Schlagfläche. Die Messwerte selbst bleiben gleich: Rechts ist für beide rechts. Beim Rechtshänder zeigt die linke Schulter zum Ziel, beim Linkshänder die rechte.",
+          },
         )}
         ${chapter(
           "Golfwoche",
@@ -52,15 +81,15 @@ export function morePage(app) {
             const isLast = isOn && week.facilities.length === 1;
             return html`<label class="toggle"><span>${FACILITY_NAMES[facility]}</span><input type="checkbox" data-facility="${facility}" data-key="facility-${facility}" ${isOn ? "checked" : ""} ${isLast ? "disabled" : ""}></label>`;
           }),
-          { footer: "Gilt für alle Golftage. Die App schlägt nur Übungen vor, die dort gehen." },
+          { footer: "Gilt für alle Golftage. Die App schlägt nur Übungen vor, die dort gehen. „Halle oder zuhause“ steht für Matte, Netz oder Teppich ohne Ballflug, z. B. im Winter. Ist nur das an, kommen Putts auf dem Teppich, Chips ins Netz und Technik-Übungen ohne Ball." },
         )}
         ${chapter(
           "Schwerpunkte vom Trainer",
           html`<ul class="rows">${store.data.focusPoints.map((point) => focusRow(point))}</ul>
-            <a class="action" href="#/mehr/schwerpunkte/neu">Schwerpunkt hinzufügen<span class="mark">+</span></a>`,
+            <a class="action" href="#/mehr/schwerpunkte/neu">Schwerpunkt hinzufügen<span class="mark" aria-hidden="true">+</span></a>`,
           { footer: "Aktive Schwerpunkte bekommen mehr Zeit und stehen bei den Technik-Übungen dabei." },
         )}
-        ${chapter("Vorschläge der Woche", html`<button type="button" class="action" data-action="regenerate" data-key="regenerate">Vorschläge neu erstellen<span class="mark">↻</span></button>`, {
+        ${chapter("Vorschläge der Woche", html`<button type="button" class="action" data-action="regenerate" data-key="regenerate">Vorschläge neu erstellen<span class="mark" aria-hidden="true">↻</span></button>`, {
           footer: "Änderungen an der Golfwoche und an Turnieren gelten sofort. Schwerpunkte und Runden zählen ab den nächsten Vorschlägen, also ab der nächsten Woche oder wenn du sie hier neu erstellst.",
         })}
         ${chapter(
@@ -83,7 +112,7 @@ export function morePage(app) {
         )}
         ${chapter(
           "Datensicherung",
-          html`<button type="button" class="action" data-action="backup" data-key="backup">Sicherung erstellen<span class="mark">↓</span></button>
+          html`<button type="button" class="action" data-action="backup" data-key="backup">Sicherung erstellen<span class="mark" aria-hidden="true">↓</span></button>
             <label class="action">Sicherung zurückspielen<input class="visually-hidden" type="file" accept=".json,application/json" data-restore></label>`,
           {
             footer:
@@ -120,6 +149,11 @@ export function morePage(app) {
         const week = copyGolfWeek(store.data.golfWeek ?? emptyGolfWeek());
         if (applyGolfWeekClick(week, event.target)) {
           store.setGolfWeek(week);
+          return;
+        }
+        const hand = event.target.closest("[data-hand]");
+        if (hand) {
+          if (store.data.handedness !== hand.dataset.hand) store.setHandedness(hand.dataset.hand);
           return;
         }
         const button = event.target.closest("[data-action]");
@@ -207,10 +241,23 @@ export function morePage(app) {
 }
 
 function installChapter(app) {
+  // Auf iPhone und iPad löscht Safari die Daten einer Seite nach sieben Tagen
+  // ohne Besuch, außer sie liegt auf dem Home-Bildschirm.
+  if (!app.installPrompt && isAppleMobile()) {
+    return chapter(
+      "Auf den Home-Bildschirm",
+      html`<p class="serif">In Safari auf „Teilen“ und dann auf „Zum Home-Bildschirm“ tippen.</p>
+        <p class="hint">Sonst kann Safari deine Daten nach sieben Tagen ohne Besuch löschen. Ein Konto oder eine Sicherung schützt davor.</p>`,
+      {
+        footer:
+          "Dann öffnet sich Golf Trainer wie eine App, ohne Adressleiste, und läuft auch ohne Netz, z. B. auf der Range. Fehlen dort deine Einträge, hol sie mit deinem Konto oder einer Sicherung nach.",
+      },
+    );
+  }
   return chapter(
     "Auf den Startbildschirm",
     app.installPrompt
-      ? html`<button type="button" class="action" data-action="install">Golf Trainer installieren<span class="mark">+</span></button>`
+      ? html`<button type="button" class="action" data-action="install">Golf Trainer installieren<span class="mark" aria-hidden="true">+</span></button>`
       : html`<p class="serif">Im Menü deines Browsers „Zum Startbildschirm hinzufügen“ oder „App installieren“ wählen. In Samsung Internet heißt es „Seite hinzufügen zu“ und dann „Startbildschirm“.</p>`,
     { footer: "Dann öffnet sich Golf Trainer wie eine App, ohne Adressleiste, und läuft auch ohne Netz, z. B. auf der Range." },
   );
@@ -258,7 +305,8 @@ export function focusEditor(app, id) {
     keepOnChange: true,
     render() {
       return html`<form class="editor" novalidate>
-        <label class="field"><span>Schwerpunkt</span><textarea name="text" rows="2" placeholder="z. B. Ruhiger Übergang">${point.text}</textarea></label>
+        <label class="field"><span>Schwerpunkt</span><textarea name="text" rows="2" maxlength="${LIMITS.textLength}" placeholder="z. B. Ruhiger Übergang">${point.text}</textarea></label>
+        <p class="note" id="focus-hint" data-hint aria-live="polite">Trag hier ein, woran du gerade mit deinem Trainer arbeitest.</p>
         <label class="field"><span>Bereich</span>
           <select name="area">${AREAS.map((area) => html`<option value="${area}" ${area === point.area ? "selected" : ""}>${AREA_NAMES[area]}</option>`)}</select>
         </label>
@@ -266,7 +314,6 @@ export function focusEditor(app, id) {
           <div class="choice" role="group" aria-label="Wichtigkeit">${[1, 2, 3].map((value) => html`<button type="button" data-priority="${value}" aria-pressed="${String(value === point.priority)}">${priorityName(value)}</button>`)}</div>
         </div>
         <label class="toggle"><span>Aktiv</span><input type="checkbox" name="active" ${point.isActive ? "checked" : ""}></label>
-        <p class="note">Trag hier ein, woran du gerade mit deinem Trainer arbeitest.</p>
         ${chapter("Passende Technik-Übungen", html`<ul class="rows" data-drills>${drillList()}</ul>`, {
           footer:
             "Was dein Trainer vorschlägt, hier abhaken. Diese Übungen schlägt die App dann bevorzugt im Technik-Teil vor. Korrektur-Übungen (mit „Korrektur“ markiert) schlägt sie nur vor, wenn sie hier ausgewählt sind.",
@@ -282,11 +329,25 @@ export function focusEditor(app, id) {
       const form = root.querySelector("form");
       const saveButton = root.querySelector("[data-save]");
       const list = root.querySelector("[data-drills]");
+      const hint = root.querySelector("[data-hint]");
+      const defaultHint = hint.textContent;
+      // Ein neuer Schwerpunkt ist noch leer. Als Fehler zählt das erst, wenn du hineingetippt hast.
+      let textTouched = Boolean(existing);
       const update = () => {
-        saveButton.disabled = form.elements.text.value.trim() === "";
+        const missing = form.elements.text.value.trim() === "";
+        saveButton.disabled = missing;
+        const showMissing = missing && textTouched;
+        const text = showMissing ? "Ohne Text lässt sich der Schwerpunkt nicht sichern." : defaultHint;
+        // Nur bei einer Änderung neu setzen, sonst liest ein Bildschirmleser bei jedem Tippen vor.
+        if (hint.textContent !== text) hint.textContent = text;
+        hint.classList.toggle("flag", showMissing);
+        markField(form.elements.text, showMissing, hint);
       };
       update();
-      form.elements.text.addEventListener("input", update);
+      form.elements.text.addEventListener("input", () => {
+        textTouched = true;
+        update();
+      });
       form.elements.area.addEventListener("change", () => {
         point.area = form.elements.area.value;
         // Übungen aus dem alten Bereich wären nicht mehr zu sehen und ließen sich nicht abwählen.
@@ -377,6 +438,9 @@ export function deletePage(app) {
           actions: [{ label: "Alles löschen", value: "delete", style: "danger" }],
         });
         if (choice !== "delete") return;
+        // Was noch nicht beim Server ist, geht vorher noch raus, dann verschwindet das Team vom Gerät.
+        await app.team?.sendPendingChanges();
+        app.team?.forgetLocalData();
         app.account.forgetSession();
         store.deleteAll();
         try {

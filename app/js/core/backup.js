@@ -72,21 +72,47 @@ export function readBackupJSON(json) {
   }
 }
 
+/** Was nur zu diesem Gerät gehört und nicht auf den Server geht, wie syncPayload in der App. */
+const DEVICE_ONLY = ["clips", "runningTraining", "captureSettings", "reminders"];
+
+/** Die Daten, wie sie auf den Server gehen: ohne Videos, laufende Stoppuhr, Kameraeinstellungen und Erinnerung. */
+export function syncPayload(data) {
+  const payload = { ...(data.extra ?? {}), ...encodeData(data) };
+  for (const key of DEVICE_ONLY) delete payload[key];
+  return payload;
+}
+
 /**
  * Das Dokument für den Server beim Abgleich über das Konto: wie die Sicherung,
- * mit dem Zeitpunkt der letzten Änderung als Stand, ohne Videos, laufende
- * Stoppuhr und Kopplungscode fürs iPad, wie syncPayload in der App. Gibt das
- * Objekt, seinen Text und den Text der Daten allein (für die Prüfsumme) zurück.
+ * mit dem Zeitpunkt der letzten Änderung als Stand und nur mit dem, was
+ * `syncPayload` nennt. Gibt das Objekt, seinen Text und den Text der Daten
+ * allein (für die Prüfsumme) zurück.
  */
 export function syncDocument(data, changedAt, app = APP) {
-  const payload = { ...(data.extra ?? {}), ...encodeData(data) };
-  delete payload.clips;
-  delete payload.runningTraining;
-  if (payload.captureSettings && typeof payload.captureSettings === "object" && !Array.isArray(payload.captureSettings)) {
-    payload.captureSettings = { ...payload.captureSettings, screenCode: "" };
-  }
+  const payload = syncPayload(data);
   const object = { format: FORMAT, version: CURRENT_VERSION, createdAt: toStored(changedAt), app, payload };
   return { object, text: JSON.stringify(object), payloadText: JSON.stringify(payload) };
+}
+
+/**
+ * Die Daten in einer Form, in der sich zwei Stände vergleichen lassen, ohne
+ * dass die Reihenfolge zählt: Listen nach Kennung sortiert, nur was auf den
+ * Server geht. Gleich heißt: Nach dem Zusammenführen gibt es nichts
+ * hochzuladen.
+ */
+export function comparableText(data) {
+  const payload = syncPayload(data);
+  const sorted = {};
+  for (const key of Object.keys(payload).sort()) {
+    const value = payload[key];
+    if (Array.isArray(value) && value.every((item) => item && typeof item === "object")) {
+      const keyOf = (item) => (key === "deletions" ? `${item.kind}|${item.id}` : String(item.id ?? JSON.stringify(item)));
+      sorted[key] = [...value].sort((a, b) => (keyOf(a) < keyOf(b) ? -1 : keyOf(a) > keyOf(b) ? 1 : 0));
+    } else {
+      sorted[key] = value;
+    }
+  }
+  return JSON.stringify(sorted);
 }
 
 /** Felder der App, die die Web-App nicht bearbeitet, z. B. Schwunganalysen. */

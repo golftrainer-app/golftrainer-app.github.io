@@ -33,7 +33,7 @@ export function launchPage(app) {
       return html`
         ${chapter(
           "Import",
-          html`<label class="action">CSV-Datei importieren<input class="visually-hidden" type="file" accept=".csv,text/csv,text/plain,text/comma-separated-values" multiple data-import><span class="mark">+</span></label>`,
+          html`<label class="action">CSV-Datei importieren<input class="visually-hidden" type="file" accept=".csv,text/csv,text/plain,text/comma-separated-values" multiple data-import><span class="mark" aria-hidden="true">+</span></label>`,
           {
             footer:
               "In Garmin Golf die Session öffnen, auf das Teilen-Symbol neben der Anzahl der Schläge tippen und die Datei speichern, z. B. in „Eigene Dateien“. Dann hier auswählen, auch mehrere auf einmal. Mehrere Sessions: in der Liste oben rechts „Sitzungen bearbeiten“, auswählen, teilen.",
@@ -408,13 +408,13 @@ export function shotPage(app, sessionID, shotID) {
       const link = (offset, label) => {
         const other = session.shots[position + offset];
         return other
-          ? html`<a class="button outline" href="${BASE}/${encodeURIComponent(session.id)}/${encodeURIComponent(other.id)}">${label}</a>`
+          ? html`<a class="button outline" href="${BASE}/${encodeURIComponent(session.id)}/${encodeURIComponent(other.id)}" data-shot-step>${label}</a>`
           : html`<span class="button outline disabled" aria-disabled="true">${label}</span>`;
       };
       return html`
         <p class="kicker">Schlag ${position + 1} von ${session.shots.length}${shot.date ? ` · ${dateWithSeconds.format(shot.date)}` : ""}</p>
         <h1 class="headline">${shot.club}</h1>
-        <div class="buttons two">${link(-1, "‹ Vorheriger")}${link(1, "Nächster ›")}</div>
+        <div class="buttons two">${link(-1, html`<span aria-hidden="true">‹</span> Vorheriger`)}${link(1, html`Nächster <span aria-hidden="true">›</span>`)}</div>
         ${chapter(
           "Messwerte",
           html`<ul class="rows">${METRICS.filter((metric) => shot.values[metric] != null).map((metric) => {
@@ -422,9 +422,19 @@ export function shotPage(app, sessionID, shotID) {
             const sense = meaning(metric, value, handedness);
             return html`<li class="row"><span class="row-main"><span class="row-title">${metricName(metric)}</span>${sense ? html`<span class="row-sub">${sense}</span>` : ""}</span><span class="row-value">${formattedForDisplay(metric, value)}</span></li>`;
           })}</ul>`,
-          { footer: "Richtungen mit L und R, wie bei TrackMan. Was ein Wert für den Schwung bedeutet, hängt von deiner Spielhand ab." },
+          { footer: "Richtungen mit L und R, wie bei TrackMan. Was ein Wert für den Schwung bedeutet, hängt von deiner Spielhand ab (Mehr → Spielhand)." },
         )}
       `;
+    },
+    mount(root) {
+      // Blättern ersetzt den Schlag im Verlauf, statt für jeden einen Eintrag anzulegen.
+      // So führt „Zurück“ gleich zur Session. Mit gedrückter Taste, z. B. für einen neuen Tab, bleibt der Link, wie er ist.
+      root.addEventListener("click", (event) => {
+        const step = event.target.closest("a[data-shot-step]");
+        if (!step || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        app.navigate(step.getAttribute("href"), { replace: true });
+      });
     },
   };
 }

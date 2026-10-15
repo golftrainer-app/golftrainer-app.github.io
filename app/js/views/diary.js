@@ -4,13 +4,20 @@
 // lassen sich bearbeiten, die automatischen nicht.
 import { AREAS, AREA_NAMES } from "../core/categories.js";
 import { formatTime, fromInputs, startOfWeek, toDateInput, toTimeInput } from "../core/dates.js";
+import { LIMITS } from "../core/model.js";
 import { KINDS, KIND_NAMES, PLACES, PLACE_NAMES, scoreText, sortedAreas } from "../core/traininglog.js";
-import { ask, chapter, durationText, empty, html, toast } from "../ui.js";
+import { ask, chapter, durationText, empty, html, markField, toast } from "../ui.js";
 
 const dayMonth = new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short" });
 const whenFormat = new Intl.DateTimeFormat("de-DE", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export const EFFORT_NAMES = { 1: "1 – locker", 2: "2 – leicht", 3: "3 – mittel", 4: "4 – anstrengend", 5: "5 – sehr anstrengend" };
+
+/** So viele Wochen zeigt das Tagebuch zuerst. Ältere kommen mit einem Knopf dazu. */
+export const VISIBLE_WEEKS = 12;
+
+/** Ältere Wochen zeigen. Bleibt, bis die Seite neu lädt. */
+let showOlderWeeks = false;
 
 /** Schritte wie die Stepper in der App. */
 const STEP = 5;
@@ -39,31 +46,37 @@ export function diaryPage(app) {
         byWeek.get(key).push(entry);
       }
       const weeks = [...byWeek.keys()].sort((a, b) => b - a);
+      // Erst die letzten Wochen: Mit Jahren voller Einträge würde die Seite sonst lang und langsam.
+      const shown = showOlderWeeks ? weeks : weeks.slice(0, VISIBLE_WEEKS);
       return html`
         ${store.running ? runningChapter(store.running, now) : ""}
         ${chapter(
           null,
-          html`${store.running ? "" : html`<button type="button" class="action" data-action="start" data-key="start">Stoppuhr starten<span class="mark">▶</span></button>`}
-            <a class="action" href="#/tagebuch/neu">Training eintragen<span class="mark">+</span></a>`,
+          html`${store.running ? "" : html`<button type="button" class="action" data-action="start" data-key="start">Stoppuhr starten<span class="mark" aria-hidden="true">▶</span></button>`}
+            <a class="action" href="#/tagebuch/neu">Training eintragen<span class="mark" aria-hidden="true">+</span></a>`,
           {
             footer:
               "Übungen, die du während einer laufenden Einheit einträgst, gehören zu ihr. Alle anderen stehen als „Übungen aus dem Plan“ an ihrem Tag. Im Team sehen das Tagebuch nur die Trainer, und nur aus der App.",
           },
         )}
         ${entries.length === 0 ? empty("Noch kein Training eingetragen. Starte die Stoppuhr, trag eine Einheit von Hand ein oder mach Übungen aus den Vorschlägen der Woche.") : ""}
-        ${weeks.map((key) => {
+        ${shown.map((key, index) => {
           const list = byWeek.get(key);
           const total = list.reduce((sum, entry) => sum + entry.minutes, 0);
-          return chapter(
-            `Woche ab ${dayMonth.format(new Date(key))}`,
-            html`<ul class="rows">${list.map((entry) =>
-              manualIDs.has(entry.id)
-                ? html`<li><a class="row log" href="#/tagebuch/${encodeURIComponent(entry.id)}" aria-label="${KIND_NAMES[entry.kind] ?? entry.kind}, ${durationText(entry.minutes)}, bearbeiten">${logBody(entry)}</a></li>`
-                : html`<li><div class="row log">${logBody(entry)}</div></li>`,
-            )}</ul>`,
-            { side: html`<span class="duration">${durationText(total)}</span>` },
-          );
+          return html`${index === VISIBLE_WEEKS ? html`<p class="visually-hidden" tabindex="-1" data-key="older">Ältere Wochen</p>` : ""}
+            ${chapter(
+              `Woche ab ${dayMonth.format(new Date(key))}`,
+              html`<ul class="rows">${list.map((entry) =>
+                manualIDs.has(entry.id)
+                  ? html`<li><a class="row log" href="#/tagebuch/${encodeURIComponent(entry.id)}" aria-label="${KIND_NAMES[entry.kind] ?? entry.kind}, ${durationText(entry.minutes)}, bearbeiten">${logBody(entry)}</a></li>`
+                  : html`<li><div class="row log">${logBody(entry)}</div></li>`,
+              )}</ul>`,
+              { side: html`<span class="duration">${durationText(total)}</span>` },
+            )}`;
         })}
+        ${shown.length < weeks.length
+          ? html`<button type="button" class="action" data-action="older" data-key="older">Ältere Wochen zeigen<span class="mark" aria-hidden="true">↓</span></button>`
+          : ""}
       `;
     },
     mount(root) {
@@ -74,6 +87,11 @@ export function diaryPage(app) {
           case "start":
             store.startTraining();
             toast("Die Stoppuhr läuft.");
+            break;
+          case "older":
+            // Der Fokus landet dann am Anfang der älteren Wochen (gleicher data-key).
+            showOlderWeeks = true;
+            app.render({ keepScroll: true });
             break;
           case "finish":
             app.navigate("#/tagebuch/stoppuhr");
@@ -181,7 +199,7 @@ export function diaryEditor(app, id) {
     render() {
       return html`<form class="editor" novalidate>
         ${id === "stoppuhr" ? html`<p class="note flag">Die Stoppuhr lief ${durationText(entry.minutes)}, seit ${formatTime(entry.start)} Uhr. Prüfe die Angaben und sichere die Einheit.</p>` : ""}
-        <div class="field-row">
+        <div class="field-row" data-when>
           <label class="field"><span>Datum</span><input type="date" name="date" value="${toDateInput(entry.start)}" min="1970-01-01" max="2199-12-31" required></label>
           <label class="field"><span>Beginn</span><input type="time" name="time" value="${toTimeInput(entry.start)}" required></label>
         </div>
@@ -208,7 +226,7 @@ export function diaryEditor(app, id) {
         <label class="field"><span>Anstrengung</span>
           <select name="effort"><option value="">Keine Angabe</option>${[1, 2, 3, 4, 5].map((value) => html`<option value="${value}" ${value === entry.effort ? "selected" : ""}>${EFFORT_NAMES[value]}</option>`)}</select>
         </label>
-        <label class="field"><span>Notiz</span><textarea name="note" rows="2" placeholder="z. B. woran du gearbeitet hast">${entry.note}</textarea></label>
+        <label class="field"><span>Notiz</span><textarea name="note" rows="2" maxlength="${LIMITS.textLength}" placeholder="z. B. woran du gearbeitet hast">${entry.note}</textarea></label>
         ${entry.drills.length > 0
           ? chapter("Übungen in dieser Einheit", html`<ul class="rows">${entry.drills.map((drill) => html`<li class="row"><span class="row-main">${drill.name}</span>${scoreText(drill) ? html`<span class="row-value">${scoreText(drill)}</span>` : ""}</li>`)}</ul>`, {
               footer: "Aus den Ergebnissen, die in die Zeit dieser Einheit fallen.",
@@ -255,14 +273,22 @@ export function diaryEditor(app, id) {
         event.preventDefault();
         const dateField = form.elements.date;
         const timeField = form.elements.time;
-        const start = dateField.value && timeField.value ? fromInputs(dateField.value, timeField.value) : new Date(NaN);
-        const valid = Number.isFinite(start.getTime());
-        dateField.setAttribute("aria-invalid", String(!valid));
-        if (!valid) {
-          toast("Bitte Datum und Uhrzeit angeben.");
-          dateField.focus();
+        // Was fehlt, steht direkt unter den Feldern und am Feld selbst: Datum, Beginn oder beides.
+        const dateInvalid = !dateField.value || !Number.isFinite(fromInputs(dateField.value).getTime());
+        const timeInvalid = !timeField.value;
+        root.querySelector("[data-when-error]")?.remove();
+        if (dateInvalid || timeInvalid) {
+          const text = dateInvalid && timeInvalid ? "Bitte gib Datum und Beginn an." : dateInvalid ? "Bitte gib das Datum an." : "Bitte gib den Beginn an.";
+          root.querySelector("[data-when]").insertAdjacentHTML("afterend", String(html`<p class="note flag" id="diary-when-error" role="alert" data-when-error>${text}</p>`));
+        }
+        const message = root.querySelector("[data-when-error]");
+        markField(dateField, dateInvalid, message);
+        markField(timeField, timeInvalid, message);
+        if (dateInvalid || timeInvalid) {
+          (dateInvalid ? dateField : timeField).focus();
           return;
         }
+        const start = fromInputs(dateField.value, timeField.value);
         store.saveTrainingEntry({
           ...entry,
           start,

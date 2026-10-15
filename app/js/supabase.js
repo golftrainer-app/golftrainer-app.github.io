@@ -7,6 +7,8 @@ import { SUPABASE } from "./config.js";
 
 /** So groß darf das Dokument sein, wie im Schema (supabase/schema.sql). */
 export const MAXIMUM_DOCUMENT_BYTES = 2 * 1024 * 1024;
+/** Ab hier hört der Abgleich auf, mit Puffer: Der Server misst das Dokument in seiner eigenen Form, die etwas größer sein kann als der Text. */
+export const SAFE_DOCUMENT_BYTES = 1800 * 1024;
 export const MINIMUM_PASSWORD_LENGTH = 8;
 /** Die Sitzung im Speicher des Browsers. „Meine Daten löschen“ und Abmelden entfernen sie. */
 export const SESSION_KEY = "golftrainer.konto.sitzung";
@@ -50,8 +52,10 @@ export function errorMessage(status, code, raw) {
       return "Zu viele Versuche in kurzer Zeit. Warte eine Stunde und versuche es noch einmal.";
     case "validation_failed":
     case "email_address_invalid":
-    case "email_address_not_authorized":
       return "Prüfe die E-Mail-Adresse.";
+    case "email_address_not_authorized":
+      // Der eingebaute Mailversand von Supabase schickt nur an das Team des Projekts.
+      return "An diese E-Mail-Adresse kann der Server noch keine Mails schicken. Der Mailversand ist beim Anbieter noch nicht eingerichtet.";
     case "signup_disabled":
       return "Zurzeit lassen sich keine Konten anlegen.";
     case "user_not_found":
@@ -61,6 +65,19 @@ export function errorMessage(status, code, raw) {
     case "refresh_token_already_used":
     case "bad_jwt":
       return "Die Anmeldung ist abgelaufen. Melde dich noch einmal an.";
+    case "reauthentication_needed":
+    case "reauthentication_not_valid":
+      return "Dafür verlangt der Server eine frische Anmeldung. Melde dich ab und wieder an, dann versuche es gleich noch einmal.";
+    case "P0001":
+      // Eine Funktion des Servers (supabase/team.sql) mit einem Satz für die Anzeige.
+      if (raw) return String(raw);
+      break;
+    case "42501":
+      return "Dafür fehlt die Berechtigung.";
+    case "23514":
+      // Die Größenregel der Datenbank (supabase/schema.sql) kommt als 400, nicht als 413.
+      if (String(raw ?? "").includes("document_size")) return "Die Daten sind zu groß für den Server, höchstens 2 MB.";
+      break;
     default:
       break;
   }
@@ -118,8 +135,15 @@ export function signUpOutcome(json, now = Date.now()) {
   try {
     return { kind: "signedIn", session: sessionFrom(json, now) };
   } catch {
-    if (json && typeof json === "object" && (json.id != null || json.user != null)) return { kind: "confirmationSent" };
-    throw new SupabaseError(200, "unexpected", UNEXPECTED);
+    if (!json || typeof json !== "object" || (json.id == null && json.user == null)) throw new SupabaseError(200, "unexpected", UNEXPECTED);
+    // Gibt es die Adresse schon, antwortet Supabase bei eingeschalteter Bestätigung
+    // wie bei einem neuen Konto, nur ohne Identitäten, damit niemand erraten kann,
+    // wer ein Konto hat. Die Person wartete sonst auf eine Mail, die nie kommt.
+    const user = json.user && typeof json.user === "object" ? json.user : json;
+    if (Array.isArray(user.identities) && user.identities.length === 0) {
+      throw new SupabaseError(200, "user_already_exists", errorMessage(200, "user_already_exists", null));
+    }
+    return { kind: "confirmationSent" };
   }
 }
 
@@ -164,7 +188,8 @@ export const requests = {
   signUp: (config, email, password) => request("POST", config, "auth/v1/signup", { body: { email, password } }),
   signIn: (config, email, password) => request("POST", config, "auth/v1/token", { query: [["grant_type", "password"]], body: { email, password } }),
   refresh: (config, refreshToken) => request("POST", config, "auth/v1/token", { query: [["grant_type", "refresh_token"]], body: { refresh_token: refreshToken } }),
-  signOut: (config, session) => request("POST", config, "auth/v1/logout", { accessToken: session.accessToken, body: {} }),
+  /** Abmelden, nur diese Sitzung: Ohne `scope=local` beendete Supabase alle Sitzungen des Kontos, auch die auf iPhone und iPad. */
+  signOut: (config, session) => request("POST", config, "auth/v1/logout", { query: [["scope", "local"]], accessToken: session.accessToken, body: {} }),
   /** „Passwort vergessen“: Supabase schickt einen Link, der zur Web-App führt. */
   recover: (config, email) => request("POST", config, "auth/v1/recover", { body: { email } }),
   resendConfirmation: (config, email) => request("POST", config, "auth/v1/resend", { body: { type: "signup", email } }),
@@ -178,6 +203,15 @@ export const requests = {
       accessToken: session.accessToken,
       body: { user_id: session.userID, under_sixteen: underSixteen, parental_consent: parentalConsent, consent_at: consentAt ? new Date(consentAt).toISOString() : null },
       headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    }),
+  /** Nur der Stand auf dem Server, ohne das Dokument: reicht, um zu sehen, ob es etwas Neues gibt, und kostet kaum Daten. */
+  fetchRevision: (config, session) =>
+    request("GET", config, "rest/v1/app_data", {
+      query: [
+        ["select", "revision"],
+        ["user_id", `eq.${session.userID}`],
+      ],
+      accessToken: session.accessToken,
     }),
   fetchDocument: (config, session) =>
     request("GET", config, "rest/v1/app_data", {
@@ -330,6 +364,16 @@ export class SupabaseClient {
     await this.authorized((session) => requests.upsertProfile(this.config, session, profile));
   }
 
+  /** Der Stand des Kontos auf dem Server, null, wenn dort noch nichts liegt. */
+  async fetchRevision() {
+    const json = await this.authorized((session) => requests.fetchRevision(this.config, session));
+    if (!Array.isArray(json)) throw new SupabaseError(200, "unexpected", UNEXPECTED);
+    const row = json[0];
+    if (!row) return null;
+    if (!Number.isInteger(row.revision)) throw new SupabaseError(200, "unexpected", UNEXPECTED);
+    return row.revision;
+  }
+
   /** Die Zeile des Kontos: { document, revision, device }, null, wenn noch keine auf dem Server liegt. */
   async fetchDocument() {
     const json = await this.authorized((session) => requests.fetchDocument(this.config, session));
@@ -369,7 +413,13 @@ export class SupabaseClient {
     } catch (error) {
       if (!(error instanceof SupabaseError) || error.status !== 401) throw error;
       const renewed = await this.refresh(current);
-      return this.send(make(renewed));
+      try {
+        return await this.send(make(renewed));
+      } catch (again) {
+        // Auch mit frischer Sitzung abgelehnt: Sie gilt nicht mehr, sonst stünde die Seite nach dem Neuladen wieder auf „angemeldet“.
+        if (again instanceof SupabaseError && again.status === 401) this.forget();
+        throw again;
+      }
     }
   }
 

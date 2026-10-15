@@ -2,9 +2,16 @@
 // Er legt die eigenen Dateien im Zwischenspeicher des Browsers ab. Daten von
 // dir gehen nirgendwohin, er lädt nur die Dateien dieser Seite.
 //
-// Nach jeder Änderung an den Dateien VERSION erhöhen. Neue Dateien kommen
-// dann beim nächsten Öffnen an, ältere Zwischenspeicher werden gelöscht.
-const VERSION = "2026-10-12-1";
+// Jede VERSION hat einen eigenen Zwischenspeicher. Die Installation füllt ihn
+// ganz oder gar nicht, danach kommen die Dateien der Seite nur noch aus ihm.
+// So treffen nie Dateien aus zwei Ständen aufeinander: Passt ein Import nicht
+// zum anderen, startet die Seite sonst gar nicht.
+//
+// Nach jeder Änderung an den Dateien VERSION erhöhen. Erst dann lädt der
+// Browser den neuen Stand, beim nächsten Öffnen ist er da, und ältere
+// Zwischenspeicher werden gelöscht. Neue Dateien in FILES eintragen,
+// test/sw.test.mjs prüft das.
+const VERSION = "2026-10-14-4";
 const CACHE = `golftrainer-${VERSION}`;
 
 const FILES = [
@@ -12,12 +19,14 @@ const FILES = [
   "index.html",
   "manifest.webmanifest",
   "css/app.css",
+  "js/boot.js",
   "js/main.js",
   "js/store.js",
   "js/ui.js",
   "js/config.js",
   "js/supabase.js",
   "js/account.js",
+  "js/team.js",
   "js/views/week.js",
   "js/views/drills.js",
   "js/views/run.js",
@@ -30,6 +39,8 @@ const FILES = [
   "js/views/stats.js",
   "js/views/launch.js",
   "js/views/account.js",
+  "js/views/team.js",
+  "js/views/coach.js",
   "js/core/backup.js",
   "js/core/bests.js",
   "js/core/calendar.js",
@@ -50,6 +61,12 @@ const FILES = [
   "js/core/tournament.js",
   "js/core/traininglog.js",
   "js/core/weighting.js",
+  "js/core/team.js",
+  "js/core/teamsync.js",
+  "js/core/teamapi.js",
+  "js/core/teamshare.js",
+  "js/core/teamcoach.js",
+  "js/core/moderation.js",
   "data/drills.json",
   "data/tournament.json",
   "icons/icon-192.png",
@@ -59,10 +76,20 @@ const FILES = [
   "icons/icon-maskable-512.png",
 ];
 
+/** Volle Adressen der Dateien ohne Abfrage, z. B. „…/app/“ für „./“. */
+const PRECACHED = new Set(FILES.map((file) => new URL(file, self.location).href));
+
 self.addEventListener("install", (event) => {
-  // Am Zwischenspeicher des Browsers vorbei laden, damit wirklich die neue Version ankommt.
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES.map((file) => new Request(file, { cache: "reload" })))));
-  self.skipWaiting();
+  // Am Zwischenspeicher des Browsers vorbei und mit der VERSION in der Abfrage
+  // laden, damit wirklich der neue Stand ankommt, auch durch Zwischenspeicher
+  // im Netz hindurch. Fehlt eine Datei oder bricht das Laden ab, scheitert die
+  // Installation, und die bisherige Version bleibt, wie sie ist.
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((cache) => cache.addAll(FILES.map((file) => new Request(`${file}?v=${encodeURIComponent(VERSION)}`, { cache: "reload" }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
@@ -74,20 +101,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Aus dem Zwischenspeicher, im Hintergrund aktualisieren. Nur eigene Dateien.
+// Dateien der Seite nur aus dem Zwischenspeicher ihrer Version, ohne sie
+// nebenbei einzeln zu erneuern. Fehlt eine wider Erwarten, kommt sie aus dem
+// Netz, ohne im Zwischenspeicher zu landen. Alles andere, z. B. der Server des
+// Kontos, geht wie ohne Service Worker ins Netz.
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
-  event.respondWith(
-    caches.open(CACHE).then(async (cache) => {
-      const cached = await cache.match(request, { ignoreSearch: true });
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) cache.put(request, response.clone());
-          return response;
-        })
-        .catch(() => cached);
-      return cached ?? network;
-    }),
-  );
+  if (request.method !== "GET") return;
+  const url = new URL(request.url);
+  url.search = "";
+  url.hash = "";
+  if (!PRECACHED.has(url.href)) return;
+  event.respondWith(caches.open(CACHE).then(async (cache) => (await cache.match(request, { ignoreSearch: true })) ?? fetch(request)));
 });

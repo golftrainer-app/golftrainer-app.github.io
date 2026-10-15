@@ -25,7 +25,7 @@ export const BLEND = 0.7;
 /** Leichtes Programm am Vortag. */
 export const DAY_BEFORE_WEIGHTS = { putting: 0.4, shortGame: 0.3, approach: 0.3 };
 
-/** Am Vortag ein Bereich pro angefangene 15 Minuten. */
+/** Am Vortag ein Bereich pro volle 15 Minuten. */
 export const DAY_BEFORE_MINUTES_PER_AREA = 15;
 
 export function rules(phase) {

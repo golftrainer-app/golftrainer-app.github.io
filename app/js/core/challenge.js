@@ -2,7 +2,7 @@
 // Distanzen. Genau wie ChallengeGenerator in der App: derselbe Startwert aus
 // Übung und Tag, derselbe Zufallsgenerator (SplitMix64) und dieselben
 // Verfahren wie Swift für Zufallszahlen und Mischen. Deshalb mit BigInt.
-import { utcDayNumber } from "./dates.js";
+import { localDayNumber } from "./dates.js";
 
 const MASK = (1n << 64n) - 1n;
 
@@ -52,14 +52,18 @@ export class SplitMix64 {
   }
 }
 
-/** Stabiler Startwert aus Übung und Tag (FNV-1a über die UTF-8-Bytes der Kennung). */
+/**
+ * Stabiler Startwert aus Übung und Tag (FNV-1a über die UTF-8-Bytes der
+ * Kennung). Der Tag zählt in der Zeitzone des Geräts: Die Ansagen wechseln um
+ * Mitternacht vor Ort, nicht um Mitternacht in UTC.
+ */
 export function seed(drillID, date) {
   let hash = 0xcbf29ce484222325n;
   for (const byte of new TextEncoder().encode(drillID)) {
     hash ^= BigInt(byte);
     hash = (hash * 0x100000001b3n) & MASK;
   }
-  return hash ^ BigInt.asUintN(64, BigInt(utcDayNumber(date)));
+  return hash ^ BigInt.asUintN(64, BigInt(localDayNumber(date)));
 }
 
 function strideThrough(from, through, by) {

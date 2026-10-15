@@ -2,10 +2,10 @@
 // Strokes Gained aus bebrassie, wie RoundsView und TournamentViews in der App.
 import { SG_CATEGORIES, SG_NAMES } from "../core/categories.js";
 import { addDays, formatShortDate, formatTime, fromInputs, toDateInput, toTimeInput } from "../core/dates.js";
-import { newID } from "../core/model.js";
+import { LIMITS, newID } from "../core/model.js";
 import { PHASE_NAMES, phase as tournamentPhase, warmUpSchedule } from "../core/tournament.js";
 import { averageStrokesGained } from "../core/weighting.js";
-import { ask, chapter, check, countdown, empty, formatDecimal, html, parseDecimal, progress, strokesGainedText, toast } from "../ui.js";
+import { ask, chapter, check, countdown, empty, formatDecimal, html, markField, parseDecimal, progress, strokesGainedText, toast } from "../ui.js";
 
 const fullDate = new Intl.DateTimeFormat("de-DE", { dateStyle: "full", timeStyle: "short" });
 
@@ -41,7 +41,7 @@ export function tournamentsPage(app) {
               ${upcoming.length === 0 ? html`<li>${empty("Kein Turnier geplant.")}</li>` : ""}
               ${upcoming.map((tournament, index) => tournamentRow(store, tournament, index === 0, now))}
             </ul>
-            <a class="action" href="#/turniere/neu">Turnier hinzufügen<span class="mark">+</span></a>`,
+            <a class="action" href="#/turniere/neu">Turnier hinzufügen<span class="mark" aria-hidden="true">+</span></a>`,
           { footer: "In den 7 Tagen vor einem Turnier stellt die App ihre Vorschläge auf Turniervorbereitung um." },
         )}
         ${past.length > 0 ? chapter("Vergangene Turniere", html`<ul class="rows">${past.map((tournament) => tournamentRow(store, tournament, false, now))}</ul>`) : ""}
@@ -57,7 +57,7 @@ export function tournamentsPage(app) {
               ${rounds.length === 0 ? html`<li>${empty("Noch keine Runden eingetragen.")}</li>` : ""}
               ${rounds.map((round) => roundRow(round))}
             </ul>
-            <a class="action" href="#/runden/neu">Runde eintragen<span class="mark">+</span></a>`,
+            <a class="action" href="#/runden/neu">Runde eintragen<span class="mark" aria-hidden="true">+</span></a>`,
           {
             footer:
               "Trag nach jeder Runde die vier Strokes-Gained-Werte aus bebrassie ein. Daraus berechnet die App, wie viel Zeit in welchen Bereich fließt.",
@@ -156,12 +156,12 @@ export function tournamentPage(app, id) {
         ${chapter(
           "Quellen",
           store.guide.sources.map(
-            (source) => html`<a class="action source" href="${source.url}" target="_blank" rel="noopener noreferrer">${source.title}<span class="mark">↗</span></a>`,
+            (source) => html`<a class="action source" href="${source.url}" target="_blank" rel="noopener noreferrer">${source.title}<span class="mark" aria-hidden="true">↗</span></a>`,
           ),
         )}
         ${chapter(
           null,
-          html`<a class="action" href="${base}/bearbeiten">Bearbeiten<span class="mark">›</span></a>
+          html`<a class="action" href="${base}/bearbeiten">Bearbeiten<span class="mark" aria-hidden="true">›</span></a>
             <button type="button" class="action danger" data-action="delete">Turnier löschen</button>`,
         )}
       `;
@@ -286,8 +286,8 @@ export function tournamentEditor(app, id) {
     keepOnChange: true,
     render() {
       return html`<form class="editor" novalidate>
-        <label class="field"><span>Name</span><input name="name" value="${tournament.name}" placeholder="z. B. Jugendmeisterschaft" autocomplete="off" required></label>
-        <label class="field"><span>Platz</span><input name="course" value="${tournament.course}" autocomplete="off"></label>
+        <label class="field"><span>Name</span><input name="name" value="${tournament.name}" placeholder="z. B. Jugendmeisterschaft" autocomplete="off" maxlength="${LIMITS.textLength}" required></label>
+        <label class="field"><span>Platz</span><input name="course" value="${tournament.course}" autocomplete="off" maxlength="${LIMITS.textLength}"></label>
         <div class="field-row">
           <label class="field"><span>Erster Tag</span><input type="date" name="date" value="${toDateInput(tournament.start)}" required></label>
           <label class="field"><span>Erste Startzeit</span><input type="time" name="time" value="${toTimeInput(tournament.start)}" required></label>
@@ -295,7 +295,7 @@ export function tournamentEditor(app, id) {
         <label class="field"><span>Turniertage</span>
           <select name="days">${[1, 2, 3, 4].map((value) => html`<option value="${value}" ${value === tournament.days ? "selected" : ""}>${value}</option>`)}</select>
         </label>
-        <p class="note">Aus der Startzeit berechnet die App den Einspielplan.</p>
+        <p class="note" id="tournament-hint" data-hint aria-live="polite">Aus der Startzeit berechnet die App den Einspielplan.</p>
         <div class="buttons">
           <button type="submit" class="button flag" data-save>Sichern</button>
           <button type="button" class="button outline" data-cancel>Abbrechen</button>
@@ -305,11 +305,27 @@ export function tournamentEditor(app, id) {
     mount(root) {
       const form = root.querySelector("form");
       const saveButton = root.querySelector("[data-save]");
+      const hint = root.querySelector("[data-hint]");
+      const defaultHint = hint.textContent;
+      // Ein neues Turnier hat noch keinen Namen. Als Fehler zählt das erst, wenn du hineingetippt hast.
+      let nameTouched = Boolean(existing);
       const update = () => {
-        saveButton.disabled = form.elements.name.value.trim() === "" || !form.elements.date.value;
+        const nameMissing = form.elements.name.value.trim() === "";
+        const dateMissing = !form.elements.date.value;
+        saveButton.disabled = nameMissing || dateMissing;
+        const showName = nameMissing && nameTouched;
+        const text = showName && dateMissing ? "Gib dem Turnier einen Namen und wähle den ersten Tag." : showName ? "Gib dem Turnier einen Namen." : dateMissing ? "Wähle den ersten Tag." : defaultHint;
+        // Nur bei einer Änderung neu setzen, sonst liest ein Bildschirmleser bei jedem Tippen vor.
+        if (hint.textContent !== text) hint.textContent = text;
+        hint.classList.toggle("flag", text !== defaultHint);
+        markField(form.elements.name, showName, hint);
+        markField(form.elements.date, dateMissing, hint);
       };
       update();
-      form.addEventListener("input", update);
+      form.addEventListener("input", (event) => {
+        if (event.target === form.elements.name) nameTouched = true;
+        update();
+      });
       root.querySelector("[data-cancel]").addEventListener("click", () => app.back(parent));
       form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -348,15 +364,16 @@ export function roundEditor(app, id) {
     render() {
       return html`<form class="editor" novalidate>
         <label class="field"><span>Datum</span><input type="date" name="date" value="${toDateInput(round.date)}" required></label>
-        <label class="field"><span>Platz</span><input name="course" value="${round.course}" autocomplete="off"></label>
+        <label class="field"><span>Platz</span><input name="course" value="${round.course}" autocomplete="off" maxlength="${LIMITS.textLength}"></label>
         <label class="field"><span>Schläge</span><input name="score" inputmode="numeric" value="${round.score ?? ""}" autocomplete="off"></label>
         ${chapter(
           "Strokes Gained aus bebrassie",
+          // Ohne inputmode="decimal": Der Ziffernblock des iPhones hat kein Minus, und negative Werte sind hier häufig.
           html`${SG_CATEGORIES.map(
-            (category) => html`<label class="field"><span>${SG_NAMES[category]}</span><input name="${category}" inputmode="decimal" placeholder="z. B. -1,2" value="${round.strokesGained[category] != null ? formatDecimal(round.strokesGained[category]) : ""}" autocomplete="off"></label>`,
+            (category) => html`<label class="field"><span>${SG_NAMES[category]}</span><input name="${category}" placeholder="z. B. -1,2" value="${round.strokesGained[category] != null ? formatDecimal(round.strokesGained[category]) : ""}" autocomplete="off"></label>`,
           )}`,
         )}
-        <p class="note" data-hint>Negativ heißt: In diesem Bereich hast du Schläge verloren. Die App nutzt nur Runden, bei denen alle vier Werte eingetragen sind.</p>
+        <p class="note" id="round-hint" data-hint aria-live="polite">Negativ heißt: In diesem Bereich hast du Schläge verloren. Die App nutzt nur Runden, bei denen alle vier Werte eingetragen sind.</p>
         <div class="buttons">
           <button type="submit" class="button flag" data-save>Sichern</button>
           <button type="button" class="button outline" data-cancel>Abbrechen</button>
@@ -386,11 +403,13 @@ export function roundEditor(app, id) {
       const update = () => {
         const invalid = invalidFields();
         saveButton.disabled = invalid.length > 0;
-        hint.textContent = invalid.length ? `Bitte prüfen: ${invalid.join(", ")}. Zahlen mit Komma oder Punkt, z. B. -1,25.` : defaultHint;
+        const text = invalid.length ? `Bitte prüfen: ${invalid.join(", ")}. Zahlen mit Komma oder Punkt, z. B. -1,25.` : defaultHint;
+        // Nur bei einer Änderung neu setzen, sonst liest ein Bildschirmleser bei jedem Tippen vor.
+        if (hint.textContent !== text) hint.textContent = text;
         hint.classList.toggle("flag", invalid.length > 0);
-        for (const name of ["score", ...SG_CATEGORIES]) {
-          const label = name === "score" ? "Schläge" : SG_NAMES[name];
-          form.elements[name].setAttribute("aria-invalid", String(invalid.includes(label)));
+        for (const name of ["date", "score", ...SG_CATEGORIES]) {
+          const label = name === "date" ? "Datum" : name === "score" ? "Schläge" : SG_NAMES[name];
+          markField(form.elements[name], invalid.includes(label), hint);
         }
       };
       update();

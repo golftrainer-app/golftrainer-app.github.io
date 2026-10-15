@@ -1,5 +1,5 @@
 // Zeitanteile je Bereich, wie FocusWeighting in der App: Ausgangsverteilung
-// nach Mark Broadie, die Hälfte nach den verlorenen Schlägen der letzten
+// nach Mark Broadie, bis zur Hälfte nach den verlorenen Schlägen der letzten
 // Runden (Strokes Gained), dazu die Trainer-Schwerpunkte.
 import { AREAS, AREA_CATEGORY, SG_CATEGORIES } from "./categories.js";
 
@@ -12,7 +12,10 @@ export const BASELINE = {
   putting: 0.2,
 };
 
+/** Anteil der Zeit, der höchstens nach Strokes Gained verteilt wird. */
 export const STROKES_GAINED_INFLUENCE = 0.5;
+/** Ab so vielen verlorenen Schlägen pro Runde wirkt Strokes Gained voll, darunter schwächer. */
+export const STROKES_GAINED_FULL_EFFECT_LOSS = 2;
 export const RECENT_ROUND_COUNT = 5;
 export const FOCUS_BOOST_PER_PRIORITY = 0.05;
 
@@ -43,6 +46,8 @@ export function weights(rounds, focus) {
     for (const category of SG_CATEGORIES) losses[category] = Math.max(0, -average[category]);
     const totalLoss = SG_CATEGORIES.reduce((sum, category) => sum + losses[category], 0);
     if (totalLoss > 0) {
+      // Wie stark die Verluste wirken, hängt von ihrer Größe ab, nicht nur von ihrer Verteilung.
+      const influence = STROKES_GAINED_INFLUENCE * Math.min(1, totalLoss / STROKES_GAINED_FULL_EFFECT_LOSS);
       for (const area of AREAS) {
         const category = AREA_CATEGORY[area];
         const categoryBaseline = AREAS.filter((other) => AREA_CATEGORY[other] === category).reduce(
@@ -51,7 +56,7 @@ export function weights(rounds, focus) {
         );
         const areaShare = BASELINE[area] / categoryBaseline;
         const lossShare = (losses[category] / totalLoss) * areaShare;
-        result[area] = (1 - STROKES_GAINED_INFLUENCE) * BASELINE[area] + STROKES_GAINED_INFLUENCE * lossShare;
+        result[area] = (1 - influence) * BASELINE[area] + influence * lossShare;
       }
     }
   }
@@ -63,9 +68,9 @@ export function weights(rounds, focus) {
   return normalized(result);
 }
 
-/** Anteile, die zusammen 1 ergeben. Ohne positive Summe unverändert. */
+/** Anteile, die zusammen 1 ergeben. Ohne positive Summe unverändert. Summiert in der Reihenfolge der Bereiche, wie in der App. */
 export function normalized(weights) {
-  const total = Object.values(weights).reduce((sum, value) => sum + value, 0);
+  const total = AREAS.reduce((sum, area) => sum + (weights[area] ?? 0), 0);
   if (!(total > 0)) return { ...weights };
   const result = {};
   for (const [area, value] of Object.entries(weights)) result[area] = value / total;

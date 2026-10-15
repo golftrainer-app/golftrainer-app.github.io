@@ -64,9 +64,13 @@ export function planCovers(weekStart, date) {
   return sameWeek(new Date(weekStart.getTime() + 3.5 * DAY), date);
 }
 
-/** Ganze Tage seit 1970 in UTC, für die Startwerte der Ansagen. */
-export function utcDayNumber(date) {
-  return Math.floor(date.getTime() / DAY);
+/**
+ * Nummer des Kalendertags vor Ort, gezählt ab dem 1. Januar 1970, für die
+ * Startwerte der Ansagen. Gleich für jede Uhrzeit des Tages, in UTC genau die
+ * Tage seit 1970. Wie `ChallengeGenerator.dayNumber` in der App.
+ */
+export function localDayNumber(date) {
+  return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / DAY);
 }
 
 // MARK: - Anzeige

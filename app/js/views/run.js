@@ -10,20 +10,81 @@ import { chapter, check, empty, headline, html, inform, labeled, scoreLabel, tic
 /** Übungen, die im Takt des Tempo-Trainers laufen. */
 const TEMPO_DRILLS = new Set(["drive-tempo"]);
 
+/**
+ * Eingaben Ball für Ball, bis sie gespeichert sind. Sie liegen im Speicher des
+ * Tabs (sessionStorage), damit sie einen Abstecher zum Tempo-Trainer oder zum
+ * Video und ein Neuladen überstehen. Mit dem Tab, beim Speichern und mit
+ * „Meine Daten löschen“ verschwinden sie.
+ */
+export const DRAFT_PREFIX = "golftrainer.eingabe.";
+
 /** Übung aus den Vorschlägen der Woche. Das Ergebnis gehört zu diesem Golftag. */
 export function planRunPage(app, slotID, drillID) {
   const session = app.store.session(slotID);
   const planned = session?.drills.find((drill) => drill.drillID === drillID) ?? null;
   const drill = app.store.drill(drillID);
   if (!session || !planned || !drill) return missing("#/woche", "woche");
-  return drillRun(app, drill, planned, session, "#/woche", "woche");
+  // Mit dem Tag: Dieselbe Kennung des Golftags kommt in der nächsten Woche wieder.
+  const draftKey = `${DRAFT_PREFIX}woche/${slotID}/${drillID}/${session.date.getTime()}`;
+  return drillRun(app, drill, planned, session, "#/woche", "woche", draftKey);
 }
 
 /** Übung aus der Bibliothek, außerhalb des Plans. */
 export function runPage(app, drillID, parent = "#/uebungen") {
   const drill = app.store.drill(drillID);
   if (!drill) return missing(parent, "uebungen");
-  return drillRun(app, drill, app.store.freePlannedDrill(drill), null, parent, "uebungen");
+  return drillRun(app, drill, app.store.freePlannedDrill(drill), null, parent, "uebungen", `${DRAFT_PREFIX}uebungen/${drillID}`);
+}
+
+/** Übung aus einer Einheit vom Trainer. Das Ergebnis gehört zu dieser Einheit. */
+export function sessionRunPage(app, sessionID, drillID) {
+  const team = app.team;
+  const session = team?.data.session(sessionID) ?? null;
+  const item = session?.drills?.find?.((drill) => drill.drillID === drillID) ?? null;
+  const drill = app.store.drill(drillID);
+  const planned = item && drill ? team.plannedDrill(item) : null;
+  const parent = `#/team/einheiten/${encodeURIComponent(String(sessionID).toUpperCase())}`;
+  if (!session || !planned) return missing(parent, "mehr");
+  return drillRun(app, drill, planned, null, parent, "mehr", `${DRAFT_PREFIX}team/${String(sessionID).toUpperCase()}/${drillID}`, { sessionID: String(sessionID).toUpperCase() });
+}
+
+function tabStorage() {
+  try {
+    return globalThis.sessionStorage ?? null;
+  } catch {
+    // Gesperrt, z. B. in manchen privaten Fenstern: Dann bleiben die Eingaben nur, solange die Seite offen ist.
+    return null;
+  }
+}
+
+/** Gespeicherte Eingaben, wenn sie zur Wertung passen, sonst null. */
+export function readDraft(key, scoring, storage = tabStorage()) {
+  let json;
+  try {
+    json = JSON.parse(storage?.getItem(key) ?? "null");
+  } catch {
+    return null;
+  }
+  if (!json || typeof json !== "object") return null;
+  const attempts = scoring.attempts ?? 0;
+  const entries = Array.isArray(json.entries) ? json.entries : [];
+  const allowed = new Set(ballOptions(scoring).map((option) => option.points));
+  if (entries.length > attempts || !entries.every((value) => allowed.has(value))) return null;
+  const count = (value) => (Number.isInteger(value) && value >= 0 && value <= attempts ? value : null);
+  const streak = count(json.streak ?? 0);
+  const bestStreak = count(json.bestStreak ?? 0);
+  if (streak == null || bestStreak == null || streak > bestStreak) return null;
+  return { entries, streak, bestStreak };
+}
+
+/** Eingaben merken, leere vergessen. */
+export function writeDraft(key, { entries, streak, bestStreak }, storage = tabStorage()) {
+  try {
+    if (entries.length === 0 && streak === 0 && bestStreak === 0) storage?.removeItem(key);
+    else storage?.setItem(key, JSON.stringify({ entries, streak, bestStreak }));
+  } catch {
+    // Kein Platz oder gesperrt: Die Eingaben bleiben, solange die Seite offen ist.
+  }
 }
 
 function missing(parent, tab) {
@@ -40,11 +101,11 @@ function recordMessage(score, previous, drill, level) {
   return `${scoreLabel(score, drill.scoring)}${onLevel}. Bisher: ${scoreLabel(previous, drill.scoring)}.`;
 }
 
-function drillRun(app, drill, planned, session, parent, tab) {
+function drillRun(app, drill, planned, session, parent, tab, draftKey, { sessionID = null } = {}) {
   const { store } = app;
-  // Eingaben bleiben, solange die Seite offen ist, auch wenn sich Daten ändern.
-  const state = { entries: [], streak: 0, bestStreak: 0, saving: false };
-  const existing = () => (session ? store.resultFor(planned, session) : null);
+  // Eingaben bleiben, auch wenn sich Daten ändern oder du kurz woandershin wechselst.
+  const state = { entries: [], streak: 0, bestStreak: 0, ...readDraft(draftKey, drill.scoring), saving: false };
+  const existing = () => (sessionID ? store.resultInSession(drill.id, sessionID) : session ? store.resultFor(planned, session) : null);
 
   async function save(score) {
     if (state.saving) return;
@@ -52,7 +113,8 @@ function drillRun(app, drill, planned, session, parent, tab) {
     // Vor dem Speichern bewerten: Ein korrigiertes Ergebnis zählt nicht gegen sich selbst.
     const before = existing();
     const result = outcome(score, planned.level, drill, store.data.results, before?.id ?? null);
-    store.record(score, planned, session);
+    store.record(score, planned, session, { sessionID });
+    writeDraft(draftKey, { entries: [], streak: 0, bestStreak: 0 });
     if (result.kind === "record") {
       await inform("Neue Bestleistung", recordMessage(score, result.previous, drill, planned.level));
     } else {
@@ -70,7 +132,7 @@ function drillRun(app, drill, planned, session, parent, tab) {
       const done = existing();
       return html`
         ${info(drill, planned.level, planned.focusNotes)}
-        <button type="button" class="action jump" data-jump>${done ? "Erledigt, Ergebnis ansehen" : "Ergebnis eintragen"}<span class="mark">↓</span></button>
+        <button type="button" class="action jump" data-jump>${done ? "Erledigt, Ergebnis ansehen" : "Ergebnis eintragen"}<span class="mark" aria-hidden="true">↓</span></button>
         ${chapter(
           "Ergebnis",
           html`${done ? html`<p class="done-line">${check(true)} Erledigt: ${scoreLabel(done.score, drill.scoring)}</p>` : ""}
@@ -78,13 +140,13 @@ function drillRun(app, drill, planned, session, parent, tab) {
           { footer: done ? "Neu eintragen ersetzt das Ergebnis, z. B. nach einem Tippfehler." : null },
         )}
         ${TEMPO_DRILLS.has(drill.id)
-          ? chapter("Takt", html`<a class="action" href="#/schwung/tempo">Tempo-Trainer öffnen<span class="mark">›</span></a>`, {
+          ? chapter("Takt", html`<a class="action" href="#/schwung/tempo">Tempo-Trainer öffnen<span class="mark" aria-hidden="true">›</span></a>`, {
               footer: "Drei Töne geben den Takt vor: ausholen, oben umkehren, treffen.",
             })
           : ""}
         ${chapter(
           "Video",
-          html`<a class="action" href="#/schwung">${drill.suggestsVideo ? "Video aufnehmen (empfohlen)" : "Video aufnehmen"}<span class="mark">›</span></a>`,
+          html`<a class="action" href="#/schwung">${drill.suggestsVideo ? "Video aufnehmen (empfohlen)" : "Video aufnehmen"}<span class="mark" aria-hidden="true">›</span></a>`,
           { footer: "In der Zeitlupe siehst du deinen Schwung Bild für Bild. Das Video bleibt auf deinem Handy." },
         )}
         ${history(store, drill)}
@@ -123,6 +185,7 @@ function drillRun(app, drill, planned, session, parent, tab) {
           default:
             return;
         }
+        writeDraft(draftKey, state);
         const key = button.dataset.key;
         draw();
         // Mit dem Finger auf demselben Knopf bleiben, auch für Bildschirmleser.
@@ -142,6 +205,7 @@ function info(drill, level, focusNotes) {
     drill.isCorrective ? ["Korrektur", "Gegen einen bestimmten Fehler. Vorgeschlagen wird sie nur über einen Schwerpunkt."] : null,
     drill.isTournamentPrep ? ["Turnier", "Gut für die Turniervorbereitung."] : null,
     drill.suggestsVideo ? ["Video", "Gut geeignet für Schwungvideos."] : null,
+    drill.isIndoor ? ["Zuhause", "Geht auch in der Halle oder zuhause, mit Matte, Netz oder Teppich."] : null,
   ].filter(Boolean);
   return html`
     ${headline(drill.name, AREA_NAMES[drill.area])}
@@ -162,7 +226,7 @@ function info(drill, level, focusNotes) {
       ? chapter(
           "Quellen",
           drill.sources.map(
-            (source) => html`<a class="action source" href="${source.url}" target="_blank" rel="noopener noreferrer">${source.title}<span class="mark">↗</span></a>`,
+            (source) => html`<a class="action source" href="${source.url}" target="_blank" rel="noopener noreferrer">${source.title}<span class="mark" aria-hidden="true">↗</span></a>`,
           ),
         )
       : ""}
@@ -171,27 +235,34 @@ function info(drill, level, focusNotes) {
 
 // MARK: - Eingabe
 
+/** Knöpfe für einen Ball oder ein Loch, leer ohne Eingabe Ball für Ball. */
+function ballOptions(scoring) {
+  switch (scoring.kind) {
+    case "count":
+      return [
+        { label: "Treffer", points: 1 },
+        { label: "Daneben", points: 0 },
+      ];
+    case "zones":
+      return scoring.zones ?? [];
+    case "strokes": {
+      // Auch ein schlechtes Loch muss sich eintragen lassen, sonst sähe das Ergebnis besser aus, als es war.
+      const highest = Math.max(scoring.par + 4, 6);
+      return Array.from({ length: highest }, (_, index) => ({ label: String(index + 1), points: index + 1 }));
+    }
+    default:
+      return [];
+  }
+}
+
 function scoreEntry(scoring, stations, state) {
   switch (scoring.kind) {
     case "none":
       return html`<button type="button" class="button flag wide" data-action="save" data-score="0" data-key="save">Als erledigt markieren</button>`;
     case "count":
-      return ballByBall(scoring, stations, state, [
-        { label: "Treffer", points: 1 },
-        { label: "Daneben", points: 0 },
-      ]);
     case "zones":
-      return ballByBall(scoring, stations, state, scoring.zones);
-    case "strokes": {
-      // Auch ein schlechtes Loch muss sich eintragen lassen, sonst sähe das Ergebnis besser aus, als es war.
-      const highest = Math.max(scoring.par + 4, 6);
-      return ballByBall(
-        scoring,
-        stations,
-        state,
-        Array.from({ length: highest }, (_, index) => ({ label: String(index + 1), points: index + 1 })),
-      );
-    }
+    case "strokes":
+      return ballByBall(scoring, stations, state, ballOptions(scoring));
     case "streak":
       return streakEntry(scoring, state);
     default:

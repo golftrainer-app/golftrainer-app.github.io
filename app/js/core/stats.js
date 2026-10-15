@@ -114,9 +114,10 @@ export function stats({ log, results, library, now, weeks: count = 12 }) {
     }
   }
 
-  const monthAgo = addDays(startOfDay(now), -28);
-  const recent = past.filter((entry) => entry.start >= monthAgo);
-  const last28 = minutesIn(daily, monthAgo, new Date(8640000000000000));
+  // Die letzten 28 Tage einschließlich heute: heute und die 27 Tage davor.
+  const firstRecentDay = addDays(startOfDay(now), -27);
+  const recent = past.filter((entry) => entry.start >= firstRecentDay);
+  const last28 = minutesIn(daily, firstRecentDay, new Date(8640000000000000));
 
   return {
     weeks,

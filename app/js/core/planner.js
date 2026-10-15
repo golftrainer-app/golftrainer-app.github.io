@@ -17,15 +17,16 @@ export const SETTINGS = {
   warmUpThreshold: 45,
   minimumBlockMinutes: 15,
   maximumBlockMinutes: 60,
-  /** Pro angefangene 35 Minuten wird ein Bereich trainiert. */
+  /** Pro volle 35 Minuten wird ein Bereich trainiert, bei 110 Minuten also drei. */
   minutesPerArea: 35,
   benchmarkIntervalDays: 28,
   /** So weit zurück zählt, was in den Bereichen schon geübt wurde. */
   carryOverDays: 28,
 };
 
+/** Alle Anlagen der Übung sind da, oder sie geht auch zuhause und die Halle ist da. */
 export function isPossible(drill, facilities) {
-  return (drill.facilities ?? []).every((facility) => facilities.includes(facility));
+  return (drill.facilities ?? []).every((facility) => facilities.includes(facility)) || (drill.isIndoor === true && facilities.includes("indoor"));
 }
 
 function sum(values) {
@@ -50,7 +51,8 @@ export class Planner {
 
   /**
    * Plan für die Woche ab `weekStart`. `kept`: Einheiten, die bleiben, wie sie
-   * sind, z. B. beim Neuplanen die vergangenen. Sie zählen für den Ausgleich mit.
+   * sind, z. B. beim Neuplanen die vergangenen. Sie zählen für den Ausgleich
+   * mit, sobald darin ein Ergebnis eingetragen ist. Ohne bleiben ihre Bereiche offen.
    */
   planWeek({ weekStart, slots, rounds = [], focus = [], results = [], tournaments = [], kept = [], now = null }) {
     const weights = focusWeights(rounds, focus);
@@ -84,10 +86,20 @@ export class Planner {
     const prepared = [required, optional].map((group) =>
       group.map((slot) => this.prepare(slot, weekStart, weights, tournaments)).filter(Boolean),
     );
-    // Bleibt die Einheit, wie sie war, zählt sie trotzdem für den Ausgleich.
+    // Golftage dieser Woche, an denen schon etwas eingetragen ist.
+    const loggedSlots = new Set(
+      results
+        .filter((result) => result.planReference && result.planReference.weekStart.getTime() === weekStart.getTime())
+        .map((result) => result.planReference.slotID),
+    );
+    // Bleibt die Einheit, wie sie war, zählt sie für den Ausgleich mit allen
+    // vorgeschlagenen Minuten, sobald darin etwas eingetragen ist. Ein
+    // vergangener Golftag ohne Eintrag zählt nicht als erledigt.
     const adopt = (keep, pool) => {
-      for (const [area, minutes] of Object.entries(keep.areaMinutes)) {
-        assigned[pool][area] = (assigned[pool][area] ?? 0) + minutes;
+      if (loggedSlots.has(keep.slot.id)) {
+        for (const [area, minutes] of Object.entries(keep.areaMinutes)) {
+          assigned[pool][area] = (assigned[pool][area] ?? 0) + minutes;
+        }
       }
       this.note(keep, context);
       sessions.push(keep);

@@ -9,12 +9,22 @@ import { weekPage } from "./views/week.js";
 import { diaryEditor, diaryPage } from "./views/diary.js";
 import { statsPage } from "./views/stats.js";
 import { distanceTablePage, launchPage, mappingPage, sessionPage, shotPage, trendPage } from "./views/launch.js";
-import { runPage, planRunPage } from "./views/run.js";
+import { runPage, planRunPage, sessionRunPage } from "./views/run.js";
 import { libraryPage, bestsPage } from "./views/drills.js";
 import { tournamentsPage, tournamentPage, tournamentEditor, phasePage, warmUpPage, roundEditor } from "./views/tournaments.js";
 import { swingPage, tempoPage } from "./views/swing.js";
 import { morePage, focusEditor, deletePage } from "./views/more.js";
 import { accountPage, passwordPage } from "./views/account.js";
+import { TEAM_KEY, TeamStore } from "./team.js";
+import {
+  teamBoardPage, teamChallengePage, teamChallengesPage, teamEventPage, teamEventsPage, teamJoinPage, teamLeaderboardPage, teamMembersPage, teamMessagesPage, teamPage,
+  teamProfilePage, teamReportPage, teamSessionPage, teamSessionsPage, teamSharingPage,
+} from "./views/team.js";
+import {
+  analysisPage, announcementEditorPage, approveMemberPage, assignmentPage, assignmentsPage, attendancePage, challengeEditorPage, coachMembersPage, eventEditorPage, exportPage,
+  focusEditorPage, inviteEditorPage, inviteSharePage, invitesPage, memberDetailPage, memberSessionsPage, reportPage, reportsPage, sessionEditorPage, sessionProgressPage,
+  settingsPage, staffHomePage, trainingCalendarPage,
+} from "./views/coach.js";
 
 const ROUTES = [
   [/^\/woche$/, () => weekPage],
@@ -48,7 +58,63 @@ const ROUTES = [
   [/^\/mehr\/schwerpunkte\/neu$/, () => (app) => focusEditor(app, null)],
   [/^\/mehr\/schwerpunkte\/([^/]+)$/, ([id]) => (app) => focusEditor(app, id)],
   [/^\/mehr\/loeschen$/, () => deletePage],
+  // Team: Trainer und Funktionäre bekommen unter denselben Adressen ihre eigenen Seiten.
+  [/^\/team$/, () => (app) => (isStaffView(app) ? staffHomePage(app) : teamPage(app))],
+  [/^\/team\/beitreten\/([^/]+)\/([^/]+)$/, ([teamID, secret]) => (app) => teamJoinPage(app, teamID, secret)],
+  [/^\/team\/profil$/, () => teamProfilePage],
+  [/^\/team\/freigaben$/, () => teamSharingPage],
+  [/^\/team\/termine$/, () => teamEventsPage],
+  [/^\/team\/termine\/neu$/, () => (app) => eventEditorPage(app, null)],
+  [/^\/team\/termine\/([^/]+)$/, ([id]) => (app) => teamEventPage(app, id)],
+  [/^\/team\/termine\/([^/]+)\/bearbeiten$/, ([id]) => (app) => eventEditorPage(app, id)],
+  [/^\/team\/termine\/([^/]+)\/anwesenheit$/, ([id]) => (app) => attendancePage(app, id)],
+  [/^\/team\/pinnwand$/, () => teamBoardPage],
+  [/^\/team\/pinnwand\/neu$/, () => (app) => announcementEditorPage(app, null)],
+  [/^\/team\/pinnwand\/([^/]+)\/bearbeiten$/, ([id]) => (app) => announcementEditorPage(app, id)],
+  [/^\/team\/challenges$/, () => teamChallengesPage],
+  [/^\/team\/challenges\/neu$/, () => (app) => challengeEditorPage(app, null)],
+  [/^\/team\/challenges\/([^/]+)$/, ([id]) => (app) => teamChallengePage(app, id)],
+  [/^\/team\/challenges\/([^/]+)\/bearbeiten$/, ([id]) => (app) => challengeEditorPage(app, id)],
+  [/^\/team\/ranglisten$/, () => teamLeaderboardPage],
+  [/^\/team\/einheiten$/, () => teamSessionsPage],
+  [/^\/team\/einheiten\/([^/]+)$/, ([id]) => (app) => teamSessionPage(app, id)],
+  [/^\/team\/einheiten\/([^/]+)\/([^/]+)$/, ([id, drillID]) => (app) => sessionRunPage(app, id, drillID)],
+  [/^\/team\/mitglieder$/, () => (app) => (isStaffView(app) ? coachMembersPage(app) : teamMembersPage(app))],
+  [/^\/team\/mitglieder\/([^/]+)$/, ([id]) => (app) => memberDetailPage(app, id)],
+  [/^\/team\/mitglieder\/([^/]+)\/freigeben$/, ([id]) => (app) => approveMemberPage(app, id)],
+  [/^\/team\/mitglieder\/([^/]+)\/einheiten$/, ([id]) => (app) => memberSessionsPage(app, id)],
+  [/^\/team\/mitglieder\/([^/]+)\/nachrichten$/, ([id]) => (app) => teamMessagesPage(app, id)],
+  [/^\/team\/mitglieder\/([^/]+)\/schwerpunkt\/([^/]+)$/, ([id, focusID]) => (app) => focusEditorPage(app, id, focusID)],
+  [/^\/team\/nachrichten$/, () => teamMessagesPage],
+  [/^\/team\/melden\/([^/]+)\/([^/]+)$/, ([kind, key]) => (app) => teamReportPage(app, kind, key)],
+  [/^\/team\/zuweisungen$/, () => assignmentsPage],
+  // Die Abfrage hinter dem „?“ nennt eine Vorlage, eine Kopie oder einen Spieler.
+  [/^\/team\/zuweisungen\/neu\??([^/]*)$/, ([query]) => (app) => sessionEditorPage(app, null, editorOptions(query))],
+  [/^\/team\/zuweisungen\/([^/?]+)$/, ([planID]) => (app) => assignmentPage(app, planID)],
+  [/^\/team\/zuweisungen\/([^/?]+)\/bearbeiten$/, ([planID]) => (app) => sessionEditorPage(app, planID)],
+  [/^\/team\/zuweisungen\/([^/?]+)\/spieler\/([^/]+)$/, ([planID, sessionID]) => (app) => sessionProgressPage(app, planID, sessionID)],
+  [/^\/team\/einladungen$/, () => invitesPage],
+  [/^\/team\/einladungen\/neu$/, () => inviteEditorPage],
+  [/^\/team\/einladungen\/([^/]+)$/, ([id]) => (app) => inviteSharePage(app, id)],
+  [/^\/team\/einstellungen$/, () => settingsPage],
+  [/^\/team\/meldungen$/, () => reportsPage],
+  [/^\/team\/meldungen\/([^/]+)$/, ([id]) => (app) => reportPage(app, id)],
+  [/^\/team\/kalender$/, () => trainingCalendarPage],
+  [/^\/team\/analyse$/, () => analysisPage],
+  [/^\/team\/export$/, () => exportPage],
 ];
+
+/** Trainer und Funktionäre sehen das Team aus ihrer Sicht, Spieler und Wartende aus ihrer. */
+function isStaffView(app) {
+  const team = app.team;
+  return team != null && team.isInTeam && team.hasLoaded && !team.isRemoved && team.isStaff;
+}
+
+/** `vorlage=…`, `kopie=…` oder `fuer=…` hinter dem „?“ der Adresse. */
+function editorOptions(query) {
+  const params = new URLSearchParams(query ?? "");
+  return { template: params.get("vorlage"), copyOf: params.get("kopie"), memberID: params.get("fuer") };
+}
 
 const HOME = "#/woche";
 
@@ -88,9 +154,10 @@ function notFound() {
 }
 
 class App {
-  constructor(store, account) {
+  constructor(store, account, team) {
     this.store = store;
     this.account = account;
+    this.team = team;
     this.view = document.getElementById("view");
     this.titleElement = document.getElementById("bar-title");
     this.backLink = document.getElementById("back");
@@ -115,13 +182,24 @@ class App {
     store.subscribe(() => {
       if (!this.page?.keepOnChange) this.render({ keepScroll: true });
     });
+    // Nur Seiten unter „Mehr“ zeigen den Stand des Kontos. Die anderen bleiben,
+    // wie sie sind, sonst verlöre z. B. die Suche in den Übungen nach jedem
+    // Abgleich ihren Text.
     account.subscribe(() => {
-      if (!this.page?.keepOnChange) this.render({ keepScroll: true });
+      if (this.page?.keepOnChange || !currentPath().startsWith("/mehr")) return;
+      this.render({ keepScroll: true });
+    });
+    // Das Team zeigt nur auf seinen Seiten und unter „Mehr“ jeden Abgleich.
+    team.subscribe(() => {
+      const path = currentPath();
+      if (this.page?.keepOnChange || !(path.startsWith("/team") || path === "/mehr")) return;
+      this.render({ keepScroll: true });
     });
     // Geändert in einem anderen Tab: dort Gespeichertes übernehmen.
     window.addEventListener("storage", (event) => {
       if (event.key === null || event.key === STORAGE_KEY || event.key === RUNNING_KEY) store.reload();
       if (event.key === null || event.key?.startsWith("golftrainer.konto.")) account.reload();
+      if (event.key === null || event.key === TEAM_KEY) team.reload();
     });
   }
 
@@ -147,7 +225,7 @@ class App {
     if (isAccountLink()) {
       handleAccountLink(this.account).then((result) => {
         this.route();
-        if (result?.type === "signup") toast("E-Mail bestätigt. Du bist angemeldet.");
+        announceLink(result);
       });
       return;
     }
@@ -169,6 +247,24 @@ class App {
 
   /** Zeichnet die aktuelle Seite. Bei Änderungen der Daten bleibt die Stelle, an der du bist. */
   render({ keepScroll = false, restoreScroll = false } = {}) {
+    // Sichert eine Seite beim Verlassen noch etwas, melden sich die Daten mitten im Zeichnen: dann gleich danach noch einmal.
+    if (this.rendering) {
+      this.renderAgain = true;
+      return;
+    }
+    this.rendering = true;
+    try {
+      this.draw({ keepScroll, restoreScroll });
+    } finally {
+      this.rendering = false;
+    }
+    if (this.renderAgain) {
+      this.renderAgain = false;
+      queueMicrotask(() => this.render({ keepScroll: true }));
+    }
+  }
+
+  draw({ keepScroll, restoreScroll }) {
     const path = currentPath();
     if (this.page && this.renderedPath && !keepScroll) this.scroll.set(this.renderedPath, window.scrollY);
     const focusKey = keepScroll ? document.activeElement?.dataset?.key : null;
@@ -242,6 +338,51 @@ async function handleAccountLink(account) {
   return result;
 }
 
+/** Was der Link ergeben hat, kurz als Hinweis. Die Rückfrage zu einem fremden Link steht auf der Seite Konto. */
+function announceLink(result) {
+  if (result?.type === "signup") toast("E-Mail bestätigt. Du bist angemeldet.");
+  else if (result?.type === "confirm") toast("E-Mail bestätigt. Anmelden? Siehe oben.");
+}
+
+/**
+ * Eine neue Version der Seite: Der Service Worker holt sie beim Öffnen und
+ * höchstens einmal pro Stunde beim Zurückkehren. Übernimmt er sie, während die
+ * Seite offen ist, läuft hier noch der alte Code: ein Hinweis zum Neuladen,
+ * nicht mitten in einer Eingabe.
+ */
+function watchForUpdates(app) {
+  if (!("serviceWorker" in navigator) || !(location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) return;
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  let lastCheck = Date.now();
+  navigator.serviceWorker
+    .register("sw.js")
+    .then((registration) => {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState !== "visible" || Date.now() - lastCheck < 60 * 60 * 1000) return;
+        lastCheck = Date.now();
+        registration.update().catch(() => {});
+      });
+    })
+    .catch(() => {
+      // Ohne Service Worker läuft die Seite trotzdem, nur nicht ohne Netz.
+    });
+  if (!hadController) return;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    const show = () => {
+      if (app.page?.keepOnChange) {
+        setTimeout(show, 30 * 1000);
+        return;
+      }
+      const element = document.getElementById("toast");
+      if (!element) return;
+      element.textContent = "Neue Version geladen. Tippe hier, um sie zu starten.";
+      element.classList.add("show");
+      element.addEventListener("click", () => location.reload(), { once: true });
+    };
+    show();
+  });
+}
+
 async function start() {
   const view = document.getElementById("view");
   // „Zum Inhalt springen“ darf die Adresse nicht ändern: „#view“ wäre eine
@@ -260,7 +401,15 @@ async function start() {
   }
   const account = new Account(store);
   const link = await handleAccountLink(account);
-  const app = new App(store, account);
+  // Neues vom Team, z. B. ein Termin oder eine Nachricht, kurz als Hinweis.
+  const team = new TeamStore(store, account, {
+    onNotice: (notices) => {
+      const [first] = notices;
+      const more = notices.length > 1 ? ` (+${notices.length - 1})` : "";
+      toast(`${first.title}${first.body ? `: ${first.body}` : ""}${more}`);
+    },
+  });
+  const app = new App(store, account, team);
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     app.installPrompt = event;
@@ -281,22 +430,31 @@ async function start() {
     }
   };
   plan();
-  // Zu Beginn einer neuen Woche, wenn die Seite die ganze Zeit offen war.
+  // Zu Beginn einer neuen Woche, wenn die Seite die ganze Zeit offen war. Beim
+  // Verlassen sofort abgleichen: Im Hintergrund frieren Browser auf dem Handy
+  // die Zeitgeber ein.
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       plan();
       account.syncIfSignedIn();
+      team.syncIfSignedIn();
+    } else {
+      account.syncBeforeLeaving();
     }
   });
+  window.addEventListener("pagehide", () => account.syncBeforeLeaving());
+  // Nach dem Training ohne Netz: nachholen, sobald es wieder da ist.
+  window.addEventListener("online", () => {
+    account.syncIfSignedIn();
+    team.syncIfSignedIn();
+  });
   app.render();
-  if (link?.type === "signup") toast("E-Mail bestätigt. Du bist angemeldet.");
+  announceLink(link);
   account.syncIfSignedIn();
-
-  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
-    navigator.serviceWorker.register("sw.js").catch(() => {
-      // Ohne Service Worker läuft die Seite trotzdem, nur nicht ohne Netz.
-    });
-  }
+  team.syncIfSignedIn();
+  team.findExistingTeam();
+  watchForUpdates(app);
+  document.documentElement.dataset.started = "1";
 }
 
 start();

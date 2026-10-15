@@ -34,13 +34,14 @@ export const AREA_CATEGORY = {
   putting: "putting",
 };
 
-export const FACILITIES = ["range", "shortGameArea", "bunker", "puttingGreen"];
+export const FACILITIES = ["range", "shortGameArea", "bunker", "puttingGreen", "indoor"];
 
 export const FACILITY_NAMES = {
   range: "Range",
   shortGameArea: "Kurzspielanlage",
   bunker: "Übungsbunker",
   puttingGreen: "Puttinggrün",
+  indoor: "Halle oder zuhause",
 };
 
 /** Art des Übens nach Adam Young: Technik, variabel, Wettkampf. */

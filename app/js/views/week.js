@@ -66,8 +66,8 @@ export function weekPage(app) {
       parts.push(
         chapter(
           "Vorschläge",
-          html`<button class="action" type="button" data-action="regenerate" data-key="regenerate">Neue Vorschläge<span class="mark">↻</span></button>
-          ${sessions.length > 0 ? html`<button class="action" type="button" data-action="calendar" data-key="calendar">In den Kalender<span class="mark">↓</span></button>` : ""}`,
+          html`<button class="action" type="button" data-action="regenerate" data-key="regenerate">Neue Vorschläge<span class="mark" aria-hidden="true">↻</span></button>
+          ${sessions.length > 0 ? html`<button class="action" type="button" data-action="calendar" data-key="calendar">In den Kalender<span class="mark" aria-hidden="true">↓</span></button>` : ""}`,
           {
             footer: store.data.reminders.isEnabled
               ? `Neue Vorschläge behält Golftage, die vorbei sind oder schon Ergebnisse haben. „In den Kalender“ speichert die Golftage als Kalenderdatei, mit einer Erinnerung um ${timeText(store.data.reminders.hour, store.data.reminders.minute)} an jedem Golftag, auch für die nächsten zwei Wochen.`
@@ -141,7 +141,7 @@ function golfWeekQuestion() {
       null,
       html`<button class="action" type="button" data-action="golfweek-done" data-key="golfweek-done">
         <span class="row-main"><span class="row-title">Weiter</span><span class="row-sub">${golfWeekSummary(draft)}</span></span>
-        <span class="mark">→</span>
+        <span class="mark" aria-hidden="true">→</span>
       </button>`,
       { footer: "Du kannst das jederzeit unter „Mehr“ ändern. Alles, was du einträgst, bleibt in diesem Browser auf deinem Gerät." },
     )}
@@ -167,7 +167,7 @@ function trainingChapter(store, now) {
           <span class="row-main"><span class="row-title">Meine Statistik</span><span class="row-sub">Zeit pro Woche, Serie, Bereiche und Monatstests</span></span>
         </a></li>
       </ul>
-      ${running ? "" : html`<button class="action" type="button" data-action="start-training" data-key="start-training">Stoppuhr starten<span class="mark">▶</span></button>`}`,
+      ${running ? "" : html`<button class="action" type="button" data-action="start-training" data-key="start-training">Stoppuhr starten<span class="mark" aria-hidden="true">▶</span></button>`}`,
   );
 }
 
