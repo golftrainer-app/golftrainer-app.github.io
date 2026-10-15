@@ -1,12 +1,19 @@
 // Tab „Schwung“: Video in Zeitlupe, Bild für Bild, mit Linien zum Messen, und
 // der Tempo-Trainer. Videos bleiben auf dem Handy: Die Seite öffnet die Datei
-// nur im Browser, lädt nichts hoch und speichert nichts.
+// nur im Browser und lädt nichts hoch. Die Kamera mit automatischem Auslöser
+// steht in views/camera.js, ihre Clips öffnet `openClip` hier im Player.
 import { STYLES, PAUSE_OPTIONS, beats, cycleDuration, phase as tempoPhase, preset as tempoPreset } from "../core/tempo.js";
 import { chapter, html, toast } from "../ui.js";
 import { mountCompare } from "./compare.js";
 
 /** Das geöffnete Video. Bleibt beim Wechsel zum Tempo-Trainer und zurück. */
 let current = null;
+
+/** Öffnet einen Clip der automatischen Aufnahme im Player, beim Treffmoment. */
+export function openClip({ blob, name, impact = null }) {
+  if (current) URL.revokeObjectURL(current.url);
+  current = { url: URL.createObjectURL(blob), name, time: impact ?? 0, rate: 0.25, lines: [], impact };
+}
 
 const RATES = [
   [1, "1×"],
@@ -44,7 +51,8 @@ export function swingPage(app) {
       return html`
         ${chapter(
           "Zeitlupe",
-          html`<div class="buttons">
+          html`<a class="action" href="#/schwung/kamera">Kamera mit automatischem Auslöser<span class="mark" aria-hidden="true">›</span></a>
+            <div class="buttons">
               <label class="button flag">Video aufnehmen<input class="visually-hidden" type="file" accept="video/*" capture="environment" data-file></label>
               <label class="button outline">Video wählen<input class="visually-hidden" type="file" accept="video/*" data-file></label>
             </div>
@@ -70,7 +78,7 @@ export function swingPage(app) {
           { footer: "Der CSV-Export der Garmin-Golf-App (Approach R10 und R50): Schläge, Distanztabelle pro Schläger und Verlauf über die Sessions." },
         )}
         ${chapter("So stellst du die Kamera auf", TIPS.map(tip))}
-        <p class="note">Aufnahme mit automatischem Auslöser, ein zweites Gerät als Bildschirm, den Treffmoment aus dem Ton und die Schwunganalyse gibt es nur in der App für iPhone und iPad.</p>
+        <p class="note">Ein zweites Gerät als Bildschirm und die Schwunganalyse mit 3D-Skelett gibt es nur in der App für iPhone und iPad.</p>
       `;
     },
     mount(root) {
@@ -130,6 +138,7 @@ function playerMarkup() {
     <div class="buttons">
       <button type="button" class="button outline" data-action="draw" aria-pressed="false">Linie zeichnen</button>
       <button type="button" class="button outline" data-action="clear">Linien löschen</button>
+      ${current.impact != null ? html`<button type="button" class="button outline" data-action="impact">Treffmoment</button>` : ""}
       <button type="button" class="button outline" data-action="close">Video schließen</button>
     </div>
     <p class="note" data-draw-hint hidden>Zieh mit dem Finger eine Linie über das Video, z. B. entlang des Schafts oder des Rückens. Die Zahl ist der Winkel zur Waagerechten.</p></div>`;
@@ -361,6 +370,11 @@ function mountPlayer(container) {
       case "clear":
         current.lines = [];
         paint();
+        break;
+      case "impact":
+        video.pause();
+        lastMediaTime = null;
+        video.currentTime = Math.min(Math.max(current.impact ?? 0, 0), video.duration || 0);
         break;
       default:
         break;

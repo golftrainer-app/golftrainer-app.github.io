@@ -543,6 +543,28 @@ button.row {
   margin: 10px 0;
 }
 .transport .button { min-height: 52px; font-size: 1.1rem; }
+/* Kamera mit automatischem Auslöser: Vorschau mit Stand unten im Bild, Clips mit kleinen Knöpfen. */
+.video-frame.camera { min-height: 200px; }
+.video-frame.camera video { max-height: 56vh; }
+.video-frame .camera-status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+.choice.wrap {
+  grid-auto-flow: row;
+  grid-template-columns: 1fr 1fr;
+}
+.clips .clip { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.clips .clip:last-child { border-bottom: none; }
+.buttons.compact { margin: 8px 0 0; }
+.buttons.compact .button { min-height: 36px; padding: 6px 12px; font-size: 0.875rem; }
 input[type="range"] { width: 100%; accent-color: var(--ink); }
 
 .tempo-phase {

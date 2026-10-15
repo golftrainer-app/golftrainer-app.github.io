@@ -1,5 +1,6 @@
 // Tab „Mehr“: Spielhand, Golfwoche, Schwerpunkte, Datensicherung, Installieren,
 // Datenschutz und „Meine Daten löschen“, wie SettingsView in der App.
+import { deleteAllClips } from "../clips.js";
 import { readBackup, fileName, summary, BackupError } from "../core/backup.js";
 import { AREAS, AREA_NAMES, FACILITIES, FACILITY_NAMES } from "../core/categories.js";
 import { formatShortDate, formatTime } from "../core/dates.js";
@@ -443,6 +444,7 @@ export function deletePage(app) {
         app.team?.forgetLocalData();
         app.account.forgetSession();
         store.deleteAll();
+        await deleteAllClips();
         try {
           const keys = (await globalThis.caches?.keys()) ?? [];
           await Promise.all(keys.filter((key) => key.startsWith("golftrainer-")).map((key) => caches.delete(key)));

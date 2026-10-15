@@ -13,6 +13,7 @@ import { runPage, planRunPage, sessionRunPage } from "./views/run.js";
 import { libraryPage, bestsPage } from "./views/drills.js";
 import { tournamentsPage, tournamentPage, tournamentEditor, phasePage, warmUpPage, roundEditor } from "./views/tournaments.js";
 import { swingPage, tempoPage } from "./views/swing.js";
+import { cameraPage } from "./views/camera.js";
 import { morePage, focusEditor, deletePage } from "./views/more.js";
 import { accountPage, passwordPage } from "./views/account.js";
 import { TEAM_KEY, TeamStore } from "./team.js";
@@ -38,6 +39,7 @@ const ROUTES = [
   [/^\/uebungen\/([^/]+)$/, ([drillID]) => (app) => runPage(app, drillID)],
   [/^\/schwung$/, () => swingPage],
   [/^\/schwung\/tempo$/, () => tempoPage],
+  [/^\/schwung\/kamera$/, () => cameraPage],
   [/^\/schwung\/launch$/, () => launchPage],
   [/^\/schwung\/launch\/zuordnen$/, () => mappingPage],
   [/^\/schwung\/launch\/tabelle$/, () => distanceTablePage],
