@@ -17,6 +17,7 @@ import {
   doneCount, feed, fileStamp, groupedOverview, heatmap, overview, recipientsText, rightsText, sortedByTotal, teamCalendar, teamStrokesGained, templateMinutes, trainingLogCSV, weakestCategory, weeklyTotals,
 } from "../core/teamcoach.js";
 import { ask, chapter, check, download, durationText, empty, headline, html, labeled, progress, toast } from "../ui.js";
+import { clipRow } from "./clips.js";
 import { TEAM_HOME, dayLong, dayShort, eventRow, mountActions, refreshAction, relativeDay, syncText, takeMessage } from "./team.js";
 
 const monthDay = new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short" });
@@ -380,6 +381,7 @@ export function memberDetailPage(app, memberID) {
             ${team.isCoach && details?.sharing && notShared(details.sharing) ? html`<p class="note">Teilt nicht alles: ${notShared(details.sharing)}</p>` : ""}`,
         )}
         ${showsTraining ? trainingSections(app, id, now) : role === "player" ? attendanceSection(data, id, now) : ""}
+        ${showsTraining ? clipsSection(team, id) : ""}
         ${team.isCoach
           ? chapter("Notiz", html`<label class="field"><span>Notiz</span><textarea name="note" rows="3" data-key="note">${team.note(id)}</textarea></label>`, { footer: "Nur in diesem Browser. Andere Trainer und der Spieler sehen sie nicht." })
           : ""}
@@ -450,6 +452,19 @@ export function memberDetailPage(app, memberID) {
       };
     },
   };
+}
+
+/** Schwungvideos, die der Spieler an die Trainer geschickt hat. */
+function clipsSection(team, id) {
+  const data = team.data;
+  const clips = data.clips(id);
+  return chapter(
+    "Videos",
+    html`${clips.length === 0 ? empty("Noch kein Video.") : ""}
+      <ul class="rows">${clips.slice(0, 3).map((clip) => clipRow(clip, team))}</ul>
+      ${clips.length > 3 ? html`<a class="action" href="#/team/mitglieder/${encodeURIComponent(id)}/videos">Alle Videos (${clips.length})<span class="mark" aria-hidden="true">›</span></a>` : ""}`,
+    { footer: `Schwungvideos, die ${data.name(id)} an die Trainer geschickt hat, je bis 6 Sekunden. Feedback gibst du beim Video.` },
+  );
 }
 
 /** Für Funktionäre: Anwesenheit statt Trainingsdaten. */
@@ -1850,6 +1865,7 @@ export function reportPage(app, reportID) {
         ${chapter(
           "Was du tun kannst",
           html`${report.subject !== "member" ? html`<button type="button" class="action danger" data-action="remove-content">${report.subject === "response" ? "Notiz löschen" : "Inhalt aus dem Team löschen"}</button>` : ""}
+            ${report.subject === "clip" && data.get(report.recordName) ? html`<a class="action" href="#/team/videos/${encodeURIComponent(uid(data.get(report.recordName).id))}">Video ansehen<span class="mark" aria-hidden="true">›</span></a>` : ""}
             ${reported && data.member(reported) && team.isStaff ? html`<a class="action" href="${member(reported)}">${data.name(reported)} ansehen und verwalten<span class="mark" aria-hidden="true">›</span></a>` : ""}
             <button type="button" class="action" data-action="toggle">${isOpen ? "Als erledigt markieren" : "Wieder öffnen"}<span class="mark" aria-hidden="true">${isOpen ? "✓" : "↺"}</span></button>`,
           { footer: "Löschen entfernt den Inhalt für alle im Team. Aus dem Team nehmen geht beim Mitglied unter „Verwaltung“." },
@@ -1866,7 +1882,12 @@ export function reportPage(app, reportID) {
           if (!report) return;
           const choice = await ask({
             title: "Für alle im Team löschen?",
-            message: report.subject === "event" ? "Zu- und Absagen und die Anwesenheit des Termins gehen mit. Die Meldung gilt danach als erledigt." : "Die Meldung gilt danach als erledigt. Die Kopie des Textes bleibt in der Meldung.",
+            message:
+              report.subject === "event"
+                ? "Zu- und Absagen und die Anwesenheit des Termins gehen mit. Die Meldung gilt danach als erledigt."
+                : report.subject === "clip"
+                  ? "Das Video und das Feedback dazu verschwinden für alle. Die Meldung gilt danach als erledigt."
+                  : "Die Meldung gilt danach als erledigt. Die Kopie des Textes bleibt in der Meldung.",
             actions: [{ label: "Löschen", value: "delete", style: "danger" }],
           });
           if (choice === "delete") team.removeReportedContent(report);

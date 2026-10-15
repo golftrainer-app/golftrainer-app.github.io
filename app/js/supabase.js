@@ -454,6 +454,8 @@ export class SupabaseClient {
     } catch {
       throw new SupabaseError(0, "offline", "Keine Verbindung zum Server. Prüfe die Internetverbindung.");
     }
+    // Eine Datei, z. B. ein Video aus dem Speicher: so wie sie ist, nicht als JSON.
+    if (request.binary && response.ok) return response.blob();
     const text = await response.text();
     let json = null;
     if (text) {

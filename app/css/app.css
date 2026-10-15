@@ -543,6 +543,19 @@ button.row {
   margin: 10px 0;
 }
 .transport .button { min-height: 52px; font-size: 1.1rem; }
+/* Video aus dem Team: Hinweis, solange es lädt. */
+.video-frame .video-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 16px;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  text-align: center;
+}
+.clip-player .video-frame { min-height: 200px; }
 /* Kamera mit automatischem Auslöser: Vorschau mit Stand unten im Bild, Clips mit kleinen Knöpfen. */
 .video-frame.camera { min-height: 200px; }
 .video-frame.camera video { max-height: 56vh; }

@@ -270,6 +270,8 @@ export function canSee(viewer, kind, memberID) {
   if (!PRIVATE_KINDS.has(kind)) return true;
   const isOwn = memberID != null && viewer.memberID != null && sameID(memberID, viewer.memberID);
   if (kind === "report") return Boolean(viewer.isAdmin) || isOwn;
+  // Videos sehen auch die Admins: Sie prüfen und löschen gemeldete Videos.
+  if (kind === "clip" && viewer.isAdmin) return true;
   switch (viewer.access) {
     case "everything":
       return true;
@@ -857,6 +859,13 @@ export class TeamData {
     return this.values("comment")
       .filter((comment) => sameID(comment.memberID, memberID) && (clipID == null || sameID(comment.clipID, clipID)) && !hiding.has(uid(comment.authorID)))
       .sort((a, b) => stamp(a.date) - stamp(b.date));
+  }
+
+  /** Videos, die ein Mitglied an die Trainer geschickt hat, neueste zuerst. */
+  clips(memberID) {
+    return this.values("clip")
+      .filter((clip) => sameID(clip.memberID, memberID))
+      .sort((a, b) => stamp(b.sharedAt) - stamp(a.sharedAt));
   }
 
   /** Runden eines Mitglieds, neueste zuerst. */

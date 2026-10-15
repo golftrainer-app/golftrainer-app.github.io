@@ -27,6 +27,7 @@ import {
   focusEditorPage, inviteEditorPage, inviteSharePage, invitesPage, memberDetailPage, memberSessionsPage, reportPage, reportsPage, sessionEditorPage, sessionProgressPage,
   settingsPage, staffHomePage, trainingCalendarPage,
 } from "./views/coach.js";
+import { teamClipPage, teamClipsPage } from "./views/clips.js";
 
 const ROUTES = [
   [/^\/woche$/, () => weekPage],
@@ -88,8 +89,11 @@ const ROUTES = [
   [/^\/team\/mitglieder\/([^/]+)\/freigeben$/, ([id]) => (app) => approveMemberPage(app, id)],
   [/^\/team\/mitglieder\/([^/]+)\/einheiten$/, ([id]) => (app) => memberSessionsPage(app, id)],
   [/^\/team\/mitglieder\/([^/]+)\/nachrichten$/, ([id]) => (app) => teamMessagesPage(app, id)],
+  [/^\/team\/mitglieder\/([^/]+)\/videos$/, ([id]) => (app) => teamClipsPage(app, id)],
   [/^\/team\/mitglieder\/([^/]+)\/schwerpunkt\/([^/]+)$/, ([id, focusID]) => (app) => focusEditorPage(app, id, focusID)],
   [/^\/team\/nachrichten$/, () => teamMessagesPage],
+  [/^\/team\/videos$/, () => (app) => teamClipsPage(app, null)],
+  [/^\/team\/videos\/([^/]+)$/, ([id]) => (app) => teamClipPage(app, id)],
   [/^\/team\/melden\/([^/]+)\/([^/]+)$/, ([kind, key]) => (app) => teamReportPage(app, kind, key)],
   [/^\/team\/zuweisungen$/, () => assignmentsPage],
   // Die Abfrage hinter dem „?“ nennt eine Vorlage, eine Kopie oder einen Spieler.

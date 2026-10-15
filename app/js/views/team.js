@@ -459,6 +459,7 @@ function home(app) {
       ? chapter(
           "Mein Training",
           html`<a class="action" href="#/tagebuch">Trainingstagebuch<span class="mark" aria-hidden="true">›</span></a>
+            <a class="action" href="#/team/videos"><span>Meine Videos${data.clips(me).length > 0 ? html` <span class="kicker">${data.clips(me).length}</span>` : ""}</span><span class="mark" aria-hidden="true">›</span></a>
             <a class="action" href="#/team/freigaben"><span>Was die Trainer sehen${team.otherSharingDevice ? html`<br><span class="kicker flag">Dein Training teilt gerade ein anderes Gerät (${team.otherSharingDevice.name ?? "Gerät"}).</span>` : ""}</span><span class="mark" aria-hidden="true">›</span></a>`,
         )
       : chapter("", html`<p class="note">Als ${data.roleText(me) ?? ROLE_NAMES[team.myRole] ?? "Mitglied"} verwaltest du das Team in der App auf dem iPhone oder iPad: Mitglieder freigeben, Termine anlegen, Anwesenheit, Pinnwand schreiben. Hier siehst du, was auch die Spieler sehen.</p>`)}
@@ -1084,7 +1085,7 @@ export function teamMessagesPage(app, memberID = null) {
               const isMine = sameID(comment.authorID, me);
               const date = dateOf(comment.date);
               return html`<div class="bubble${isMine ? " mine" : ""}">
-                <p class="kicker">${isMine ? "Du" : team.data.name(comment.authorID)}${date ? ` · ${formatShortDate(date)}, ${formatTime(date)} Uhr` : ""}${isMine ? "" : html` · <a href="#/team/melden/comment/${encodeURIComponent(uid(comment.id))}">Melden</a>`}</p>
+                <p class="kicker">${isMine ? "Du" : team.data.name(comment.authorID)}${date ? ` · ${formatShortDate(date)}, ${formatTime(date)} Uhr` : ""}${comment.clipID && team.data.get(`clip.${uid(comment.clipID)}`) ? html` · <a href="#/team/videos/${encodeURIComponent(uid(comment.clipID))}">Zum Video</a>` : ""}${isMine ? "" : html` · <a href="#/team/melden/comment/${encodeURIComponent(uid(comment.id))}">Melden</a>`}</p>
                 <p class="serif">${comment.text}</p>
               </div>`;
             })}

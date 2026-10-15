@@ -18,6 +18,7 @@ import {
 } from "./core/team.js";
 import { parseCreated, parseInvite, parseJoinLink as parseNewJoinLink, parseJoined, parsePull, parsePushResult, parseRedeemed, parseTeams, teamRequests } from "./core/teamapi.js";
 import { attendedEvents, keepingProgress, makeProgress, publicStats, snapshot } from "./core/teamshare.js";
+import { clipPath, clipRequests, clipTitle } from "./core/teamclips.js";
 import { TeamSync } from "./core/teamsync.js";
 import { invitationMessage, playerInvitationMessage } from "./core/teamcoach.js";
 import { entries as logEntries } from "./core/traininglog.js";
@@ -76,6 +77,8 @@ export class TeamStore {
    * Server, z. B. einen Termin, als [{ title, body }].
    */
   constructor(store, account, { storage = defaultStorage(), now = () => new Date(), autoSync = true, library = null, onNotice = null } = {}) {
+    /** Geladene Videos (Kennung → Blob), nur im Speicher dieses Tabs. */
+    this.clipFiles = new Map();
     this.store = store;
     this.account = account;
     this.storage = storage;
@@ -500,6 +503,8 @@ export class TeamStore {
     const teamID = this.teamID;
     if (!teamID) return null;
     if (this.isOwner) return this.deleteTeam();
+    // Die eigenen Videos vorher aus dem Speicher: Danach darf die Person es nicht mehr.
+    if (deleteMyData && this.myMemberID) await this.deleteClipFiles(this.clipPaths(this.myMemberID));
     try {
       await this.send((config, session) => teamRequests.leave(config, session, teamID, deleteMyData));
       this.resetLocal("Du hast das Team verlassen.", true);
@@ -513,6 +518,8 @@ export class TeamStore {
   async deleteTeam() {
     const teamID = this.teamID;
     if (!this.isOwner || !teamID) return null;
+    // Die Videos aller Mitglieder aus dem Speicher, solange das Team sie noch kennt.
+    await this.deleteClipFiles(this.allClipPaths);
     try {
       await this.send((config, session) => teamRequests.deleteTeam(config, session, teamID));
       this.resetLocal("Das Team wurde gelöscht.", true);
@@ -553,6 +560,7 @@ export class TeamStore {
     this.file = fresh;
     this.lastSync = null;
     this.notices = [];
+    this.clipFiles?.clear();
     this.persist();
     if (message) this.message = message;
     this.notify();
@@ -667,7 +675,7 @@ export class TeamStore {
   }
 
   /** Nachricht an die Trainer. null, wenn gesichert, sonst der Hinweis. */
-  sendComment(text, memberID = this.myMemberID) {
+  sendComment(text, memberID = this.myMemberID, { clipID = null } = {}) {
     const me = this.myMemberID;
     if (!me || memberID == null) return ACCOUNT_NEEDED;
     if (this.needsParentalConsent) return "Antworten geht erst, wenn deine Eltern einverstanden sind. Trag es unter „Profil“ ein.";
@@ -675,8 +683,73 @@ export class TeamStore {
     if (!trimmed) return null;
     if (!allows(trimmed)) return "Bitte formuliere das freundlicher. Beleidigungen, Drohungen und sexuelle Ausdrücke sind im Team nicht erlaubt.";
     const now = toStored(this.now());
-    this.saveItem("comment", { id: newID(), memberID: uid(memberID), authorID: me, text: trimmed, date: now, updatedAt: now });
+    const comment = { id: newID(), memberID: uid(memberID), authorID: me, text: trimmed, date: now, updatedAt: now };
+    // Feedback zu einem Video hängt am Video und verschwindet mit ihm.
+    if (clipID) comment.clipID = uid(clipID);
+    this.saveItem("comment", comment);
     return null;
+  }
+
+  // MARK: - Videos im Team
+
+  /** Eigene Videos an die Trainer, neueste zuerst. */
+  get myClips() {
+    return this.myMemberID ? this.data.clips(this.myMemberID) : [];
+  }
+
+  /** Pfad der Datei eines Videos im Speicher des Kontos. */
+  clipPath(clip) {
+    return this.teamID ? clipPath(this.teamID, clip.memberID, clip.id) : null;
+  }
+
+  /** Pfade der Videos einer Person, z. B. vor dem Entfernen oder dem Austritt. */
+  clipPaths(memberID) {
+    return this.teamID ? this.data.clips(memberID).map((clip) => this.clipPath(clip)) : [];
+  }
+
+  /** Pfade aller Videos im Team, die dieser Browser kennt, vor dem Löschen der Abteilung. */
+  get allClipPaths() {
+    return this.teamID ? this.data.values("clip").map((clip) => this.clipPath(clip)) : [];
+  }
+
+  /** Die Datei eines Videos als Blob: aus dem Speicher des Tabs, sonst vom Server. */
+  async clipFile(clip) {
+    const key = uid(clip.id);
+    const cached = this.clipFiles.get(key);
+    if (cached) return cached;
+    const path = this.clipPath(clip);
+    if (!path) throw new SupabaseError(0, "no_team", "Du bist in keinem Team.");
+    const blob = await this.send((config, session) => clipRequests.download(config, session, path));
+    this.clipFiles.set(key, blob);
+    return blob;
+  }
+
+  /** Löscht ein Video aus dem Team: Eintrag, Feedback dazu und die Datei. Spieler ihre eigenen, Admins jedes. Gibt zurück, ob es erlaubt war. */
+  async deleteClip(clip) {
+    if (!(sameID(clip.memberID, this.myMemberID) || this.isAdmin)) return false;
+    const path = this.clipPath(clip);
+    this.deleteNames(this.data.recordNamesRemovedWith(recordName("clip", uid(clip.id))));
+    this.clipFiles.delete(uid(clip.id));
+    if (path) await this.deleteClipFiles([path]);
+    return true;
+  }
+
+  /** Dateien im Speicher löschen. Fehler bleiben still: Eine Datei ohne Eintrag zeigt die App niemandem mehr, und beim Entfernen der Person räumt ein Admin sie weg. */
+  async deleteClipFiles(paths) {
+    if (paths.length === 0) return;
+    try {
+      await this.send((config, session) => clipRequests.delete(config, session, paths));
+    } catch {
+      // Siehe oben.
+    }
+  }
+
+  /** Geladene Videos, deren Eintrag nicht mehr im Team ist. Nur mit vollständigem Stand, sonst fehlte ein Video bloß, weil es noch nicht geladen ist. */
+  pruneClipFiles() {
+    if (!this.isFullyLoaded) return;
+    for (const key of [...this.clipFiles.keys()]) {
+      if (!this.data.has(recordName("clip", key))) this.clipFiles.delete(key);
+    }
   }
 
   // MARK: - Rechte der Trainer
@@ -728,6 +801,8 @@ export class TeamStore {
   async removeMember(memberID) {
     const teamID = this.teamID;
     if (!teamID || !this.canManage(memberID)) return "Dieses Mitglied darfst du nicht verwalten.";
+    // Die Videos der Person aus dem Speicher, bevor ihr Eintrag verschwindet.
+    await this.deleteClipFiles(this.clipPaths(memberID));
     try {
       await this.send((config, session) => teamRequests.removeMember(config, session, teamID, memberID));
       await this.refresh();
@@ -973,6 +1048,11 @@ export class TeamStore {
       const current = this.data.get(report.recordName);
       if (current && current.note) this.saveIfChanged("response", { ...current, note: "" }, current);
     } else if (parsed.kind !== "member") {
+      if (parsed.kind === "clip") {
+        const clip = this.data.get(report.recordName);
+        this.clipFiles.delete(uid(parsed.key));
+        if (clip && this.clipPath(clip)) this.deleteClipFiles([this.clipPath(clip)]);
+      }
       this.deleteNames(this.data.recordNamesRemovedWith(report.recordName));
     }
     this.setResolved(report, true);
@@ -1133,6 +1213,7 @@ export class TeamStore {
       if (report.isComplete && !this.file.sync?.needsFullPull) break;
     }
     if (changed) this.remoteDidChange();
+    this.pruneClipFiles();
     this.postNotices();
   }
 
@@ -1199,6 +1280,14 @@ export class TeamStore {
               : "Du bist freigeschaltet. Was die Trainer sehen, wählst du unter „Was die Trainer sehen“."
             : `Du bist als ${data.roleText(me) ?? membership.role} freigeschaltet.`;
         this.notices.push({ title: "Willkommen im Team", body });
+        return;
+      }
+      case "clip": {
+        // Trainer erfahren von neuen Videos; Admins ohne Trainerrolle nicht.
+        if (!this.isCoach) return;
+        const clip = data.get(recordName("clip", uid(key)));
+        if (!clip || sameID(clip.memberID, me) || this.isBlocked(clip.memberID)) return;
+        this.notices.push({ title: `Neues Video von ${data.name(clip.memberID)}`, body: `${clipTitle(clip)}. Sieh es dir an und gib Feedback.` });
         return;
       }
       default:
