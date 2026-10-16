@@ -73,7 +73,7 @@ export function readBackupJSON(json) {
 }
 
 /** Was nur zu diesem Gerät gehört und nicht auf den Server geht, wie syncPayload in der App. */
-const DEVICE_ONLY = ["clips", "runningTraining", "captureSettings", "reminders"];
+const DEVICE_ONLY = ["clips", "runningTraining", "captureSettings", "reminders", "coursePlaces", "detectsCourseVisits"];
 
 /** Die Daten, wie sie auf den Server gehen: ohne Videos, laufende Stoppuhr, Kameraeinstellungen und Erinnerung. */
 export function syncPayload(data) {
@@ -118,7 +118,7 @@ export function comparableText(data) {
 /** Felder der App, die die Web-App nicht bearbeitet, z. B. Schwunganalysen. */
 export function extraFields(payload) {
   // „slots“ stammt aus älteren Versionen mit festen Trainingszeiten. Es fällt weg, statt mitzureisen.
-  const known = new Set(["handedness", "golfWeek", "slots", "focusPoints", "rounds", "results", "tournaments", "trainingLog", "launchSessions", "csvMappings", "reminders", "weekPlan", "deletions"]);
+  const known = new Set(["handedness", "golfWeek", "slots", "focusPoints", "rounds", "results", "tournaments", "trainingLog", "launchSessions", "csvMappings", "reminders", "weekPlan", "deletions", "handicaps", "appointments"]);
   const extra = {};
   for (const [key, value] of Object.entries(payload)) {
     // „__proto__“ würde den Prototyp ändern statt ein Feld anzulegen.
@@ -183,6 +183,8 @@ export function summary(data) {
     [data.rounds.length, "Runde", "Runden"],
     [data.tournaments.length, "Turnier", "Turniere"],
     [data.launchSessions.length, "Launch-Monitor-Session", "Launch-Monitor-Sessions"],
+    [(data.handicaps ?? []).length, "Handicap-Eintrag", "Handicap-Einträge"],
+    [(data.appointments ?? []).length, "eigener Termin", "eigene Termine"],
     [kept("analyses"), "Schwunganalyse", "Schwunganalysen"],
     [data.focusPoints.length, "Schwerpunkt", "Schwerpunkte"],
   ]

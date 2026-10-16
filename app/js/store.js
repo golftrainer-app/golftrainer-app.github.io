@@ -16,6 +16,10 @@ import { Planner } from "./core/planner.js";
 import { DELETION_KINDS, mergedData, mergedDeletions, noting, restoring } from "./core/sync.js";
 import { fingerprint } from "./core/launch.js";
 import { LOCAL_MEMBER, PLACES, entries as logEntries } from "./core/traininglog.js";
+import { agendaItems } from "./core/agenda.js";
+import { appointmentTrainingEntry, sanitizeAppointment } from "./core/appointments.js";
+import { handicapAt, sanitizeHandicap, sortedHandicaps } from "./core/handicap.js";
+import { attendedEvents, seasonOverview } from "./core/season.js";
 
 export const STORAGE_KEY = "golftrainer.data";
 /** Gespeicherte Daten, die sich nicht lesen ließen. Sie bleiben, bis du alles löschst. */
@@ -403,12 +407,16 @@ export class Store {
     this.notify();
   }
 
-  /** Neuer Eintrag von Hand: die letzte Stunde, wie in der App. */
-  newTrainingEntry(now = new Date()) {
+  /**
+   * Neuer Eintrag von Hand: heute die letzte Stunde, wie in der App. An einem
+   * anderen Tag (`day`) um 17 Uhr.
+   */
+  newTrainingEntry(now = new Date(), day = null) {
+    const isToday = day == null || startOfDay(day).getTime() === startOfDay(now).getTime();
     return {
       id: newID(),
       memberID: LOCAL_MEMBER,
-      start: new Date(now.getTime() - 3600000),
+      start: isToday ? new Date(now.getTime() - 3600000) : new Date(day.getFullYear(), day.getMonth(), day.getDate(), 17, 0, 0, 0),
       minutes: 60,
       kind: "free",
       place: null,
@@ -440,7 +448,120 @@ export class Store {
     this.change((data) => {
       data.trainingLog = data.trainingLog.filter((entry) => entry.id !== id);
       this.noteDeletion("trainingLog", id);
+      // Ein Termin, der auf den Eintrag zeigt, steht danach wieder offen.
+      const now = new Date();
+      data.appointments = data.appointments.map((appointment) => (appointment.trainingEntryID === id ? { ...appointment, trainingEntryID: null, updatedAt: now } : appointment));
     });
+  }
+
+  // MARK: - Startseite
+
+  /** Stand der Einheiten im Wochenplan, nach Kennung der Einheit. Wie die Woche zählt nur, was es in der Bibliothek gibt. */
+  planProgress() {
+    const progress = new Map();
+    for (const session of this.data.weekPlan?.sessions ?? []) {
+      const planned = session.drills.filter((drill) => this.drill(drill.drillID));
+      const done = planned.filter((drill) => this.resultFor(drill, session)).length;
+      progress.set(session.slot.id, { done, total: planned.length });
+    }
+    return progress;
+  }
+
+  /** Einträge von `from` bis vor `to` für den Kalender. `team`: `TeamStore.agendaTeam()` oder null. */
+  agenda(from, to, { team = null, now = new Date() } = {}) {
+    return agendaItems({
+      from,
+      to,
+      now,
+      sources: {
+        golfWeek: this.data.golfWeek,
+        weekPlan: this.data.weekPlan,
+        planProgress: this.planProgress(),
+        tournaments: this.data.tournaments,
+        rounds: this.data.rounds,
+        trainingLog: this.myTrainingLog(),
+        appointments: this.data.appointments,
+        team,
+      },
+    });
+  }
+
+  /** Der Überblick der Saison oben auf der Startseite. */
+  seasonOverview({ team = null, now = new Date() } = {}) {
+    return seasonOverview({
+      handicaps: this.data.handicaps,
+      trainingLog: this.myTrainingLog(),
+      attendedEvents: attendedEvents(team, now),
+      rounds: this.data.rounds,
+      tournaments: this.data.tournaments,
+      now,
+    });
+  }
+
+  // MARK: - Handicap
+
+  handicapHistory() {
+    return sortedHandicaps(this.data.handicaps);
+  }
+
+  handicap(id) {
+    return this.data.handicaps.find((entry) => entry.id === id) ?? null;
+  }
+
+  /** Neuer Eintrag mit dem Wert, der heute gilt, für heute 12 Uhr. */
+  newHandicapEntry(now = new Date()) {
+    const noon = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0);
+    return { id: newID(), date: noon, value: handicapAt(now, this.data.handicaps)?.value ?? 54, note: "", updatedAt: now };
+  }
+
+  saveHandicap(entry) {
+    const clean = sanitizeHandicap({ ...entry, updatedAt: new Date() });
+    if (!clean) return;
+    this.change((data) => upsert(data.handicaps, clean));
+  }
+
+  deleteHandicap(id) {
+    this.change((data) => {
+      data.handicaps = data.handicaps.filter((entry) => entry.id !== id);
+      this.noteDeletion("handicaps", id);
+    });
+  }
+
+  // MARK: - Eigene Termine
+
+  appointment(id) {
+    return this.data.appointments.find((appointment) => appointment.id === id) ?? null;
+  }
+
+  /** Neuer Termin an `day`: heute zur nächsten vollen Stunde, sonst um 17 Uhr. */
+  newAppointment(day, now = new Date()) {
+    const isToday = startOfDay(day).getTime() === startOfDay(now).getTime();
+    const start = isToday
+      ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0, 0)
+      : new Date(day.getFullYear(), day.getMonth(), day.getDate(), 17, 0, 0, 0);
+    return { id: newID(), kind: "practice", title: "", start, minutes: 60, place: "", note: "", trainingEntryID: null, updatedAt: now };
+  }
+
+  saveAppointment(appointment) {
+    const clean = sanitizeAppointment({ ...appointment, updatedAt: new Date() });
+    if (!clean) return;
+    this.change((data) => upsert(data.appointments, clean));
+  }
+
+  deleteAppointment(id) {
+    this.change((data) => {
+      data.appointments = data.appointments.filter((appointment) => appointment.id !== id);
+      this.noteDeletion("appointments", id);
+    });
+  }
+
+  /** Übernimmt einen Termin ins Tagebuch und merkt sich den Eintrag beim Termin. */
+  logAppointment(appointment) {
+    const now = new Date();
+    const entry = appointmentTrainingEntry(appointment, newID(), now, LOCAL_MEMBER);
+    this.saveTrainingEntry(entry);
+    this.saveAppointment({ ...appointment, trainingEntryID: entry.id });
+    return entry;
   }
 
   // MARK: - Launch Monitor
@@ -615,7 +736,7 @@ export class Store {
     if (mode === "merge") {
       let added = 0;
       this.change((data) => {
-        for (const key of ["results", "rounds", "tournaments", "focusPoints", "trainingLog", "launchSessions"]) {
+        for (const key of ["results", "rounds", "tournaments", "focusPoints", "trainingLog", "launchSessions", "handicaps", "appointments"]) {
           // Ergebnisse derselben geplanten Übung nur einmal, wie in der App.
           const result = key === "results" ? mergeResults(data[key], imported[key]) : merge(data[key], imported[key]);
           data[key] = result.items;

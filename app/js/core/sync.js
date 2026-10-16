@@ -8,7 +8,7 @@
 export const DELETION_RETENTION = 180 * 24 * 60 * 60 * 1000;
 export const MAXIMUM_DELETIONS = 2000;
 /** Listen, aus denen gelöscht wird, benannt wie das Feld in den Daten. */
-export const DELETION_KINDS = ["trainingLog", "launchSessions", "analyses", "tournaments", "focusPoints", "rounds"];
+export const DELETION_KINDS = ["trainingLog", "launchSessions", "analyses", "tournaments", "focusPoints", "rounds", "handicaps", "appointments"];
 
 /**
  * Was mit dem Server zu tun ist: "nothing", "push" oder "merge".
@@ -203,6 +203,8 @@ export function mergedData(local, remote, { localSavedAt, remoteSavedAt, now, pr
     tournaments: list("tournaments"),
     focusPoints: list("focusPoints"),
     rounds: list("rounds"),
+    handicaps: list("handicaps", (entry) => entry.updatedAt),
+    appointments: list("appointments", (appointment) => appointment.updatedAt),
     golfWeek: either(local.golfWeek, remote.golfWeek),
     handedness: either(local.handedness, remote.handedness),
     weekPlan: either(local.weekPlan, remote.weekPlan),

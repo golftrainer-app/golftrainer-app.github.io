@@ -14,7 +14,7 @@ import { allows } from "./core/moderation.js";
 import { encodeLogEntry, encodeRound, newID } from "./core/model.js";
 import { AREAS } from "./core/categories.js";
 import {
-  applyingEdits, canonical, detailsNeedConsent, effectiveSharing, isSharingDevice, isStaffRole, joinLink, normalizeCode, parseJoinLink, parseRecordName, recordName, sameID, stamp, TeamData, uid, ANNOUNCEMENT_FIELDS, CHALLENGE_FIELDS, EVENT_FIELDS, FOCUS_FIELDS, NOTHING_SHARED,
+  applyingEdits, canonical, detailsNeedConsent, effectiveSharing, isSharingDevice, isStaffRole, joinLink, normalizeCode, parseJoinLink, parseRecordName, recordName, sameID, sessionState, stamp, TeamData, uid, ANNOUNCEMENT_FIELDS, CHALLENGE_FIELDS, EVENT_FIELDS, FOCUS_FIELDS, NOTHING_SHARED,
 } from "./core/team.js";
 import { parseCreated, parseInvite, parseJoinLink as parseNewJoinLink, parseJoined, parsePull, parsePushResult, parseRedeemed, parseTeams, teamRequests } from "./core/teamapi.js";
 import { attendedEvents, keepingProgress, makeProgress, publicStats, snapshot } from "./core/teamshare.js";
@@ -1508,6 +1508,41 @@ export class TeamStore {
     if (!plan) return focus;
     const notes = new Set(plan.sessions.flatMap((session) => session.drills).flatMap((drill) => drill.focusNotes));
     return focus.filter((point) => !notes.has(point.text));
+  }
+
+  /**
+   * Was das Team zum Kalender der Startseite beiträgt, wie `agendaTeam` in
+   * der App: Termine, die dich betreffen, deine Antworten, die Anwesenheit
+   * laut Trainer und deine Einheiten. Null ohne Team.
+   */
+  agendaTeam(now = this.now()) {
+    const me = this.myMemberID;
+    if (!this.isActiveMember || !me) return null;
+    const events = this.data
+      .values("event")
+      .filter((event) => this.data.concerns(event.group, me))
+      .sort((a, b) => (stamp(a.start) !== stamp(b.start) ? stamp(a.start) - stamp(b.start) : uid(a.id) < uid(b.id) ? -1 : 1));
+    const responses = new Map();
+    const attendance = new Map();
+    for (const event of events) {
+      const id = uid(event.id);
+      const response = this.data.response(me, id);
+      if (response?.answer) responses.set(id, response.answer);
+      const entry = this.data.attendance(me, id);
+      if (entry?.status) attendance.set(id, entry.status);
+    }
+    // Gezählt wie in der Zeile der Einheit: jede Übung einmal.
+    const sessions = this.mySessions().map((session) => {
+      const done = this.doneDrillIDs(session);
+      const drills = Array.isArray(session.drills) ? session.drills : [];
+      return {
+        session,
+        done: new Set(drills.map((item) => item.drillID).filter((id) => done.has(id))).size,
+        total: drills.length,
+        state: sessionState(session, done, now),
+      };
+    });
+    return { events, responses, attendance, answersEvents: this.isPlayer, sessions };
   }
 
   /** Einheiten, die mir Trainer gegeben haben, nächste Frist zuerst. */

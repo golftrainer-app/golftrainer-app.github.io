@@ -1153,3 +1153,78 @@ dialog.dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
 .evaluation-percent { margin: 4px 0 8px; font-variant-numeric: tabular-nums; }
 .setup-steps { padding-left: 1.4em; margin: 6px 0; }
 .setup-steps li { margin: 6px 0; font-family: var(--serif); }
+
+/* MARK: Startseite
+   Wie HomeView in der App: Datum groß, der Überblick der Saison mit einer
+   großen Zahl und kleinen rechts daneben, der Kalender mit Kästchen wie auf
+   der Scorekarte. Ab 900 Punkten Breite stehen Kalender und Tag nebeneinander. */
+
+main:has(.home) { max-width: 1100px; }
+.home-head .headline { margin: 12px 0 6px; }
+.home-running { margin-top: 14px; }
+.flag-text, .chapter > h2 .flag { color: var(--flag); }
+
+.figures.season { align-items: flex-start; }
+.season-handicap { display: block; min-width: 0; text-decoration: none; }
+.season-handicap p { margin: 0 0 4px; }
+.figure.huge { font-size: 4rem; line-height: 1; letter-spacing: -0.02em; }
+.small.strong { font-weight: 600; color: var(--ink); }
+.sparkline { display: block; margin-top: 8px; overflow: visible; }
+.sparkline line { stroke: var(--rule); stroke-width: 1; }
+.sparkline polyline { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.sparkline circle { fill: var(--flag); }
+.season-side { text-decoration: none; }
+.season-side .side-figures li { margin-bottom: 8px; }
+.season-tournament { align-items: baseline; gap: 10px; margin-top: 6px; border-top: 1px solid var(--rule); }
+.season-tournament .kicker { flex: none; }
+.season-countdown { flex: none; font-family: var(--serif); font-weight: 600; font-size: 1.4rem; white-space: nowrap; }
+.season-countdown.flag { color: var(--flag); }
+
+.calendar-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0 6px; }
+.calendar-step { width: 44px; height: 40px; padding: 0; border: none; background: none; color: var(--ink); font-size: 1.6rem; line-height: 1; text-align: left; cursor: pointer; }
+.calendar-step:last-child { text-align: right; }
+.calendar-title { font-family: var(--serif); font-weight: 600; font-size: 1.0625rem; text-align: center; }
+.calendar-today { margin-left: 6px; padding: 2px 4px; border: none; background: none; color: var(--ink); font-family: var(--sans); font-size: 0.875rem; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.calendar-head, .calendar-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.calendar-head span { padding-bottom: 6px; text-align: center; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-secondary); }
+.calendar-week { border-top: 1px solid var(--rule); }
+.calendar-week:last-child { border-bottom: 1px solid var(--rule); }
+.day { position: relative; display: flex; flex-direction: column; align-items: center; gap: 7px; min-height: 56px; padding: 8px 0 12px; border: none; background: none; color: var(--ink); cursor: pointer; }
+.day-number { font-family: var(--serif); font-size: 1.0625rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.day.today .day-number { color: var(--flag); font-weight: 700; }
+.day.outside { cursor: default; }
+.day.outside .day-number { color: var(--ink-secondary); opacity: 0.6; }
+.day.selected { outline: 1.5px solid var(--ink); outline-offset: -1.5px; }
+.day:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.day-marks { display: flex; gap: 3px; height: 6px; }
+.day-mark { display: inline-block; width: 6px; height: 6px; border: 1px solid var(--ink); }
+.day-mark.done { background: var(--ink); }
+.day-bar { position: absolute; left: 5px; right: 5px; bottom: 4px; height: 3px; background: var(--ink); }
+.calendar-legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 10px 0 4px; font-size: 0.75rem; color: var(--ink-secondary); }
+.calendar-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-bar { display: inline-block; width: 14px; height: 3px; background: var(--ink); }
+.home-week { margin-top: 6px; padding: 12px 64px 4px 0; border-top: 1px solid var(--rule); }
+.home-week .figure { margin: 0 0 10px; font-size: 1.6rem; }
+.home-week .small { margin: 8px 0 0; }
+
+.agenda-row { align-items: flex-start; }
+.agenda-time { flex: none; width: 44px; padding-top: 2px; font-family: var(--serif); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.agenda-date { flex: none; display: flex; flex-direction: column; width: 44px; }
+.agenda-day { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.agenda-status { flex: none; max-width: 40%; padding-top: 2px; text-align: right; font-size: 0.875rem; }
+.agenda-status.muted { color: var(--ink-secondary); }
+.agenda-status.attention { color: var(--flag); font-weight: 600; }
+.row-title.secondary { color: var(--ink-secondary); }
+.answers { margin: 0 0 10px 56px; }
+
+.handicap-chart { display: block; width: 100%; height: auto; margin: 6px 0; }
+.handicap-chart .grid { stroke: var(--rule); stroke-width: 1; }
+.handicap-chart .axis { fill: var(--ink-secondary); font-family: var(--sans); font-size: 10px; }
+.handicap-chart polyline { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.handicap-chart rect { fill: var(--ink); }
+.handicap-chart circle { fill: var(--flag); }
+
+@media (min-width: 900px) {
+  .home { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 40px; align-items: start; }
+  .home-side { padding-left: 40px; border-left: 1px solid var(--rule); }
+}

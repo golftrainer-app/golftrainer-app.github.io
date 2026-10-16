@@ -1,17 +1,16 @@
-// Tab „Woche“: die Vorschläge dieser Woche wie WeekView in der App. Beim
-// ersten Öffnen fragt die Seite nach der Golfwoche: an welchen Tagen
-// Teamtraining ist und an welchen du sonst golfen kannst. Danach oben die
-// vorgeschlagene Zeit und wie viel erledigt ist, dann die Bereiche und für
-// jeden Golftag ein Vorschlag.
+// Wochenplan hinter der Startseite: die Vorschläge dieser Woche wie
+// WeekPlanView in der App. Oben die vorgeschlagene Zeit und wie viel erledigt
+// ist, dann die Bereiche und für jeden Golftag ein Vorschlag. Dazu die Frage
+// nach der Golfwoche beim ersten Öffnen: an welchen Tagen Teamtraining ist
+// und an welchen du sonst golfen kannst.
 import { totalMinutes } from "../core/calendar.js";
 import { AREAS, AREA_NAMES, MODE_NAMES, weekdayName } from "../core/categories.js";
-import { addDays, formatTime, sameWeek } from "../core/dates.js";
+import { addDays, sameWeek } from "../core/dates.js";
 import { MINUTE_RANGE, MINUTE_STEP, dayCount, emptyGolfWeek, hasOwnMinutes, minutesOn, setMinutes, suggestedMinutes } from "../core/golfweek.js";
 import { PHASE_NAMES, phase as tournamentPhase } from "../core/tournament.js";
 import { timeText } from "../core/reminders.js";
 import { chapter, check, countdown, download, durationText, empty, html, isoWeek, progress, shareFile, toast } from "../ui.js";
 import { applyGolfWeekClick, dayButtons, dayList, golfDays, golfWeekSummary, minutesRows } from "./golfweek.js";
-import { runningMinutes } from "./diary.js";
 
 const dayMonth = new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short" });
 
@@ -25,9 +24,9 @@ function isToday(date, now) {
 export function weekPage(app) {
   const { store } = app;
   return {
-    title: "Diese Woche",
-    tab: "woche",
-    parent: null,
+    title: "Wochenplan",
+    tab: "start",
+    parent: "#/start",
     render() {
       const now = new Date();
       const week = store.data.golfWeek;
@@ -62,7 +61,6 @@ export function weekPage(app) {
         );
       }
 
-      parts.push(trainingChapter(store, now));
       parts.push(
         chapter(
           "Vorschläge",
@@ -79,23 +77,12 @@ export function weekPage(app) {
     },
     mount(root) {
       root.addEventListener("click", async (event) => {
-        if (draft && applyGolfWeekClick(draft, event.target)) {
-          app.render({ keepScroll: true });
-          return;
-        }
+        if (golfWeekQuestionClick(app, event.target)) return;
         const button = event.target.closest("[data-action]");
         if (!button) return;
-        if (button.dataset.action === "golfweek-done") {
-          const week = draft ?? emptyGolfWeek();
-          draft = null;
-          store.setGolfWeek(week);
-          toast(golfDays(week).length > 0 ? "Gesichert. Für jeden Golftag steht jetzt ein Vorschlag da." : "Gesichert. Golftage legst du unter „Mehr“ fest.");
-        } else if (button.dataset.action === "regenerate") {
+        if (button.dataset.action === "regenerate") {
           store.regeneratePlan();
           toast("Die Vorschläge sind neu erstellt.");
-        } else if (button.dataset.action === "start-training") {
-          store.startTraining();
-          toast("Die Stoppuhr läuft. Beenden kannst du sie im Tagebuch.");
         } else if (button.dataset.action === "calendar") {
           const text = store.calendarText(new Date());
           if (!text) return;
@@ -106,17 +93,38 @@ export function weekPage(app) {
           }
         }
       });
-      // Zeit für einen Golftag direkt beim Vorschlag ändern.
-      root.addEventListener("change", (event) => {
-        const select = event.target.closest("[data-session-minutes]");
-        if (!select) return;
-        const day = Number(select.dataset.sessionMinutes);
-        const value = Number(select.value);
-        store.updateGolfWeek((week) => setMinutes(week, day, value === 0 ? null : value));
-        toast("Die Vorschläge sind angepasst.");
-      });
+      listenForMinutes(root, store);
     },
   };
+}
+
+/** Zeit für einen Golftag direkt beim Vorschlag ändern. */
+export function listenForMinutes(root, store) {
+  root.addEventListener("change", (event) => {
+    const select = event.target.closest("[data-session-minutes]");
+    if (!select) return;
+    const day = Number(select.dataset.sessionMinutes);
+    const value = Number(select.value);
+    store.updateGolfWeek((week) => setMinutes(week, day, value === 0 ? null : value));
+    toast("Die Vorschläge sind angepasst.");
+  });
+}
+
+/**
+ * Klicks in der Frage nach der Golfwoche. Gibt true zurück, wenn der Klick
+ * dazugehörte. Die Seite wird danach neu gezeichnet.
+ */
+export function golfWeekQuestionClick(app, target) {
+  if (draft && applyGolfWeekClick(draft, target)) {
+    app.render({ keepScroll: true });
+    return true;
+  }
+  if (!target.closest("[data-action='golfweek-done']")) return false;
+  const week = draft ?? emptyGolfWeek();
+  draft = null;
+  app.store.setGolfWeek(week);
+  toast(golfDays(week).length > 0 ? "Gesichert. Für jeden Golftag steht jetzt ein Vorschlag da." : "Gesichert. Golftage legst du unter „Mehr“ fest.");
+  return true;
 }
 
 /**
@@ -124,7 +132,7 @@ export function weekPage(app) {
  * golfen kannst. Nichts ist vorausgewählt. Die Zeit pro Golftag trägt die App
  * als Vorschlag ein, du kannst sie gleich hier ändern.
  */
-function golfWeekQuestion() {
+export function golfWeekQuestion() {
   draft ??= emptyGolfWeek();
   const days = golfDays(draft);
   return html`<div class="question">
@@ -146,29 +154,6 @@ function golfWeekQuestion() {
       { footer: "Du kannst das jederzeit unter „Mehr“ ändern. Alles, was du einträgst, bleibt in diesem Browser auf deinem Gerät." },
     )}
   </div>`;
-}
-
-/** Tagebuch und Stoppuhr, wie die Knöpfe in der Leiste der App. */
-function trainingChapter(store, now) {
-  const running = store.running;
-  return chapter(
-    "Training",
-    html`<ul class="rows">
-        ${running
-          ? html`<li><a class="row" href="#/tagebuch">
-              <span class="row-main"><span class="row-title flag">Training läuft</span><span class="row-sub">seit ${formatTime(running.start)} Uhr · Beenden im Tagebuch</span></span>
-              <span class="row-value flag">${durationText(runningMinutes(running, now))}</span>
-            </a></li>`
-          : ""}
-        <li><a class="row" href="#/tagebuch">
-          <span class="row-main"><span class="row-title">Trainingstagebuch</span><span class="row-sub">Stoppuhr, eigene Einheiten und die Übungen aus den Vorschlägen</span></span>
-        </a></li>
-        <li><a class="row" href="#/statistik">
-          <span class="row-main"><span class="row-title">Meine Statistik</span><span class="row-sub">Zeit pro Woche, Serie, Bereiche und Monatstests</span></span>
-        </a></li>
-      </ul>
-      ${running ? "" : html`<button class="action" type="button" data-action="start-training" data-key="start-training">Stoppuhr starten<span class="mark" aria-hidden="true">▶</span></button>`}`,
-  );
 }
 
 /** Ohne Golftage: was die App dann tut und wo man sie festlegt. */
@@ -228,7 +213,7 @@ function weights(plan) {
 }
 
 /** Zeit für einen Golftag: Vorschlag der App oder eine eigene Zeit. Leer, wenn der Tag kein Golftag mehr ist. */
-function minutesChoice(store, weekday) {
+export function minutesChoice(store, weekday) {
   const week = store.data.golfWeek;
   const minutes = week ? minutesOn(week, weekday) : null;
   if (minutes == null) return "";
@@ -246,10 +231,9 @@ function minutesChoice(store, weekday) {
   </label>`;
 }
 
-function sessionChapter(store, session, now) {
-  const today = isToday(session.date, now);
-  const side = session.tournament ? PHASE_NAMES[session.tournament.phase] ?? "" : "";
-  const rows = session.drills
+/** Die Übungen eines Golftags, jede mit Link zum Durchführen unter `base`, z. B. „#/woche“. */
+export function drillRows(store, session, base) {
+  return session.drills
     .map((planned) => {
       const drill = store.drill(planned.drillID);
       if (!drill) return null;
@@ -257,7 +241,7 @@ function sessionChapter(store, session, now) {
       const subtitle = [AREA_NAMES[drill.area], drill.isBenchmark ? "Monatstest" : MODE_NAMES[drill.mode]];
       if (drill.levels.length > 1) subtitle.push(`Stufe ${planned.level + 1}`);
       return html`<li>
-        <a class="row drill${isDone ? " done" : ""}" href="#/woche/${encodeURIComponent(session.slot.id)}/${encodeURIComponent(drill.id)}" aria-label="${drill.name}, ${planned.minutes} Minuten, ${isDone ? "erledigt" : "offen"}">
+        <a class="row drill${isDone ? " done" : ""}" href="${base}/${encodeURIComponent(session.slot.id)}/${encodeURIComponent(drill.id)}" aria-label="${drill.name}, ${planned.minutes} Minuten, ${isDone ? "erledigt" : "offen"}">
           ${check(isDone)}
           <span class="row-main">
             <span class="row-title">${drill.name}</span>
@@ -269,6 +253,12 @@ function sessionChapter(store, session, now) {
       </li>`;
     })
     .filter(Boolean);
+}
+
+function sessionChapter(store, session, now) {
+  const today = isToday(session.date, now);
+  const side = session.tournament ? PHASE_NAMES[session.tournament.phase] ?? "" : "";
+  const rows = drillRows(store, session, "#/woche");
   const isPast = session.date < now && !today && sameWeek(session.date, now);
   return html`<section class="session${today ? " today" : ""}${isPast ? " past" : ""}">
     <div class="session-head">

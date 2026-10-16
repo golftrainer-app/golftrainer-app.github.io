@@ -10,6 +10,8 @@ import { DELETION_KINDS, MAXIMUM_DELETIONS } from "./sync.js";
 import { METRICS } from "./launch.js";
 import { defaultSettings as defaultReminders } from "./reminders.js";
 import { KINDS, LOCAL_MEMBER, PLACES } from "./traininglog.js";
+import { decodeAppointment, encodeAppointment } from "./appointments.js";
+import { decodeHandicap, encodeHandicap } from "./handicap.js";
 
 export function newID() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID().toUpperCase();
@@ -526,6 +528,8 @@ export function decodeData(json = {}) {
     launchSessions: lossy(json.launchSessions, decodeLaunchSession, LIMITS.listLength),
     csvMappings: decodeMappings(json.csvMappings),
     reminders: decodeReminders(json.reminders),
+    handicaps: lossy(json.handicaps, decodeHandicap, 2000),
+    appointments: lossy(json.appointments, decodeAppointment, 5000),
     deletions: lossy(json.deletions, decodeDeletion, MAXIMUM_DELETIONS),
     weekPlan: (() => {
       try {
@@ -635,6 +639,8 @@ export function encodeData(data) {
     launchSessions: data.launchSessions.map(encodeLaunchSession),
     csvMappings: Object.fromEntries(Object.entries(data.csvMappings).map(([key, mapping]) => [key, encodeColumnMapping(mapping)])),
     reminders: { isEnabled: data.reminders.isEnabled, hour: data.reminders.hour, minute: data.reminders.minute },
+    handicaps: (data.handicaps ?? []).map(encodeHandicap),
+    appointments: (data.appointments ?? []).map(encodeAppointment),
     deletions: (data.deletions ?? []).map(encodeDeletion),
   };
   if (data.handedness) json.handedness = data.handedness;

@@ -11,7 +11,7 @@
 // Browser den neuen Stand, beim nächsten Öffnen ist er da, und ältere
 // Zwischenspeicher werden gelöscht. Neue Dateien in FILES eintragen,
 // test/sw.test.mjs prüft das.
-const VERSION = "2026-10-15-10";
+const VERSION = "2026-10-16-1";
 const CACHE = `golftrainer-${VERSION}`;
 
 const FILES = [
@@ -36,6 +36,7 @@ const FILES = [
   "js/realtime.js",
   "js/link.js",
   "js/audio/impact-worklet.js",
+  "js/views/home.js",
   "js/views/week.js",
   "js/views/drills.js",
   "js/views/run.js",
@@ -56,6 +57,8 @@ const FILES = [
   "js/views/team.js",
   "js/views/coach.js",
   "js/views/clips.js",
+  "js/core/agenda.js",
+  "js/core/appointments.js",
   "js/core/backup.js",
   "js/core/bests.js",
   "js/core/calendar.js",
@@ -70,14 +73,17 @@ const FILES = [
   "js/core/difficulty.js",
   "js/core/garmin.js",
   "js/core/golfweek.js",
+  "js/core/handicap.js",
   "js/core/launch.js",
   "js/core/model.js",
   "js/core/planner.js",
   "js/core/reminders.js",
   "js/core/scoring.js",
+  "js/core/season.js",
   "js/core/stats.js",
   "js/core/sync.js",
   "js/core/tempo.js",
+  "js/core/texts.js",
   "js/core/tournament.js",
   "js/core/traininglog.js",
   "js/core/weighting.js",

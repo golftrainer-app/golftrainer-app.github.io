@@ -33,8 +33,8 @@ export function diaryPage(app) {
   const { store } = app;
   return {
     title: "Tagebuch",
-    tab: "woche",
-    parent: "#/woche",
+    tab: "start",
+    parent: "#/start",
     render() {
       const now = new Date();
       const entries = store.myTrainingLog();
@@ -169,15 +169,17 @@ function areasNote(assigned, minutes) {
 
 /**
  * Eintrag bearbeiten. `id`: „neu“ für einen neuen Eintrag, „stoppuhr“ für die
- * laufende Stoppuhr, sonst die Kennung eines eigenen Eintrags.
+ * laufende Stoppuhr, sonst die Kennung eines eigenen Eintrags. `day`: Tag für
+ * einen neuen Eintrag aus dem Kalender der Startseite, `parent`: wohin es
+ * danach zurückgeht.
  */
-export function diaryEditor(app, id) {
+export function diaryEditor(app, id, { day = null, parent = "#/tagebuch" } = {}) {
   const { store } = app;
-  const missing = (text) => ({ title: "Training", tab: "woche", parent: "#/tagebuch", render: () => empty(text) });
+  const missing = (text) => ({ title: "Training", tab: "start", parent, render: () => empty(text) });
   let entry;
   let existing = false;
   if (id === "neu") {
-    entry = store.newTrainingEntry();
+    entry = store.newTrainingEntry(new Date(), day);
   } else if (id === "stoppuhr") {
     entry = store.entryForRunningTraining();
     if (!entry) return missing("Gerade läuft keine Stoppuhr.");
@@ -193,8 +195,8 @@ export function diaryEditor(app, id) {
 
   return {
     title: id === "stoppuhr" ? "Training eintragen" : "Training",
-    tab: "woche",
-    parent: "#/tagebuch",
+    tab: "start",
+    parent,
     keepOnChange: true,
     render() {
       return html`<form class="editor" novalidate>
@@ -261,13 +263,13 @@ export function diaryEditor(app, id) {
         }
         note.textContent = areasNote(assigned(), draft.minutes);
       });
-      root.querySelector("[data-cancel]").addEventListener("click", () => app.back("#/tagebuch"));
+      root.querySelector("[data-cancel]").addEventListener("click", () => app.back(parent));
       root.querySelector("[data-delete]")?.addEventListener("click", async () => {
         const choice = await ask({ title: "Eintrag löschen?", actions: [{ label: "Löschen", value: "delete", style: "danger" }] });
         if (choice !== "delete") return;
         store.deleteTrainingEntry(entry.id);
         toast("Eintrag gelöscht.");
-        app.back("#/tagebuch");
+        app.back(parent);
       });
       form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -300,7 +302,7 @@ export function diaryEditor(app, id) {
           note: form.elements.note.value.trim(),
         });
         toast(id === "stoppuhr" ? "Eingetragen. Die Stoppuhr ist beendet." : "Eingetragen.");
-        app.back("#/tagebuch");
+        app.back(parent);
       });
     },
   };

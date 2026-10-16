@@ -6,6 +6,7 @@ import { Account } from "./account.js";
 import { ICONS, escape, html, toast } from "./ui.js";
 import { RUNNING_KEY, STORAGE_KEY, Store } from "./store.js";
 import { weekPage } from "./views/week.js";
+import { appointmentEditor, golfDayPage, handicapEditor, handicapPage, homePage } from "./views/home.js";
 import { diaryEditor, diaryPage } from "./views/diary.js";
 import { statsPage } from "./views/stats.js";
 import { distanceTablePage, launchPage, mappingPage, sessionPage, shotPage, trendPage } from "./views/launch.js";
@@ -31,6 +32,14 @@ import { teamClipPage, teamClipsPage } from "./views/clips.js";
 import { analysesPage, analysisHistoryPage, feedbackTargetsPage, newAnalysisPage, swingAnalysisPage, trimAnalysisPage } from "./views/analysis.js";
 
 const ROUTES = [
+  [/^\/start$/, () => homePage],
+  [/^\/start\/golftag\/([^/]+)$/, ([slotID]) => (app) => golfDayPage(app, slotID)],
+  [/^\/start\/golftag\/([^/]+)\/([^/]+)$/, ([slotID, drillID]) => (app) => planRunPage(app, slotID, drillID, `#/start/golftag/${encodeURIComponent(slotID)}`)],
+  [/^\/start\/handicap$/, () => handicapPage],
+  [/^\/start\/handicap\/([^/]+)$/, ([id]) => (app) => handicapEditor(app, id)],
+  [/^\/start\/termine\/neu\/(\d{4}-\d{2}-\d{2})$/, ([day]) => (app) => appointmentEditor(app, "neu", day)],
+  [/^\/start\/termine\/([^/]+)$/, ([id]) => (app) => appointmentEditor(app, id === "neu" ? "neu" : id)],
+  [/^\/start\/training\/(\d{4}-\d{2}-\d{2})$/, ([day]) => (app) => diaryEditor(app, "neu", { day: dayOf(day), parent: "#/start" })],
   [/^\/woche$/, () => weekPage],
   [/^\/woche\/([^/]+)\/([^/]+)$/, ([slotID, drillID]) => (app) => planRunPage(app, slotID, drillID)],
   [/^\/tagebuch$/, () => diaryPage],
@@ -121,6 +130,12 @@ const ROUTES = [
   [/^\/team\/export$/, () => exportPage],
 ];
 
+/** Tag aus der Adresse, z. B. „2026-10-16“, in der Zeitzone des Geräts. */
+function dayOf(text) {
+  const [year, month, day] = text.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 /** Trainer und Funktionäre sehen das Team aus ihrer Sicht, Spieler und Wartende aus ihrer. */
 function isStaffView(app) {
   const team = app.team;
@@ -133,7 +148,7 @@ function editorOptions(query) {
   return { template: params.get("vorlage"), copyOf: params.get("kopie"), memberID: params.get("fuer") };
 }
 
-const HOME = "#/woche";
+const HOME = "#/start";
 
 function currentPath() {
   const hash = location.hash || HOME;
@@ -166,7 +181,7 @@ function notFound() {
     title: "Nicht gefunden",
     tab: null,
     parent: HOME,
-    render: () => html`<p class="empty">Diese Seite gibt es nicht.</p><p><a class="button outline" href="${HOME}">Zur Woche</a></p>`,
+    render: () => html`<p class="empty">Diese Seite gibt es nicht.</p><p><a class="button outline" href="${HOME}">Zur Startseite</a></p>`,
   };
 }
 
@@ -228,6 +243,12 @@ class App {
     } else {
       location.hash = hash;
     }
+  }
+
+  /** Kam die aktuelle Seite von einer Adresse, die so beginnt? Z. B. ein Editor von der Liste dahinter. */
+  cameFrom(prefix) {
+    const previous = this.stack[this.stack.length - 2];
+    return typeof previous === "string" && previous.startsWith(prefix);
   }
 
   /** Zurück zur übergeordneten Seite: im Verlauf, wenn sie davor kam, sonst direkt. */

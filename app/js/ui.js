@@ -94,11 +94,8 @@ export function labeled(label, value) {
 
 // MARK: - Texte
 
-/** Dauer wie in der App: „45 Min.“ oder „2:30 h“. */
-export function durationText(minutes) {
-  if (minutes >= 60) return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")} h`;
-  return `${minutes} Min.`;
-}
+// Dauer und Countdown stehen im Kern, weil auch die Startseite sie rechnet.
+export { countText, countdown, durationText } from "./core/texts.js";
 
 /** Ergebnis wie ScoreText in der App: „14 von 20“, „31 Schläge (Par 27)“ oder „erledigt“. */
 export function scoreLabel(score, scoring) {
@@ -111,15 +108,6 @@ export function scoreLabel(score, scoring) {
     default:
       return `${score} von ${maxScore(normalized) ?? 0}`;
   }
-}
-
-/** Countdown zum Turnier wie in der App. */
-export function countdown(daysUntil, days) {
-  if (daysUntil >= 2) return `in ${daysUntil} Tagen`;
-  if (daysUntil === 1) return "morgen";
-  if (daysUntil === 0) return "heute";
-  if (daysUntil < 0 && daysUntil >= 1 - Math.max(1, days)) return "läuft";
-  return "vorbei";
 }
 
 const signedFormat = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: "always" });

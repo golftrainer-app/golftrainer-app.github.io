@@ -12,7 +12,7 @@ import { ask, chapter, html, inform, toast } from "../ui.js";
  */
 const form = { mode: "signIn", email: "", password: "", repeated: "", underSixteen: null, consent: false, message: null };
 
-const SYNCED = "Abgeglichen werden Golfwoche, Vorschläge, Ergebnisse, Tagebuch, Runden, Turniere, Schwerpunkte, Launch-Monitor-Daten, Spielhand und Nutzung.";
+const SYNCED = "Abgeglichen werden Golfwoche, Vorschläge, Ergebnisse, Tagebuch, Runden, Turniere, Handicap, eigene Termine, Schwerpunkte, Launch-Monitor-Daten, Spielhand und Nutzung.";
 
 /** Rückmeldung direkt unter dem Knopf. Ein Fehler wird vorgelesen, sobald er erscheint. */
 function note(message) {

@@ -14,8 +14,8 @@ export function statsPage(app) {
   const { store } = app;
   return {
     title: "Statistik",
-    tab: "woche",
-    parent: "#/woche",
+    tab: "start",
+    parent: "#/start",
     render() {
       const stats = buildStats({ log: store.myTrainingLog(), results: store.data.results, library: store.library, now: new Date() });
       const assigned = Object.values(stats.areaMinutes).reduce((sum, minutes) => sum + minutes, 0);

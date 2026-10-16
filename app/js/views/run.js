@@ -18,15 +18,18 @@ const TEMPO_DRILLS = new Set(["drive-tempo"]);
  */
 export const DRAFT_PREFIX = "golftrainer.eingabe.";
 
-/** Übung aus den Vorschlägen der Woche. Das Ergebnis gehört zu diesem Golftag. */
-export function planRunPage(app, slotID, drillID) {
+/**
+ * Übung aus den Vorschlägen der Woche. Das Ergebnis gehört zu diesem Golftag.
+ * `parent`: der Wochenplan oder der Golftag auf der Startseite.
+ */
+export function planRunPage(app, slotID, drillID, parent = "#/woche") {
   const session = app.store.session(slotID);
   const planned = session?.drills.find((drill) => drill.drillID === drillID) ?? null;
   const drill = app.store.drill(drillID);
-  if (!session || !planned || !drill) return missing("#/woche", "woche");
+  if (!session || !planned || !drill) return missing(parent, "start");
   // Mit dem Tag: Dieselbe Kennung des Golftags kommt in der nächsten Woche wieder.
   const draftKey = `${DRAFT_PREFIX}woche/${slotID}/${drillID}/${session.date.getTime()}`;
-  return drillRun(app, drill, planned, session, "#/woche", "woche", draftKey);
+  return drillRun(app, drill, planned, session, parent, "start", draftKey);
 }
 
 /** Übung aus der Bibliothek, außerhalb des Plans. */

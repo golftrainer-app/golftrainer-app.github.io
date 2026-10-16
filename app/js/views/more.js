@@ -129,7 +129,7 @@ export function morePage(app) {
             <label class="action">Sicherung zurückspielen<input class="visually-hidden" type="file" accept=".json,application/json" data-restore></label>`,
           {
             footer:
-              "Eine Datei mit Golfwoche, Vorschlägen, Ergebnissen, Tagebuch, Launch-Monitor-Sessions, Runden, Turnieren und Schwerpunkten, z. B. für ein neues Handy. Sie passt auch zur App auf dem iPhone, in beide Richtungen. Browser löschen ihre Daten manchmal, z. B. mit dem Verlauf. Sichere deshalb ab und zu. Die Datei ist nicht verschlüsselt: Bewahre sie so sorgfältig auf wie deine Fotos.",
+              "Eine Datei mit Golfwoche, Vorschlägen, Ergebnissen, Tagebuch, Launch-Monitor-Sessions, Runden, Turnieren, Schwerpunkten, Handicap und eigenen Terminen, z. B. für ein neues Handy. Sie passt auch zur App auf dem iPhone, in beide Richtungen. Browser löschen ihre Daten manchmal, z. B. mit dem Verlauf. Sichere deshalb ab und zu. Die Datei ist nicht verschlüsselt: Bewahre sie so sorgfältig auf wie deine Fotos.",
           },
         )}
         ${isStandalone() ? "" : installChapter(app)}
@@ -424,6 +424,7 @@ export function deletePage(app) {
           html`<ul class="bullets">
             <li>Golfwoche, Vorschläge und Schwerpunkte</li>
             <li>Ergebnisse, Bestleistungen, Runden und Turniere</li>
+            <li>Handicap und eigene Termine</li>
             <li>Trainingstagebuch und eine laufende Stoppuhr</li>
             <li>Sessions vom Launch Monitor und gespeicherte Spaltenzuordnungen</li>
             <li>Alles, was aus einer zurückgespielten Sicherung oder vom Abgleich über das Konto stammt</li>
@@ -467,7 +468,7 @@ export function deletePage(app) {
         } catch {
           // Ohne Zwischenspeicher gibt es dort nichts zu löschen.
         }
-        location.replace("#/woche");
+        location.replace("#/start");
         location.reload();
       });
     },
