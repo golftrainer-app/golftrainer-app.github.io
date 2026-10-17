@@ -48,8 +48,14 @@ export function errorMessage(status, code, raw) {
       return "Das ist schon dein Passwort.";
     case "over_email_send_rate_limit":
     case "over_request_rate_limit":
-    case "over_sms_send_rate_limit":
+    case "over_sms_send_rate_limit": {
+      // An dieselbe Adresse geht höchstens eine Mail pro Minute. Dann nennt
+      // Supabase die Sekunden bis zur nächsten, sonst gilt die Grenze pro Stunde.
+      const seconds = waitSeconds(raw);
+      if (seconds === 1) return "Warte noch eine Sekunde und versuche es dann noch einmal.";
+      if (seconds !== null) return `Warte noch ${seconds} Sekunden und versuche es dann noch einmal.`;
       return "Zu viele Versuche in kurzer Zeit. Warte eine Stunde und versuche es noch einmal.";
+    }
     case "validation_failed":
     case "email_address_invalid":
       return "Prüfe die E-Mail-Adresse.";
@@ -96,6 +102,12 @@ export function errorMessage(status, code, raw) {
       if (status >= 500) return "Der Server antwortet gerade nicht. Versuche es später noch einmal.";
       return raw ? `Der Server hat die Anfrage abgelehnt (${status}): ${raw}` : `Der Server hat die Anfrage abgelehnt (${status}).`;
   }
+}
+
+/** Die Wartezeit aus „For security purposes, you can only request this after 37 seconds.“, sonst null. */
+export function waitSeconds(raw) {
+  const match = /after (\d+) seconds?/.exec(String(raw ?? ""));
+  return match ? Math.max(1, Number(match[1])) : null;
 }
 
 /**

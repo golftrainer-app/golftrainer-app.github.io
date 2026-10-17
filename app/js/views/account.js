@@ -122,7 +122,7 @@ function signedOut(account) {
 function awaiting(account) {
   return html`${chapter(
     "E-Mail bestätigen",
-    html`<p class="serif">Wir haben eine E-Mail an ${account.email} geschickt. Tippe auf den Link darin. Öffnet er diese Seite, bist du gleich angemeldet. Sonst melde dich hier an. Sieh auch im Spam-Ordner nach.</p>
+    html`<p class="serif">Wir haben eine E-Mail an ${account.email} geschickt. Tippe auf den Link darin. Öffnet er diese Seite, bist du gleich angemeldet. Sonst melde dich hier an. Sieh auch im Spam-Ordner nach. Ist die Adresse falsch geschrieben, tippe auf „Andere E-Mail-Adresse“.</p>
       <button type="button" class="action" data-action="resend" ${account.isBusy ? "disabled" : ""}>E-Mail noch einmal schicken<span class="mark" aria-hidden="true">↗</span></button>
       <button type="button" class="action" data-action="confirmed">Bestätigt, jetzt anmelden<span class="mark" aria-hidden="true">→</span></button>
       <button type="button" class="action" data-action="other">Andere E-Mail-Adresse<span class="mark" aria-hidden="true">→</span></button>
@@ -255,7 +255,7 @@ export function accountPage(app) {
           }
           case "resend": {
             const problem = await account.resendConfirmation(account.email);
-            form.message = problem ? { text: problem, isProblem: true } : { text: "Die E-Mail ist noch einmal unterwegs.", isProblem: false };
+            form.message = problem ? { text: problem, isProblem: true } : { text: "Ist die Adresse noch nicht bestätigt, ist eine neue E-Mail unterwegs. Ist sie schon bestätigt, kommt keine mehr. Dann melde dich einfach an.", isProblem: false };
             app.render({ keepScroll: true });
             return;
           }
