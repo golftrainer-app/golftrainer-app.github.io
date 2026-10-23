@@ -755,9 +755,11 @@ export class Store {
           data.extra = { ...data.extra, [key]: result.items };
           added += result.added;
         }
+        // Neue Turniere und Schwerpunkte wirken gleich auf die Woche, wie beim
+        // Eintragen von Hand und wie in der App. Innerhalb von change(), damit
+        // der neue Plan mit gespeichert wird und nicht nur im Speicher steht.
+        if (added > 0) this.plan(now);
       });
-      // Neue Turniere und Schwerpunkte wirken gleich auf die Woche, wie beim Eintragen von Hand und wie in der App.
-      if (added > 0) this.plan(now);
       if (added === 0) return "Nichts Neues: Alles aus der Sicherung ist schon auf diesem Gerät.";
       return added === 1 ? "1 Eintrag aus der Sicherung übernommen." : `${added} Einträge aus der Sicherung übernommen.`;
     }

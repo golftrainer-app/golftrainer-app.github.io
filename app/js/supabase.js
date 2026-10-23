@@ -273,6 +273,8 @@ export class SupabaseClient {
     this.storage = storage;
     this.now = now;
     this.session = this.loadSession();
+    /** false: Die Sitzung gilt nur in dieser Seite und kommt nicht in den Speicher (Link „Passwort zurücksetzen“). */
+    this.persistent = true;
   }
 
   loadSession() {
@@ -295,6 +297,7 @@ export class SupabaseClient {
 
   store(session) {
     this.session = session;
+    if (!this.persistent) return;
     try {
       this.storage?.setItem(SESSION_KEY, JSON.stringify(session));
     } catch {
@@ -305,6 +308,7 @@ export class SupabaseClient {
   /** Die Sitzung auf diesem Gerät vergessen, ohne den Server. */
   forget() {
     this.session = null;
+    this.persistent = true;
     try {
       this.storage?.removeItem(SESSION_KEY);
     } catch {
@@ -312,9 +316,23 @@ export class SupabaseClient {
     }
   }
 
-  /** Sitzung aus dem Link einer E-Mail übernehmen (Bestätigen, Passwort zurücksetzen). */
-  adopt(session) {
+  /**
+   * Sitzung aus dem Link einer E-Mail übernehmen (Bestätigen, Passwort
+   * zurücksetzen). Mit `persist: false` bleibt sie in dieser Seite und kommt
+   * nicht in den Speicher: Nach dem Neuladen ist der Browser nicht angemeldet.
+   * So macht ein untergeschobener Link „Passwort zurücksetzen“ den Browser
+   * nicht zum Gerät eines fremden Kontos, in das die Daten hier abgeglichen
+   * würden.
+   */
+  adopt(session, { persist = true } = {}) {
+    this.persistent = persist;
     this.store(session);
+  }
+
+  /** Eine Sitzung, die nur in dieser Seite galt, doch behalten. */
+  keep() {
+    this.persistent = true;
+    if (this.session) this.store(this.session);
   }
 
   // MARK: - Konto
@@ -322,6 +340,7 @@ export class SupabaseClient {
   async signIn(email, password) {
     const json = await this.send(requests.signIn(this.config, email, password));
     const session = sessionFrom(json, this.now());
+    this.persistent = true;
     this.store(session);
     return session;
   }
@@ -329,7 +348,10 @@ export class SupabaseClient {
   async signUp(email, password) {
     const json = await this.send(requests.signUp(this.config, email, password));
     const outcome = signUpOutcome(json, this.now());
-    if (outcome.kind === "signedIn") this.store(outcome.session);
+    if (outcome.kind === "signedIn") {
+      this.persistent = true;
+      this.store(outcome.session);
+    }
     return outcome;
   }
 

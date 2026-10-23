@@ -148,11 +148,11 @@ export function morePage(app) {
         ${chapter(
           "Nur in der App für iPhone und iPad",
           html`<ul class="bullets">
-            <li>Team mit Jugendabteilung, Trainern, Terminen und Einheiten vom Trainer</li>
-            <li>Kamera mit automatischem Auslöser und zweites Gerät als Bildschirm</li>
-            <li>Schwunganalyse und Mitteilungen auf dem Gerät</li>
+            <li>Mitteilungen auf dem Gerät, z. B. zu neuen Terminen</li>
+            <li>Eine Jugendabteilung eröffnen und Videos aus der Kamera an die Trainer schicken</li>
+            <li>Training am Golfplatz am Standort erkennen, Flugbahn zeichnen, Videos mit Schlägen verknüpfen</li>
           </ul>`,
-          { footer: "Was du hier einträgst, nimmst du mit einer Sicherung oder über dein Konto in die App mit." },
+          { footer: "Team, Kamera mit Auslöser, Bildschirm-Modus und Schwunganalyse gibt es auch hier. Was du hier einträgst, nimmst du mit einer Sicherung oder über dein Konto in die App mit." },
         )}
       `;
     },

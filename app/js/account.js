@@ -119,6 +119,8 @@ export class Account {
 
   /** Nach Änderungen in einem anderen Tab, z. B. Abmelden dort. */
   reload() {
+    // Die Sitzung aus dem Link „Passwort zurücksetzen“ steht nur in dieser Seite; sie bleibt, bis du entscheidest.
+    if (this.pendingRecovery) return;
     this.state = this.readState();
     this.client.session = this.client.loadSession();
     this.status = this.client.session ? "signedIn" : this.state.awaitingEmail ? "awaitingConfirmation" : "signedOut";
@@ -191,10 +193,20 @@ export class Account {
     // Das Einverständnis zählt nur unter 16, sonst stünde im Profil etwas, das nicht gefragt war.
     const consent = underSixteen && Boolean(parentalConsent);
     return this.busy(async () => {
-      // Alter und Einverständnis merken, bis die erste Anmeldung sie ins Profil schreibt.
-      this.state.pending = { underSixteen, parentalConsent: consent, consentAt: consent ? this.now().getTime() : null };
+      // Alter und Einverständnis merken, bis die erste Anmeldung dieser Adresse
+      // sie ins Profil schreibt. Mit der Adresse: Sie gehören zu diesem Konto,
+      // nicht zu dem, das sich als Nächstes hier anmeldet.
+      this.state.pending = { email: address, underSixteen, parentalConsent: consent, consentAt: consent ? this.now().getTime() : null };
       this.writeState();
-      const outcome = await this.client.signUp(address, password);
+      let outcome;
+      try {
+        outcome = await this.client.signUp(address, password);
+      } catch (error) {
+        // Ohne Konto bleibt nichts liegen, was ein anderes Konto bekäme.
+        this.state.pending = null;
+        this.writeState();
+        throw error;
+      }
       if (outcome.kind === "signedIn") {
         await this.didSignIn(outcome.session);
       } else {
@@ -232,16 +244,25 @@ export class Account {
     this.email = session.email;
     this.lastEmail = session.email;
     this.notify();
-    await this.writePendingProfile();
+    await this.writePendingProfile(session);
     this.syncSoon(0);
   }
 
-  /** Alter und Einverständnis aus dem Registrieren ins Profil, sobald es eine Sitzung gibt. */
-  async writePendingProfile() {
+  /**
+   * Alter und Einverständnis aus dem Registrieren ins Profil, sobald es eine
+   * Sitzung dieser Adresse gibt. Meldet sich ein anderes Konto an, fällt der
+   * Rest weg: Er gehört nicht in dessen Profil.
+   */
+  async writePendingProfile(session) {
     const pending = this.state.pending;
     if (!pending) return;
+    if (typeof pending.email !== "string" || trimmed(pending.email) !== trimmed(session?.email ?? "")) {
+      this.state.pending = null;
+      this.writeState();
+      return;
+    }
     try {
-      await this.client.upsertProfile(pending);
+      await this.client.upsertProfile({ underSixteen: pending.underSixteen, parentalConsent: pending.parentalConsent, consentAt: pending.consentAt });
       this.state.pending = null;
       this.writeState();
     } catch {
@@ -301,8 +322,12 @@ export class Account {
       const expiresAt = params.get("expires_at") ? Number(params.get("expires_at")) * 1000 : this.now().getTime() + (Number(params.get("expires_in")) || 3600) * 1000;
       const session = { accessToken, refreshToken, expiresAt, userID: user.id, email: user.email };
       if (type === "recovery") {
-        // Nur zum Ändern des Passworts. Ob die Sitzung bleibt, fragt die Seite danach.
-        this.client.adopt(session);
+        // Nur zum Ändern des Passworts, nur in dieser Seite: Nach dem Neuladen
+        // ist der Browser nicht angemeldet, bis du nach dem neuen Passwort
+        // „bleiben“ wählst. Sonst machte ein untergeschobener Link den Browser
+        // zum Gerät eines fremden Kontos, und der Abgleich schickte deine
+        // Daten dorthin.
+        this.client.adopt(session, { persist: false });
         this.pendingRecovery = true;
         this.status = "signedIn";
         this.email = session.email;
@@ -347,6 +372,7 @@ export class Account {
     const session = this.client.session;
     this.pendingRecovery = false;
     if (stay && session) {
+      this.client.keep();
       await this.didSignIn(session);
       return;
     }

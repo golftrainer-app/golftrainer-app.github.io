@@ -569,7 +569,7 @@ export function tempoPage(app) {
       const selected = tempo();
       return html`
         <div class="tempo-display" data-display role="status" aria-label="${player.isPlaying ? `Tempo-Trainer läuft, ${selected.id}` : "Tempo-Trainer bereit"}">${display()}</div>
-        <button type="button" class="button wide tall" data-toggle>${player.isPlaying ? "Stopp" : "Start"}</button>
+        <button type="button" class="button wide tall" data-toggle aria-pressed="${String(player.isPlaying)}">${player.isPlaying ? "Stopp" : "Start"}</button>
         ${error ? html`<p class="note flag">${error}</p>` : ""}
         ${chapter(
           "Einstellung",

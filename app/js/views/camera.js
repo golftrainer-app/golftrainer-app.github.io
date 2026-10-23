@@ -556,7 +556,7 @@ export function cameraPage(app) {
             </div>
             <p class="hint camera-motion" data-motion hidden></p>
             <div class="buttons">
-              <button type="button" class="button flag" data-action="toggle">Kamera starten</button>
+              <button type="button" class="button flag" data-action="toggle" aria-pressed="false">Kamera starten</button>
               <button type="button" class="button outline" data-action="save" disabled>Schwung speichern</button>
             </div>
             <p class="hint" data-message hidden></p>`,
@@ -698,6 +698,7 @@ export function cameraPage(app) {
         try {
           await session.start();
           toggle.textContent = "Kamera stoppen";
+          toggle.setAttribute("aria-pressed", "true");
           save.disabled = false;
           startLink();
         } catch (error) {
@@ -713,6 +714,7 @@ export function cameraPage(app) {
         if (settings.screenCode) setLinkState("idle");
         session.stop();
         toggle.textContent = "Kamera starten";
+        toggle.setAttribute("aria-pressed", "false");
         save.disabled = true;
         setStatus("Kamera aus.");
         showMotion(null);
