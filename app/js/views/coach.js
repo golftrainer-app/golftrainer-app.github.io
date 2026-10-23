@@ -1707,7 +1707,15 @@ export function settingsPage(app) {
               { footer: "Die Person wird Admin und kann die Abteilung löschen. Du behältst deine Rolle, bist aber nur noch Admin, wenn sie es dir lässt." },
             )
           : ""}
-        ${chapter("", html`<p class="note">Die Daten des Teams liegen auf dem Server des Kontos in Frankfurt. Eröffnet hat die Abteilung ${info ? data.name(info.ownerMemberID) : "der Admin"}. Verantwortlich für die Daten ist euer Verein.</p>`)}`;
+        ${team.canTakeOver
+          ? chapter(
+              "Übernehmen",
+              html`<p class="serif">Die Person, die die Abteilung eröffnet hat, hat ihr Konto gelöscht. Als Admin kannst du die Abteilung übernehmen. Dann kannst du sie später übergeben oder löschen.</p>
+                <button type="button" class="action" data-action="takeover">Abteilung übernehmen<span class="mark" aria-hidden="true">›</span></button>`,
+              { footer: "Bis dahin ändern Admins und Cheftrainer die Einstellungen wie bisher." },
+            )
+          : ""}
+        ${chapter("", html`<p class="note">Die Daten des Teams liegen auf dem Server des Kontos in Frankfurt. Eröffnet hat die Abteilung ${info ? (data.hasOwner() ? data.name(info.ownerMemberID) : "eine Person, deren Konto gelöscht ist") : "der Admin"}. Verantwortlich für die Daten ist euer Verein.</p>`)}`;
     },
     mount(root) {
       const form = root.querySelector("form[data-settings]");
@@ -1787,6 +1795,12 @@ export function settingsPage(app) {
           if (choice !== "handover") return;
           team.transferOwnership(candidate);
           toast("Übergeben.");
+        },
+        takeover: async () => {
+          const choice = await ask({ title: "Abteilung übernehmen?", message: "Du wirst die Person, die die Abteilung führt. Übergeben kannst du sie später an einen Trainer oder Funktionär.", actions: [{ label: "Übernehmen", value: "takeover", style: "flag" }] });
+          if (choice !== "takeover") return;
+          team.takeOverTeam();
+          toast("Übernommen.");
         },
       });
       return () => {

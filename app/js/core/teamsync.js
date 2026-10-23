@@ -39,6 +39,12 @@ export class TeamSync {
     this.joinSecret = null;
     /** Namen, die ein vollständiges Holen ab 0 bisher gebracht hat. null: kein vollständiges Holen. */
     this.seenNames = new Set();
+    /** Einträge, die diese Version nicht lesen konnte. Nach einem Update holt retryUnreadable einmal alles neu. */
+    this.unreadable = new Set();
+    /** Version, für die retryUnreadable zuletzt alles neu geholt hat. */
+    this.retriedVersion = null;
+    /** Gelöscht ohne bekannten Stand: gemeldete Inhalte, die ein Admin nie gesehen hat. Der Server prüft. */
+    this.forcedDeletes = new Set();
   }
 
   /** Aus dem Speicher des Browsers. Fehlende Felder bekommen ihren Standardwert. */
@@ -61,6 +67,9 @@ export class TeamSync {
     sync.joinSecret = typeof json.joinSecret === "string" ? json.joinSecret : null;
     // Ohne Folge wurde noch nie etwas geholt: Das nächste Holen ist ein vollständiges.
     sync.seenNames = Array.isArray(json.seenNames) ? new Set(json.seenNames.filter((name) => typeof name === "string")) : sync.lastSeq === 0 ? new Set() : null;
+    sync.unreadable = new Set(Array.isArray(json.unreadable) ? json.unreadable.filter((name) => typeof name === "string") : []);
+    sync.retriedVersion = typeof json.retriedVersion === "string" ? json.retriedVersion : null;
+    sync.forcedDeletes = new Set(Array.isArray(json.forcedDeletes) ? json.forcedDeletes.filter((name) => typeof name === "string") : []);
     return sync;
   }
 
@@ -77,6 +86,9 @@ export class TeamSync {
       isAdmin: this.isAdmin,
       joinSecret: this.joinSecret,
       seenNames: this.seenNames ? [...this.seenNames].sort() : null,
+      unreadable: [...this.unreadable].sort(),
+      retriedVersion: this.retriedVersion,
+      forcedDeletes: [...this.forcedDeletes].sort(),
     };
   }
 
@@ -88,7 +100,7 @@ export class TeamSync {
   }
 
   get hasPendingChanges() {
-    return this.pendingSaves.size > 0 || Object.keys(this.pendingDeletes).length > 0;
+    return this.pendingSaves.size > 0 || Object.keys(this.pendingDeletes).length > 0 || this.forcedDeletes.size > 0;
   }
 
   /** Holt der nächste Abgleich alles ab 0? */
@@ -107,19 +119,38 @@ export class TeamSync {
     if (this.lastPull != null && now.getTime() - this.lastPull > FULL_PULL_AFTER) this.scheduleFullPull();
   }
 
+  /**
+   * Nach einem Update: Gab es Einträge, die die alte Version nicht lesen
+   * konnte, einmal alles neu holen. Gibt zurück, ob ein vollständiges Holen
+   * ansteht. Bleiben sie unlesbar, passiert bis zur nächsten Version nichts mehr.
+   */
+  retryUnreadable(appVersion) {
+    if (this.unreadable.size === 0 || this.retriedVersion === appVersion) return false;
+    this.retriedVersion = appVersion;
+    this.unreadable = new Set();
+    this.scheduleFullPull();
+    return true;
+  }
+
   /** Lokal geändert: beim nächsten Abgleich hochladen. */
   markChanged(names) {
     for (const name of names) {
       this.pendingSaves.add(name);
       delete this.pendingDeletes[name];
+      this.forcedDeletes.delete(name);
     }
   }
 
-  /** Lokal gelöscht: auf dem Server löschen. Was der Server nie hatte, braucht dort nichts. */
-  markDeleted(names) {
+  /**
+   * Lokal gelöscht: auf dem Server löschen. Was der Server nie hatte, braucht
+   * dort nichts. `evenWithoutRevision`: auch ohne bekannten Stand, etwa
+   * gemeldete Inhalte, die ein Admin nie gesehen hat; der Server prüft, ob er darf.
+   */
+  markDeleted(names, evenWithoutRevision = false) {
     for (const name of names) {
       this.pendingSaves.delete(name);
       if (Number.isInteger(this.revisions[name])) this.pendingDeletes[name] = this.revisions[name];
+      else if (evenWithoutRevision) this.forcedDeletes.add(name);
     }
   }
 
@@ -134,6 +165,9 @@ export class TeamSync {
     this.isAdmin = false;
     this.joinSecret = null;
     this.seenNames = new Set();
+    this.unreadable = new Set();
+    this.retriedVersion = null;
+    this.forcedDeletes = new Set();
   }
 
   // MARK: - Hochladen
@@ -153,6 +187,10 @@ export class TeamSync {
     for (const name of Object.keys(this.pendingDeletes).sort()) {
       if (batch.items.length + batch.deletions.length >= limit) break;
       batch.deletions.push({ name, revision: this.pendingDeletes[name] });
+    }
+    for (const name of [...this.forcedDeletes].sort()) {
+      if (batch.items.length + batch.deletions.length >= limit) break;
+      batch.deletions.push({ name, revision: null });
     }
     return batch;
   }
@@ -249,6 +287,8 @@ export class TeamSync {
   }
 
   applyDeletion(entry, name, viewer, data, report) {
+    // Jede Antwort erledigt ein Löschen ohne Stand; ein Konflikt macht daraus eines mit Stand.
+    this.forcedDeletes.delete(name);
     switch (entry.outcome) {
       case "deleted":
         delete this.pendingDeletes[name];
@@ -364,6 +404,13 @@ export class TeamSync {
     }
     // Rolle geändert?
     const after = this.viewer(data);
+    const isPendingNow = this.memberID != null && data.isPending(this.memberID);
+    if (report.wasPending && !isPendingNow) {
+      // Frisch freigegeben: Bis eben kamen nur die eigenen Angaben, jetzt auch
+      // Termine, Beiträge und Challenges von vor dem Beitritt. Alles neu holen.
+      this.scheduleFullPull();
+      report.needsFullPull = true;
+    }
     if (this.access != null) {
       if (ACCESS_RANK[after.access] > ACCESS_RANK[this.access] || (after.isAdmin && !this.isAdmin)) {
         // Darf mehr sehen: Was früher nicht kam, jetzt holen.
@@ -382,13 +429,20 @@ export class TeamSync {
     }
     this.access = after.access;
     this.isAdmin = after.isAdmin;
-    report.isPending = this.memberID != null && data.isPending(this.memberID);
+    report.isPending = isPendingNow;
     return report;
   }
 
   applyRow(row, viewer, data, report) {
     const name = row.name;
     if (row.payload == null) {
+      this.unreadable.delete(name);
+      if (this.pendingSaves.has(name) && !Number.isInteger(this.revisions[name])) {
+        // Lokal neu angelegt, der Server kennt nur eine alte Löschmarke, z. B.
+        // die Angaben der Eltern nach dem Wiederbeitritt: Das Neue gewinnt und
+        // belebt die Löschmarke beim Hochladen wieder.
+        return;
+      }
       // Löschmarke: Das Löschen gewinnt, auch gegen eine lokale Änderung.
       this.revisions[name] = row.revision;
       this.pendingSaves.delete(name);
@@ -400,9 +454,11 @@ export class TeamSync {
     try {
       outcome = data.apply(name, row.payload, viewer).outcome;
     } catch {
-      // Unlesbar, z. B. aus einer neueren Version: nächstes Mal wieder.
+      // Unlesbar, z. B. aus einer neueren Version. Die Folge geht weiter; nach einem Update holt retryUnreadable alles neu.
+      this.unreadable.add(name);
       return;
     }
+    this.unreadable.delete(name);
     switch (outcome) {
       case "stored": {
         this.revisions[name] = row.revision;

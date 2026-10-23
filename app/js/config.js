@@ -3,6 +3,13 @@
 // (test/supabase.test.mjs prüft das). Der Schlüssel „anon“ ist öffentlich und
 // für Apps gedacht: Er erlaubt Registrieren und Anmelden. Daten gibt es nur
 // mit angemeldeter Sitzung, jeder nur seine eigenen (docs/KONTO.md).
+/**
+ * Version der Web-App, dieselbe wie VERSION in sw.js (test/sw.test.mjs prüft
+ * das). Das Team merkt sich damit, ob es nach einem Update Einträge noch
+ * einmal holen muss, die die alte Version nicht lesen konnte.
+ */
+export const APP_VERSION = "2026-10-23-2";
+
 export const SUPABASE = {
   url: "https://vdzydvydngpmxpmarjdb.supabase.co",
   anonKey:

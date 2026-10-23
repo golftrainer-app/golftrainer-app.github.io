@@ -6,6 +6,7 @@
 // (team_push) und holt, was sich seit dem letzten Mal geändert hat
 // (team_pull). Ohne Konto gibt es kein Team.
 import { describe, deviceName } from "./account.js";
+import { APP_VERSION } from "./config.js";
 import { seed, stations } from "./core/challenge.js";
 import { addDays, startOfDay, toStored } from "./core/dates.js";
 import { level as difficultyLevel } from "./core/difficulty.js";
@@ -122,6 +123,8 @@ export class TeamStore {
       const json = JSON.parse(this.storage?.getItem(TEAM_KEY) ?? "null");
       if (!json || typeof json !== "object") return file;
       file.sync = TeamSync.fromJSON(json.sync);
+      // Nach einem Update: Was die alte Version nicht lesen konnte, einmal neu holen.
+      file.sync?.retryUnreadable(APP_VERSION);
       // Ohne Stand des Abgleichs gibt es kein Team auf diesem Gerät.
       file.data = file.sync ? TeamData.fromJSON(json.data) : new TeamData();
       file.userID = typeof json.userID === "string" ? json.userID : null;
@@ -255,6 +258,16 @@ export class TeamStore {
     return this.myMemberID != null && this.data.isOwner(this.myMemberID);
   }
 
+  /** Die Abteilung hat keinen Eröffner mehr (Konto gelöscht), und dieses Mitglied ist Admin: Es kann sie übernehmen oder löschen. */
+  get canTakeOver() {
+    return this.isAdmin && !this.isOwner && this.data.info != null && !this.data.hasOwner();
+  }
+
+  /** Löschen darf, wer eröffnet hat; ohne Eröffner jeder Admin. */
+  get canDeleteTeam() {
+    return this.isOwner || this.canTakeOver;
+  }
+
   get me() {
     return this.data.member(this.myMemberID);
   }
@@ -365,10 +378,10 @@ export class TeamStore {
     return this.saveItem(kind, { ...payload, updatedAt: Math.max(toStored(this.now()), floor) });
   }
 
-  deleteNames(names) {
+  deleteNames(names, { evenWithoutRevision = false } = {}) {
     if (names.length === 0) return;
     for (const name of names) this.file.data.remove(name);
-    this.file.sync?.markDeleted(names);
+    this.file.sync?.markDeleted(names, evenWithoutRevision);
     this.persistSoon();
     this.syncSoon();
     this.notify();
@@ -514,10 +527,10 @@ export class TeamStore {
     }
   }
 
-  /** Löscht die Jugendabteilung mit allen Daten. Nur wer sie eröffnet hat. */
+  /** Löscht die Jugendabteilung mit allen Daten. Wer sie eröffnet hat; ohne Eröffner jeder Admin. */
   async deleteTeam() {
     const teamID = this.teamID;
-    if (!this.isOwner || !teamID) return null;
+    if (!this.canDeleteTeam || !teamID) return null;
     // Die Videos aller Mitglieder aus dem Speicher, solange das Team sie noch kennt.
     await this.deleteClipFiles(this.allClipPaths);
     try {
@@ -904,6 +917,14 @@ export class TeamStore {
     this.saveIfChanged("info", { ...existing, ownerMemberID: uid(memberID) }, existing);
   }
 
+  /** Ohne Eröffner (Konto gelöscht) übernimmt ein Admin die Abteilung für sich. Der Server prüft das. */
+  takeOverTeam() {
+    const existing = this.data.info;
+    const me = this.myMemberID;
+    if (!this.canTakeOver || !existing || !me) return;
+    this.saveIfChanged("info", { ...existing, ownerMemberID: uid(me) }, existing);
+  }
+
   // MARK: - Termine, Pinnwand, Challenges (Trainer und Funktionäre)
 
   /** Termin anlegen oder ändern. Beim Ändern zählt nur, was gegenüber `original` geändert wurde. Gibt zurück, ob gespeichert wurde. */
@@ -1053,7 +1074,8 @@ export class TeamStore {
         this.clipFiles.delete(uid(parsed.key));
         if (clip && this.clipPath(clip)) this.deleteClipFiles([this.clipPath(clip)]);
       }
-      this.deleteNames(this.data.recordNamesRemovedWith(report.recordName));
+      // Auch ohne bekannten Stand: Ein Jugendwart sieht Nachrichten sonst nicht. Der Server erlaubt Admins das Löschen gemeldeter Inhalte.
+      this.deleteNames(this.data.recordNamesRemovedWith(report.recordName), { evenWithoutRevision: true });
     }
     this.setResolved(report, true);
   }

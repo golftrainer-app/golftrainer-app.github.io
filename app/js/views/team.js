@@ -1194,14 +1194,17 @@ export function teamProfilePage(app) {
           : ""}
         ${chapter(
           "",
-          team.isOwner
-            ? html`<button type="button" class="action danger" data-action="delete-team">Jugendabteilung löschen</button>`
-            : html`<label class="toggle"><span>Meine Daten im Team löschen</span><input type="checkbox" name="deletesMyData" checked data-key="deletesMyData"></label>
-                <button type="button" class="action danger" data-action="leave">Team verlassen</button>`,
+          html`${team.canDeleteTeam ? html`<button type="button" class="action danger" data-action="delete-team">Jugendabteilung löschen</button>` : ""}
+            ${team.isOwner
+              ? ""
+              : html`<label class="toggle"><span>Meine Daten im Team löschen</span><input type="checkbox" name="deletesMyData" checked data-key="deletesMyData"></label>
+                <button type="button" class="action danger" data-action="leave">Team verlassen</button>`}`,
           {
             footer: team.isOwner
-              ? "Löschst du die Jugendabteilung, sind alle Daten aller Mitglieder auf dem Server weg. Willst du nur gehen, übergib sie vorher in der App an einen Trainer oder Funktionär."
-              : "Deine Daten in diesem Browser bleiben erhalten.",
+              ? "Löschst du die Jugendabteilung, sind alle Daten aller Mitglieder auf dem Server weg. Willst du nur gehen, übergib sie vorher unter „Einladen und Einstellungen“ an einen Trainer oder Funktionär."
+              : team.canTakeOver
+                ? "Die Person, die die Abteilung eröffnet hat, hat ihr Konto gelöscht. Als Admin kannst du die Abteilung unter „Einladen und Einstellungen“ übernehmen oder sie hier mit allen Daten löschen. Deine Daten in diesem Browser bleiben erhalten."
+                : "Deine Daten in diesem Browser bleiben erhalten.",
           },
         )}`;
     },

@@ -687,6 +687,12 @@ export class TeamData {
     return memberID != null && owner != null && sameID(owner, memberID);
   }
 
+  /** Hat die Abteilung noch die Person, die sie eröffnet hat? Ohne sie (Konto gelöscht) übernimmt ein Admin sie oder löscht sie. */
+  hasOwner() {
+    const owner = this.info?.ownerMemberID;
+    return owner != null && !sameID(owner, ZERO_ID);
+  }
+
   /** Rolle eines Mitglieds. Wer eröffnet hat, behält immer eine, ohne Angabe Cheftrainer. */
   role(memberID) {
     if (memberID == null) return null;
