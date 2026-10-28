@@ -8,7 +8,7 @@
  * das). Das Team merkt sich damit, ob es nach einem Update Einträge noch
  * einmal holen muss, die die alte Version nicht lesen konnte.
  */
-export const APP_VERSION = "2026-10-23-2";
+export const APP_VERSION = "2026-10-28-1";
 
 export const SUPABASE = {
   url: "https://vdzydvydngpmxpmarjdb.supabase.co",

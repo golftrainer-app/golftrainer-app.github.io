@@ -2,7 +2,7 @@
 // (GolfCore/Sources/GolfCore/Model/Handicap.swift). Du trägst es selbst ein,
 // wenn es sich ändert. Weniger ist besser, Werte unter null sind
 // Plus-Handicaps und stehen als „+1,2“ da.
-import { fromStored, toStored } from "./dates.js";
+import { fromStored, startOfDay, toStored } from "./dates.js";
 
 /** Handicap-Index nach WHS: höchstens 54, Plus-Handicaps bis +10. */
 export const HANDICAP_RANGE = [-10, 54];
@@ -107,9 +107,14 @@ export function sortedHandicaps(entries) {
   });
 }
 
-/** Der Eintrag, der an `date` gilt: der letzte bis einschließlich diesem Zeitpunkt. */
+/** Ein Eintrag gilt ab seinem Kalendertag, nicht erst ab der gespeicherten Uhrzeit (12 Uhr): auch am Vormittag des Tages. */
+export function handicapApplies(entry, date) {
+  return startOfDay(entry.date) <= date;
+}
+
+/** Der Eintrag, der an `date` gilt: der letzte bis einschließlich diesem Tag. */
 export function handicapAt(date, entries) {
-  const sorted = sortedHandicaps(entries).filter((entry) => entry.date <= date);
+  const sorted = sortedHandicaps(entries).filter((entry) => handicapApplies(entry, date));
   return sorted[sorted.length - 1] ?? null;
 }
 
@@ -121,7 +126,7 @@ export function handicapAt(date, entries) {
 export function handicapChange(start, entries, now) {
   const current = handicapAt(now, entries);
   if (!current) return null;
-  const sorted = sortedHandicaps(entries).filter((entry) => entry.date <= now);
+  const sorted = sortedHandicaps(entries).filter((entry) => handicapApplies(entry, now));
   const before = sorted.filter((entry) => entry.date <= start);
   const reference = before[before.length - 1] ?? sorted.find((entry) => entry.date > start) ?? null;
   if (!reference || reference.id === current.id) return null;
@@ -130,7 +135,7 @@ export function handicapChange(start, entries, now) {
 
 /** Bestes, also niedrigstes Handicap seit `start` bis `now`. */
 export function bestHandicap(start, entries, now) {
-  const inRange = sortedHandicaps(entries).filter((entry) => entry.date <= now);
+  const inRange = sortedHandicaps(entries).filter((entry) => handicapApplies(entry, now));
   const before = inRange.filter((entry) => entry.date <= start);
   const starting = before[before.length - 1];
   const candidates = [...(starting ? [starting] : []), ...inRange.filter((entry) => entry.date > start)];
@@ -139,7 +144,7 @@ export function bestHandicap(start, entries, now) {
 
 /** Punkte für die Kurve von `start` bis `now`: der Wert zu Beginn am Beginn selbst, dann jeder Eintrag. Gleiche Tage einmal. */
 export function handicapPoints(start, entries, now) {
-  const inRange = sortedHandicaps(entries).filter((entry) => entry.date <= now);
+  const inRange = sortedHandicaps(entries).filter((entry) => handicapApplies(entry, now));
   const points = [];
   const before = inRange.filter((entry) => entry.date <= start);
   const starting = before[before.length - 1];

@@ -447,6 +447,8 @@ async function start() {
       toast(`${first.title}${first.body ? `: ${first.body}` : ""}${more}`);
     },
   });
+  // Mit dem Konto gehen die eigenen Videos im Team aus dem Speicher: Danach darf das niemand mehr.
+  account.beforeDelete = () => team.deleteOwnClipFiles();
   const app = new App(store, account, team);
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();

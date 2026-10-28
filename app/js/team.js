@@ -748,6 +748,11 @@ export class TeamStore {
   }
 
   /** Dateien im Speicher löschen. Fehler bleiben still: Eine Datei ohne Eintrag zeigt die App niemandem mehr, und beim Entfernen der Person räumt ein Admin sie weg. */
+  /** Vor „Konto löschen“: die eigenen Videos aus dem Speicher. Ohne Konto darf das niemand mehr. */
+  async deleteOwnClipFiles() {
+    if (this.myMemberID) await this.deleteClipFiles(this.clipPaths(this.myMemberID));
+  }
+
   async deleteClipFiles(paths) {
     if (paths.length === 0) return;
     try {
@@ -946,10 +951,19 @@ export class TeamStore {
     this.saveIfChanged("event", { ...current, isCancelled: Boolean(isCancelled) }, current);
   }
 
-  /** Löscht einen Termin samt Zu- und Absagen und Anwesenheit. */
+  /**
+   * Löscht einen Termin samt Anwesenheit und, als Admin, den Zu- und Absagen.
+   * Fremde Zu- und Absagen löschen nur Admins: Ein Trainer ohne Admin-Recht bekäme
+   * vom Server „nicht erlaubt“ und eine Fehlermeldung, obwohl der Termin weg ist.
+   */
   deleteEvent(eventID) {
     if (!this.isStaff) return;
-    this.deleteNames(this.data.recordNamesRemovedWith(recordName("event", uid(eventID))));
+    const me = uid(this.myMemberID ?? "");
+    const names = this.data.recordNamesRemovedWith(recordName("event", uid(eventID))).filter((name) => {
+      if (this.isAdmin || !name.startsWith("response.")) return true;
+      return uid(this.data.get(name)?.memberID ?? "") === me;
+    });
+    this.deleteNames(names);
   }
 
   setAttendance(eventID, memberID, status) {

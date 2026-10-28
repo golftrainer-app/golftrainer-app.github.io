@@ -247,6 +247,8 @@ export class SwingMotionDetector {
     /** Dauer der Bewegung: kürzer ist Rauschen, länger ist Herumlaufen. */
     this.durationRange = [0.3, 3];
     this.refractoryPeriod = 2;
+    /** Eine kurze Bewegung nach einer ruhigen Phase, z. B. ein Waggle, unterbricht die Ruhe nicht, wenn sie kürzer ist. */
+    this.waggleTolerance = 1;
     this.reset();
   }
 
@@ -271,13 +273,20 @@ export class SwingMotionDetector {
         if (isSwing) {
           const quietEnd = state.quietUntil ?? time;
           if (state.quietSince != null && quietEnd - state.quietSince >= this.stillBefore && time - quietEnd <= this.slowStart) {
-            this.state = { kind: "swinging", start: quietEnd, peakTime: time, peakEnergy: energy, quietSince: null };
+            this.state = { kind: "swinging", start: quietEnd, peakTime: time, peakEnergy: energy, quietSince: null, quietBefore: state.quietSince };
           } else {
             this.state = { kind: "ignoring", quietSince: null };
           }
         } else if (isQuiet) {
-          // Neue ruhige Phase, wenn vorher Bewegung war.
-          if (state.quietSince == null || state.quietUntil != null) this.state = { kind: "idle", quietSince: time, quietUntil: null };
+          if (state.quietSince != null && state.quietUntil != null) {
+            // Wieder ruhig nach leichter Bewegung: Ein kurzes Waggle nach einer ruhigen
+            // Phase unterbricht sie nicht, die Ruhe geht weiter.
+            const wasStill = state.quietUntil - state.quietSince >= this.stillBefore;
+            this.state = { kind: "idle", quietSince: wasStill && time - state.quietUntil <= this.waggleTolerance ? state.quietSince : time, quietUntil: null };
+          } else if (state.quietSince == null) {
+            // Neue ruhige Phase, wenn vorher Bewegung war.
+            this.state = { kind: "idle", quietSince: time, quietUntil: null };
+          }
         } else if (state.quietSince != null && state.quietUntil == null) {
           // Leichte Bewegung, z. B. das Ausholen: Die Ruhe ist hier zu Ende.
           this.state = { kind: "idle", quietSince: state.quietSince, quietUntil: time };
@@ -286,7 +295,7 @@ export class SwingMotionDetector {
       }
       case "swinging": {
         let { peakTime, peakEnergy } = state;
-        const { start } = state;
+        const { start, quietBefore } = state;
         if (energy > peakEnergy) {
           peakTime = time;
           peakEnergy = energy;
@@ -294,17 +303,22 @@ export class SwingMotionDetector {
         if (!isQuiet) {
           // Die Pause am höchsten Punkt ist vorbei, der Schwung geht weiter. Zu lange Bewegung ist kein Schwung.
           if (time - start > this.durationRange[1] + this.stillAfter) this.state = { kind: "ignoring", quietSince: null };
-          else this.state = { kind: "swinging", start, peakTime, peakEnergy, quietSince: null };
+          else this.state = { kind: "swinging", start, peakTime, peakEnergy, quietSince: null, quietBefore };
           return null;
         }
         const since = state.quietSince ?? time;
         if (time - since < this.stillAfter) {
-          this.state = { kind: "swinging", start, peakTime, peakEnergy, quietSince: since };
+          this.state = { kind: "swinging", start, peakTime, peakEnergy, quietSince: since, quietBefore };
+          return null;
+        }
+        const duration = since - start;
+        if (duration < this.durationRange[0]) {
+          // Zu kurz für einen Schwung, z. B. ein Waggle: Die Ruhe davor gilt weiter, der Schwung kann gleich kommen.
+          this.state = { kind: "idle", quietSince: quietBefore, quietUntil: null };
           return null;
         }
         this.state = { kind: "idle", quietSince: since, quietUntil: null };
-        const duration = since - start;
-        if (duration < this.durationRange[0] || duration > this.durationRange[1] || peakTime - this.lastSwing < this.refractoryPeriod) return null;
+        if (duration > this.durationRange[1] || peakTime - this.lastSwing < this.refractoryPeriod) return null;
         this.lastSwing = peakTime;
         return peakTime;
       }

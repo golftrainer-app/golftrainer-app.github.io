@@ -1812,7 +1812,7 @@ export function settingsPage(app) {
 
 // MARK: - Meldungen für Admins
 
-const SUBJECT_TITLES = { member: "Mitglied", announcement: "Beitrag an der Pinnwand", event: "Termin", response: "Notiz zu einer Antwort", challenge: "Challenge", comment: "Nachricht", clip: "Video" };
+const SUBJECT_TITLES = { member: "Mitglied", announcement: "Beitrag an der Pinnwand", event: "Termin", response: "Notiz zu einer Antwort", challenge: "Challenge", comment: "Nachricht", clip: "Video", session: "Einheit vom Trainer", focus: "Schwerpunkt" };
 const REASON_TITLES = { insult: "Beleidigung oder Mobbing", harassment: "Belästigung oder Bedrohung", inappropriate: "Unangemessene Inhalte", privacy: "Verletzt die Privatsphäre", spam: "Werbung oder Spam", other: "Etwas anderes" };
 
 function reportRow(report, data) {

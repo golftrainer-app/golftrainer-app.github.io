@@ -70,6 +70,8 @@ export class Account {
     this.now = now;
     this.autoSync = autoSync;
     this.listeners = new Set();
+    /** Läuft vor „Konto löschen“, z. B. um die eigenen Videos im Team aus dem Speicher zu nehmen. */
+    this.beforeDelete = null;
     this.timer = null;
     this.state = this.readState();
     /** "signedOut", "awaitingConfirmation" (die Bestätigungsmail ist unterwegs) oder "signedIn". */
@@ -444,6 +446,8 @@ export class Account {
   async deleteAccount() {
     return this.busy(async () => {
       this.cancelScheduledSync();
+      // Erst, was mit dem Konto verschwindet und danach niemand mehr darf.
+      await this.beforeDelete?.();
       await this.client.deleteAccount();
       this.clearLocalState();
       this.status = "signedOut";

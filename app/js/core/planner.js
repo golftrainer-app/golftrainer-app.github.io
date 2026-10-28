@@ -361,7 +361,12 @@ export class Planner {
       remaining = 0;
     }
 
-    const regular = candidates.filter((drill) => !drill.isBenchmark && plan.modes.includes(drill.mode));
+    let regular = candidates.filter((drill) => !drill.isBenchmark && plan.modes.includes(drill.mode));
+    if (regular.length === 0) {
+      // In der Turniervorbereitung gibt es keine Technik, in der Halle fast nur Technik:
+      // Dann lieber eine Technik-Übung als Minuten ohne Übung.
+      regular = candidates.filter((drill) => !drill.isBenchmark);
+    }
     const modes = this.modePlan(remaining, area, focusNotes.length > 0, context).map((mode) =>
       plan.modes.includes(mode) ? mode : "variable",
     );

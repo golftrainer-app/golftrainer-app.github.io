@@ -27,6 +27,8 @@ export const SUBJECT_NAMES = {
   challenge: "Challenge",
   comment: "Nachricht",
   clip: "Video",
+  session: "Einheit vom Trainer",
+  focus: "Schwerpunkt",
 };
 
 export function excerpt(text) {
